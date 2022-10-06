@@ -2,6 +2,17 @@
   text-align: center;
 }
 
+.App-camera {
+  width: 128px;
+  height: 96px;
+  border: 1px solid black;
+}
+.App-video {
+  width: 640px;
+  height: 480px;
+  border: 1px solid black;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
