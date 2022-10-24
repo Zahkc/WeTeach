@@ -3,8 +3,8 @@
 }
 
 .App-camera {
-  width: 128px;
-  height: 96px;
+  width: 148px;
+  height: 111px;
   border: 1px solid black;
 }
 .App-video {
@@ -46,4 +46,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.chat_window {
+  height:300px;
+}
+.new_message{
+
 }
