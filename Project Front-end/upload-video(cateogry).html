@@ -7,6 +7,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="Askbootstrap">
       <meta name="author" content="Askbootstrap">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <title>Vermilion Cloud Video Streaming Platform</title>
       <!-- tabIcon Icon -->
       <link rel="icon" type="image/png" href="img/tabIcon.png">
@@ -231,163 +232,60 @@
                         <div class="row ">
                            <div class="col-lg-12">
                               <div class="main-title">
-                                 <h6>Category ( you can select upto 6 categories )</h6>
+                                 <h6>Category</h6>
                               </div>
                            </div>
                         </div>
-                        <div class="row category-checkbox">
-                           <!-- checkbox 1col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                 <label class="custom-control-label" for="customCheck1">Computer Science</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                 <label class="custom-control-label" for="customCheck2">Econ</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                 <label class="custom-control-label" for="customCheck3">Science</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck4">
-                                 <label class="custom-control-label" for="customCheck4">Art</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck5">
-                                 <label class="custom-control-label" for="customCheck5">IT</label>
-                              </div>
+                        <!-- Category and Subcategory -->
+                        <script type="text/javascript">
+                           var subcategory = {
+                               ComputerScienceAndInformationTechnology: ["Big Data", "Cyber Security", "Digital Systems Security", "eBusiness", "Game & Mobile Development", "Network Design & Management"],
+                               CommunicationsAndMedia: ["Digital and Social Media", "Screen Media Production", "Journalism", "Marketing Communication", "Advertising and Visual Communication Design"],
+                               MedicalScience : ["Medical Science", "Molecular Medicine", "Exercise Science or Nutrition"]
+                              }
+                   
+                           function makeSubmenu(value) {
+                               if (value.length == 0) document.getElementById("categorySelect").innerHTML = "<option></option>";
+                               else {
+                                   var citiesOptions = "";
+                                   for (categoryId in subcategory[value]) {
+                                       citiesOptions += "<option>" + subcategory[value][categoryId] + "</option>";
+                                   }
+                                   document.getElementById("categorySelect").innerHTML = citiesOptions;
+                               }
+                           }
+                   
+                           function displaySelected() {
+                               var country = document.getElementById("category").value;
+                               var city = document.getElementById("categorySelect").value;
+                               var result = country + "\n" + city;
+                               document.getElementById("result").innerHTML = result;
+                           }
+                   
+                           function resetSelection() {
+                               document.getElementById("category").selectedIndex = 0;
+                               document.getElementById("categorySelect").selectedIndex = 0;
+                           }
+                       </script>
+                        <select id="category" size="1" onchange="makeSubmenu(this.value)">
+                           <option value="" disabled selected>Choose Category</option>
+                           <option>ComputerScienceAndInformationTechnology</option>
+                           <option>CommunicationsAndMedia</option>
+                           <option>MedicalScience</option>
+                           </select>
+                               <select id="categorySelect" size="1">
+                           <option value="" disabled selected>Choose Subcategory</option>
+                           <option></option>
+                           </select>
+
+                           <div class="osahan-area text-center mt-3">
+                              <button class="btn btn-outline-primary">Save Changes</button>
                            </div>
-                           <!-- checkbox 2col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck1">
-                                 <label class="custom-control-label" for="zcustomCheck1">Programming</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck2">
-                                 <label class="custom-control-label" for="zcustomCheck2">English</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck3">
-                                 <label class="custom-control-label" for="zcustomCheck3">Japanese</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck4">
-                                 <label class="custom-control-label" for="zcustomCheck4">Chinese</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck5">
-                                 <label class="custom-control-label" for="zcustomCheck5">Chemistry</label>
-                              </div>
+                           <hr>
+                           <div class="terms text-center">
+                              <p class="mb-0">Tos <a href="#">Terms of Service</a> and <a href="#">Community Guidelines</a>.</p>
+                              <p class="hidden-xs mb-0">Tos</p>
                            </div>
-                           <!-- checkbox 3col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck1">
-                                 <label class="custom-control-label" for="czcustomCheck1">Biology</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck2">
-                                 <label class="custom-control-label" for="czcustomCheck2">Physics</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck3">
-                                 <label class="custom-control-label" for="czcustomCheck3">Mathematics</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck4">
-                                 <label class="custom-control-label" for="czcustomCheck4">Engineer</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck5">
-                                 <label class="custom-control-label" for="czcustomCheck5">Cyber</label>
-                              </div>
-                           </div>
-                           <!-- checkbox 1col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                 <label class="custom-control-label" for="customCheck1">Computer Science</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                 <label class="custom-control-label" for="customCheck2">Econ</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                 <label class="custom-control-label" for="customCheck3">Science</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck4">
-                                 <label class="custom-control-label" for="customCheck4">Art</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="customCheck5">
-                                 <label class="custom-control-label" for="customCheck5">IT</label>
-                              </div>
-                           </div>
-                           <!-- checkbox 2col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck1">
-                                 <label class="custom-control-label" for="zcustomCheck1">Programming</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck2">
-                                 <label class="custom-control-label" for="zcustomCheck2">English</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck3">
-                                 <label class="custom-control-label" for="zcustomCheck3">Japanese</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck4">
-                                 <label class="custom-control-label" for="zcustomCheck4">Chinese</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="zcustomCheck5">
-                                 <label class="custom-control-label" for="zcustomCheck5">Chemistry</label>
-                              </div>
-                           </div>
-                           <!-- checkbox 3col -->
-                           <div class="col-lg-2 col-xs-6 col-4">
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck1">
-                                 <label class="custom-control-label" for="czcustomCheck1">Vessel</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck2">
-                                 <label class="custom-control-label" for="czcustomCheck2">Physics</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck3">
-                                 <label class="custom-control-label" for="czcustomCheck3">Mathematics</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck4">
-                                 <label class="custom-control-label" for="czcustomCheck4">Engineer</label>
-                              </div>
-                              <div class="custom-control custom-checkbox">
-                                 <input type="checkbox" class="custom-control-input" id="czcustomCheck5">
-                                 <label class="custom-control-label" for="czcustomCheck5">Cyber</label>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="osahan-area text-center mt-3">
-                        <button class="btn btn-outline-primary">Save Changes</button>
-                     </div>
-                     <hr>
-                     <div class="terms text-center">
-                        <p class="mb-0">Tos <a href="#">Terms of Service</a> and <a href="#">Community Guidelines</a>.</p>
-                        <p class="hidden-xs mb-0">Tos</p>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <!-- /.container-fluid -->
            
       <!-- Bootstrap core JavaScript-->
       <script src="vendor/jquery/jquery.min.js"></script>

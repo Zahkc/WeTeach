@@ -15,7 +15,7 @@
       <!-- Custom fonts for this template-->
       <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <!-- Custom styles for this template-->
-      <link href="css/osahan.css" rel="stylesheet">
+      <link href="css/kf.css" rel="stylesheet">
    </head>
    <body id="page-top">
       <nav class="navbar navbar-expand navbar-light bg-white static-top osahan-nav sticky-top">
@@ -147,6 +147,41 @@
                      </div>
                      <div class="col-md-4">
                         <div class="single-video-right">
+                           <div class="row">
+                              <div class="col-md-12">  
+                                 </div>
+                                 <div class="chatBoxShowHide">
+                                    <button type = "button" class="collapsible">Chat Room</button>   
+                                       <div class="containerChat">
+                                          <p>
+                                             <a class="container img">
+                                             <img alt="Avatar" src="img/icon1.png" style ="width: 10%;">
+                                             <p class = "chat">Hello. Good Video</p>
+                                             <span class="time-right">11:00</span>
+                                             <img alt="Avatar" src="img/icon2.png" style ="width: 10%;">
+                                             <p class = "chat">Hello. Keep it up</p>
+                                             <span class="time-right">11:05</span>
+                                             </a>
+                                          </p>
+                                  </div>
+                                 </div>
+                              </div>
+                              <script>
+                                 var coll = document.getElementsByClassName("collapsible");
+                                 var i;
+                                 
+                                 for (i = 0; i < coll.length; i++) {
+                                   coll[i].addEventListener("click", function() {
+                                     this.classList.toggle("active");
+                                     var content = this.nextElementSibling;
+                                     if (content.style.display === "block") {
+                                       content.style.display = "none";
+                                     } else {
+                                       content.style.display = "block";
+                                     }
+                                   });
+                                 }
+                                 </script>
                            <div class="row">
                               <div class="col-md-12">  
                                  </div>
