@@ -56,7 +56,9 @@ function Navbar() {
                                 <a className="dropdown-item" href="account.html"><i className="fas fa-fw fa-user-circle"></i> &nbsp; My Account</a>
                                 <a className="dropdown-item" href="settings.html"><i className="fas fa-fw fa-cog"></i> &nbsp; Settings</a>
                                 <div className="dropdown-divider"></div>
+                                <NavLink to ="/login">
                                 <a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
+                                </NavLink>
                             </div>
                             </li>
                         </ul>
