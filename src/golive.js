@@ -45,7 +45,7 @@ function GoLive() {
           <button onClick={swapScreen}>Swap Screen</button>
           </td>
           <td>
-          <button onClick={swapScreen}>Mute Audio</button>
+          <button id="mute-button" onClick={muteMic}>Mute Audio</button>
           </td>
           <td>
           <button onClick={stopStream}>Go Live</button>
@@ -65,6 +65,7 @@ let camStream = null;
 let vidStream = null;
 let localCam = null;
 let localVid = null;
+let muted = false;
 let pc1;
 let startTime;
 const offerOptions = {
@@ -105,7 +106,19 @@ async function stopStream(){
   localCam.srcObject = null
   localVid.srcObject = null
 }
-
+async function muteMic(){
+  if(camStream.getAudioTracks()[0].enabled){
+    document.getElementById("mute-button").textContent = "Unmute Audio";
+    document.getElementById("mute-button").style.background='#800000';
+    camStream.getAudioTracks()[0].enabled = false;
+  }
+  else if(!camStream.getAudioTracks()[0].enabled){
+    document.getElementById("mute-button").textContent = "Mute Audio";
+    document.getElementById("mute-button").style.background='#FFFFFF';
+    camStream.getAudioTracks()[0].enabled = true;
+  }
+  console.log(camStream.getAudioTracks()[0].enabled);
+}
 function call(){
   console.log('Starting call');
   startTime = window.performance.now();
