@@ -49,7 +49,13 @@ function GoLive() {
           </table>
           </td>
         </tr>
+        <tr>
+          <td>
+          <input type ="text" id="title" placeholder="Enter your title here."></input>
+          </td>
+        </tr>
       </table>
+      
       <table>
         <tr>
           <td>
@@ -63,12 +69,15 @@ function GoLive() {
           </td>
           <td>
           <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
+          </td>          
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <button onClick={getInfo}>Go Live</button>
           </td>
           <td>
-          <button onClick={getInfo}>Go Live</button>
-          </td>
-          <td>
-          <button onClick={stopStream}>Stop Stream</button>
+            <button onClick={stopStream}>Stop Stream</button>
           </td>
         </tr>
       </table>
@@ -138,17 +147,16 @@ async function muteMic(){
     document.getElementById("mic-mute-button").style.background='#FFFFFF';
     camStream.getAudioTracks()[0].enabled = true;
   }
-  console.log(camStream.getAudioTracks()[0].enabled);
 }
 
 async function muteCam(){
   if(camStream.getVideoTracks()[0].enabled){
-    document.getElementById("cam-mute-button").textContent = "Disable Camera";
+    document.getElementById("cam-mute-button").textContent = "Enable Camera";
     document.getElementById("cam-mute-button").style.background='#800000';
     camStream.getVideoTracks()[0].enabled = false;
   }
   else if(!camStream.getVideoTracks()[0].enabled){
-    document.getElementById("cam-mute-button").textContent = "Enable Camera";
+    document.getElementById("cam-mute-button").textContent = "Disable Camera";
     document.getElementById("cam-mute-button").style.background='#FFFFFF';
     camStream.getVideoTracks()[0].enabled = true;
   }
