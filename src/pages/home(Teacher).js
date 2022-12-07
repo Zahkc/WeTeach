@@ -44,7 +44,7 @@ class Home extends React.Component{
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
-                                                <a href="#">There are many variations of passages of Lorem</a>
+                                                <a href="#">Video 1</a>
                                             </div>
 
                                             <div className="video-view">
