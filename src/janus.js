@@ -32,6 +32,11 @@
 	OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import jQuery from 'jquery';
+import adapter from 'webrtc-adapter';
+
+ var server =  "https://weteach.ddns.net:8089/janus";
+
 // List of sessions
 Janus.sessions = {};
 
@@ -3114,4 +3119,4 @@ function Janus(gatewayCallbacks) {
 	}
 }
 
-module.exports = Janus;
+export default Janus;
