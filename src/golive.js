@@ -1,7 +1,9 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import './golive.css';
+import {useState, useEffect, useRef} from 'react';
 import Janus from './janus'
+import './golive.css';
+import {Spinner} from 'spin.js';
+import {server, iceServers} from './settings'
 
 let camStream = null;
 let vidStream = null;
@@ -11,7 +13,6 @@ let localVid = null;
 let stage = 0;
 let janusInstance;
 let setJanusInstance;
-var server =  "https://weteach.ddns.net:8089/janus";
 
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
@@ -214,5 +215,69 @@ async function toggleScreenShare(){
     startStream();
   }
 }
+
+// function shareScreen() {
+// 	// Create a new room
+// 	role = "publisher";
+// 	var create = {
+// 		request: "create",
+// 		description: desc,
+// 		bitrate: 500000,
+// 		publishers: 1
+// 	};
+// 	screentest.send({ message: create, success: function(result) {
+// 		var event = result["videoroom"];
+// 		Janus.debug("Event: " + event);
+// 		if(event) {
+// 			// Our own screen sharing session has been created, join it
+// 			room = result["room"];
+// 			Janus.log("Screen sharing session created: " + room);
+// 			myusername = Janus.randomString(12);
+// 			var register = {
+// 				request: "join",
+// 				room: room,
+// 				ptype: "publisher",
+// 				display: myusername
+// 			};
+// 			screentest.send({ message: register });
+// 		}
+// 	}});
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export default GoLive;

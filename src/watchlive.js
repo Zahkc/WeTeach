@@ -17,12 +17,11 @@ var myusername = Janus.randomString(12);
 function WatchLive() {
   const inputRef = useRef(null);
 
-  function handleClick(){
-    room = inputRef.current.value;
-    newRemoteFeed();
-  }
+ function handleClick() {
+   room = parseInt(inputRef.current.value);
+   attemptConnect();
+ }
 
-  console.log(server)
   const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
     initJanus();
@@ -61,7 +60,7 @@ function WatchLive() {
           <td>
           <p>Enter Session ID</p>
           <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-          <button onClick={attemptConnect} id="connect">connect</button>
+          <button onClick={handleClick} id="connect">connect</button>
           <button id="disconnect">disconnect</button>
           </td>
         </tr>
@@ -169,7 +168,6 @@ function initJanus(){
 }
 
 function attemptConnect(){
-  room = parseInt("1580264379752557");
 	role = "listener";
   var register = {
 		request: "join",
