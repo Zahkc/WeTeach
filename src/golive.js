@@ -6,13 +6,21 @@ import {Spinner} from 'spin.js';
 import {server, iceServers} from './settings'
 
 let camStream = null;
+let janusInstance, setJanusInstance, janus;
+var opaqueId = "screensharingtest-"+Janus.randomString(12);
+var capture, screentest, room, role, myid, source, spinner, roomid;
+var localTracks = {}, localVideos = 0,
+	remoteTracks = {}, remoteVideos = 0;
 let vidStream = null;
 let screenStream = null;
+let outStream = new MediaStream([]);
 let localCam = null;
 let localVid = null;
+var myusername = Janus.randomString(12);
+
 let stage = 0;
-let janusInstance;
-let setJanusInstance;
+
+
 
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
@@ -28,6 +36,7 @@ function GoLive() {
       <p>
         Going Live Interface
       </p>
+			<input type="text" id="codeDisp" value="Room Code"/>
       <table>
         <tr>
           <td>
@@ -72,7 +81,7 @@ function GoLive() {
         <tr>
           <td></td>
           <td>
-            <button onClick={getInfo}>Go Live</button>
+            <button onClick={shareScreen}>Go Live</button>
           </td>
           <td>
             <button onClick={stopStream}>Stop Stream</button>
@@ -86,41 +95,6 @@ function GoLive() {
   );
 }
 
-function initJanus(){
-
-    Janus.init({debug: "all", callback: function() {
-        if(!Janus.isWebrtcSupported()) {
-    console.log("No WebRTC support... ");
-    return;
-        }
-
-        const janus = new Janus(
-    {
-			server: server,
-      // No "iceServers" is provided, meaning janus.js will use a default STUN server
-      // Here are some examples of how an iceServers field may look like to support TURN
-      // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // Should the Janus API require authentication, you can specify either the API secret or user token here too
-      //		token: "mytoken",
-      //	or
-      //		apisecret: "serversecret",
-      success: function() {
-        // Attach to echo test plugin
-                    console.log("Janus loaded");
-                    setJanusInstance(janus);
-      },
-      error: function(error) {
-        Janus.error(error);
-                    setJanusInstance(null);
-      },
-      destroyed: function() {
-                    setJanusInstance(null);
-      }
-            });
-    }});
-}
 
 function getInfo(){
   console.log();
@@ -165,10 +139,11 @@ async function swapScreen(){
 }
 
 async function stopStream(){
-  vidStream = null
-  camStream = null
-  localCam.srcObject = null
-  localVid.srcObject = null
+  vidStream = null;
+  camStream = null;
+  localCam.srcObject = null;
+  localVid.srcObject = null;
+	janus.destroy();
 }
 async function muteMic(){
   if(camStream.getAudioTracks()[0].enabled){
@@ -216,33 +191,145 @@ async function toggleScreenShare(){
   }
 }
 
-// function shareScreen() {
-// 	// Create a new room
-// 	role = "publisher";
-// 	var create = {
-// 		request: "create",
-// 		description: desc,
-// 		bitrate: 500000,
-// 		publishers: 1
-// 	};
-// 	screentest.send({ message: create, success: function(result) {
-// 		var event = result["videoroom"];
-// 		Janus.debug("Event: " + event);
-// 		if(event) {
-// 			// Our own screen sharing session has been created, join it
-// 			room = result["room"];
-// 			Janus.log("Screen sharing session created: " + room);
-// 			myusername = Janus.randomString(12);
-// 			var register = {
-// 				request: "join",
-// 				room: room,
-// 				ptype: "publisher",
-// 				display: myusername
-// 			};
-// 			screentest.send({ message: register });
-// 		}
-// 	}});
-// }
+
+function initJanus(){
+
+    Janus.init({debug: "all", callback: function() {
+        if(!Janus.isWebrtcSupported()) {
+    console.log("No WebRTC support... ");
+    return;
+        }
+
+        janus = new Janus(
+    {
+			server: server,
+      // No "iceServers" is provided, meaning janus.js will use a default STUN server
+      // Here are some examples of how an iceServers field may look like to support TURN
+      // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
+      // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+      // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
+      // Should the Janus API require authentication, you can specify either the API secret or user token here too
+      //		token: "mytoken",
+      //	or
+      //		apisecret: "serversecret",
+      success: function() {
+        console.log("Janus loaded");
+        // setJanusInstance(janus);
+        // Attach to echo test plugin
+        janus.attach({
+          plugin: "janus.plugin.videoroom",
+          opaqueId: opaqueId,
+          success: function(pluginHandle) {
+              screentest = pluginHandle;
+              Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
+              // Prepare the username registration
+          },
+          error: function(error) {},
+					iceState: function(state) {
+						Janus.log("ICE state changed to " + state);
+					},
+					mediaState: function(medium, on, mid) {
+						Janus.log("Janus " + (on ? "started" : "stopped") + " receiving our " + medium + " (mid=" + mid + ")");
+					},
+					webrtcState: function(on) {
+						Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
+						if(on) {
+							console.log("Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.");
+						} else {
+							console.log("Your screen sharing session just stopped.", function() {
+								janus.destroy();
+								window.location.reload();
+							});
+						}
+					},
+          onmessage: function(msg, jsep) {
+            Janus.debug(" ::: Got a message (publisher) :::", msg);
+            var event = msg["videoroom"];
+            Janus.debug("Event: " + event);
+
+            if(event){
+              if (event === "joined") {
+
+                myid = msg["id"];
+                Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
+                Janus.debug("Negotiating WebRTC stream for our screen (capture " + capture + ")");
+
+                if(Janus.webRTCAdapter.browserDetails.browser === "safari") {
+                  console.log("Rip Apple users");
+                } else {
+
+                  screentest.createOffer({
+                    tracks: [
+                      { type: 'audio', capture: camStream.getAudioTracks()[0], recv: false },
+                      { type: 'video', capture: camStream.getVideoTracks()[0], recv: false }
+                    ],
+                    success: function(jsep) {
+                      Janus.debug("Got publisher SDP!", jsep);
+                      var publish = { request: "configure", audio: true, video: true };
+                      screentest.send({ message: publish, jsep: jsep });
+                    },
+                    error: function(error) {
+                      Janus.error("WebRTC error:", error);
+                      console.error("WebRTC error... " + error.message);
+                    }
+                  });
+                }
+
+              } else if(msg["error"]) {
+                  console.error(msg["error"]);
+                }
+              }
+							if(jsep) {
+								Janus.debug("Handling SDP as well...", jsep);
+								screentest.handleRemoteJsep({ jsep: jsep });
+							}
+            }
+        });
+
+      },
+      error: function(error) {
+        Janus.error(error);
+                    setJanusInstance(null);
+      },
+      destroyed: function() {
+                    setJanusInstance(null);
+      }
+            });
+    }});
+}
+
+
+
+function shareScreen() {
+	// Create a new room
+  capture = "screen";
+  var desc = "Test transmit Page";
+	var role = "publisher";
+	var create = {
+		request: "create",
+		description: desc,
+		bitrate: 500000,
+		publishers: 1
+	};
+	screentest.send({ message: create, success: function(result) {
+		var event = result["videoroom"];
+		Janus.debug("Event: " + event);
+		if(event) {
+			// Our own screen sharing session has been created, join it
+			room = result["room"];
+			Janus.log("Screen sharing session created: " + room);
+			document.getElementById("codeDisp").value = room;
+			myusername = Janus.randomString(12);
+			var register = {
+				request: "join",
+				room: room,
+				ptype: "publisher",
+				display: myusername
+			};
+			screentest.send({ message: register });
+		}
+	}});
+}
 
 
 
