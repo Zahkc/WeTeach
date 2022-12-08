@@ -61,7 +61,7 @@ function WatchLive() {
           <p>Enter Session ID</p>
           <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
           <button onClick={handleClick} id="connect">connect</button>
-          <button id="disconnect">disconnect</button>
+          <button onClick={leaveStream} id="disconnect">disconnect</button>
           </td>
         </tr>
       </table>
@@ -165,6 +165,10 @@ function initJanus(){
       }
             });
     }});
+}
+
+function leaveStream(){
+	janus.destroy();
 }
 
 function attemptConnect(){
