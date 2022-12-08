@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import Janus from './janus'
 import './golive.css';
 import {Spinner} from 'spin.js';
@@ -8,13 +8,20 @@ import {server, iceServers} from './settings'
 let stream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var screentest, room, role, myid, source, spinner;
+var screentest, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
 
 
 function WatchLive() {
+  const inputRef = useRef(null);
+
+  function handleClick(){
+    room = inputRef.current.value;
+    newRemoteFeed();
+  }
+
   console.log(server)
   const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
@@ -53,7 +60,7 @@ function WatchLive() {
         <tr>
           <td>
           <p>Enter Session ID</p>
-          <input type="text" id="title" placeholder="Enter Session ID"></input>
+          <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
           <button onClick={attemptConnect} id="connect">connect</button>
           <button id="disconnect">disconnect</button>
           </td>
@@ -222,7 +229,7 @@ function newRemoteFeed(id, display) {
         remoteFeed.createAnswer(
           {
             jsep: jsep,
-            
+
             tracks: [
               { type: 'data' }
             ],
