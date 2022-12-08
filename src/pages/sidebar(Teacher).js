@@ -40,6 +40,13 @@ function SideBar() {
                 <span>GoLive</span>
                 </NavLink>
                 </li>
+
+                <li className="nav-item">
+                <NavLink to = "/WatchLive">
+                <i className="fas fa-fw fa-cloud-upload-alt"></i>
+                <span>WatchLive</span>
+                </NavLink>
+                </li>
             </ul>
         </Fragment>
     )
