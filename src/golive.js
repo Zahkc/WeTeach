@@ -135,6 +135,15 @@ async function swapScreen(){
   camStream.addTrack(screenStream.getVideoTracks()[0]);
   console.log(camStream.getVideoTracks().count);
   stage = 1;
+
+	screentest.replaceTracks([
+		{
+			type:'screen',
+			mid: '2',
+			capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1]
+		}
+	]);
+
   startStream()
 }
 
@@ -260,8 +269,9 @@ function initJanus(){
 
                   screentest.createOffer({
                     tracks: [
-                      { type: 'audio', capture: camStream.getAudioTracks()[0], recv: false },
-                      { type: 'video', capture: camStream.getVideoTracks()[0], recv: false }
+                      { type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
+                      { type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+                      { type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false }
                     ],
                     success: function(jsep) {
                       Janus.debug("Got publisher SDP!", jsep);
