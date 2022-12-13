@@ -19,7 +19,6 @@ let localVid = null;
 var myusername = Janus.randomString(12);
 var participants = {};
 var transactions = {};
-var textroom = null;
 
 let stage = 0;
 
@@ -231,7 +230,6 @@ function initJanus(){
           opaqueId: opaqueId,
           success: function(pluginHandle) {
               screentest = pluginHandle;
-              textroom = pluginHandle;
               Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
               // Prepare the username registration
           },
@@ -273,11 +271,13 @@ function initJanus(){
                     tracks: [
                       { type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
                       { type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-                      { type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false }
+                      { type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false },
+											{ type: 'data', mid:'3'}
                     ],
                     success: function(jsep) {
                       Janus.debug("Got publisher SDP!", jsep);
-                      var publish = { request: "configure", audio: true, video: true };
+                      Janus.log("Got publisher SDP!", jsep);
+                      var publish = { request: "configure", audio: true, video: true, data: true };
                       screentest.send({ message: publish, jsep: jsep });
                     },
                     error: function(error) {
@@ -285,39 +285,22 @@ function initJanus(){
                       console.error("WebRTC error... " + error.message);
                     }
                   });
-                  
+
                 }
 
               } else if(msg["error"]) {
                   console.error(msg["error"]);
                 }
               }
-              // For WebChat
-							if(jsep) {
-								Janus.debug("Handling SDP as well...", jsep);
-								screentest.handleRemoteJsep({ jsep: jsep });
-                  // Answer
-                  textroom.createOffer(
-                    {
-                      jsep: jsep,
-                      // We only use datachannels
-                      tracks: [
-                        { type: 'data' }
-                      ],
-                      success: function(jsep) {
-                        Janus.debug("Got SDP!", jsep);
-                        var body = { request: "ack" };
-                        textroom.send({ message: body, jsep: jsep });
-                      },
-                      error: function(error) {
-                        Janus.error("WebRTC error:", error);
-                      }
-                    });
-							}
+
+						if(jsep) {
+							Janus.debug("Handling SDP as well...", jsep);
+							screentest.handleRemoteJsep({ jsep: jsep });
+						}
           },
           ondataopen: function(data) {
             Janus.log("The DataChannel is available!");
-         
+
           },
           ondata: function(data) {
             Janus.debug("We got data from the DataChannel!", data);
@@ -330,7 +313,7 @@ function initJanus(){
               delete transactions[transaction];
               return;
             }
-            var what = json["textroom"];
+            var what = json["videoroom"];
             if(what === "message") {
               // Incoming message: public or private?
               var msg = escapeXmlTags(json["text"]);
@@ -343,7 +326,7 @@ function initJanus(){
                 Janus.log('<p>[' + dateString + '] <b>' + sender + ':</b> ' + msg);
                 //$('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
               }
-             
+
           },
           oncleanup: function() {
             Janus.log(" ::: Got a cleanup notification :::");
@@ -360,7 +343,7 @@ function initJanus(){
                     setJanusInstance(null);
       }
             });
-            
+
     }});
 }
 
@@ -395,6 +378,7 @@ function shareScreen() {
 		}
 	}});
 }
+
 function escapeXmlTags(value) {
 	if(value) {
 		var escapedValue = value.replace(new RegExp('<', 'g'), '&lt');
@@ -433,7 +417,7 @@ function sendData() {
 		return;
 	}
 	var message = {
-		textroom: "message",
+		videoroom: "message",
 		transaction: randomString(12),
 		room: room,
  		text: messageText
@@ -443,7 +427,7 @@ function sendData() {
 	// server and forwarded to the recipients. If you do not want this to happen,
 	// just add an ack:false property to the message above, and server won't send
 	// you a response (meaning you just have to hope it succeeded).
-	textroom.data({
+	screentest.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
 		success: function(message) { Janus.log(messageText); }
