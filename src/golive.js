@@ -285,15 +285,34 @@ function initJanus(){
                       console.error("WebRTC error... " + error.message);
                     }
                   });
+                  
                 }
 
               } else if(msg["error"]) {
                   console.error(msg["error"]);
                 }
               }
+              // For WebChat
 							if(jsep) {
 								Janus.debug("Handling SDP as well...", jsep);
 								screentest.handleRemoteJsep({ jsep: jsep });
+                  // Answer
+                  textroom.createOffer(
+                    {
+                      jsep: jsep,
+                      // We only use datachannels
+                      tracks: [
+                        { type: 'data' }
+                      ],
+                      success: function(jsep) {
+                        Janus.debug("Got SDP!", jsep);
+                        var body = { request: "ack" };
+                        textroom.send({ message: body, jsep: jsep });
+                      },
+                      error: function(error) {
+                        Janus.error("WebRTC error:", error);
+                      }
+                    });
 							}
           },
           ondataopen: function(data) {
