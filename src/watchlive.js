@@ -272,12 +272,14 @@ function newRemoteFeed(id, display) {
 					Janus.log("Created remote video stream:", stream);
 					let localVid = document.getElementById('local_vid');
 					localVid.srcObject = stream;
+					let localCam = document.getElementById('local_cam');
+					localCam.srcObject = screenStream;
 				} else {
 					screenStream.addTrack(track);
 					remoteFeed.remoteTracks[mid] = screenStream;
 					Janus.log("Created remote video stream:", screenStream);
-					let localCam = document.getElementById('local_cam');
-					localCam.srcObject = screenStream;
+					let localVid = document.getElementById('local_vid');
+					localVid.srcObject = screenStream;
 				}
 
       }
@@ -285,41 +287,6 @@ function newRemoteFeed(id, display) {
   })
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 export default WatchLive;

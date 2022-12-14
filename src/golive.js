@@ -6,7 +6,7 @@ import {Spinner} from 'spin.js';
 import {server, iceServers} from './settings'
 
 let camStream = null;
-let janusInstance, setJanusInstance, janus;
+let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
 var capture, screentest, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
@@ -19,7 +19,7 @@ let localVid = null;
 var myusername = Janus.randomString(12);
 var participants = {};
 var transactions = {};
-
+let textroom;
 let stage = 0;
 
 
@@ -156,6 +156,7 @@ async function stopStream(){
   localVid.srcObject = null;
 	janus.destroy();
 }
+
 async function muteMic(){
   if(camStream.getAudioTracks()[0].enabled){
     document.getElementById("mic-mute-button").textContent = "Unmute Audio";
@@ -212,15 +213,6 @@ function initJanus(){
         janus = new Janus(
     {
 			server: server,
-      // No "iceServers" is provided, meaning janus.js will use a default STUN server
-      // Here are some examples of how an iceServers field may look like to support TURN
-      // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // Should the Janus API require authentication, you can specify either the API secret or user token here too
-      //		token: "mytoken",
-      //	or
-      //		apisecret: "serversecret",
       success: function() {
         console.log("Janus loaded");
         // setJanusInstance(janus);
@@ -230,8 +222,11 @@ function initJanus(){
           opaqueId: opaqueId,
           success: function(pluginHandle) {
               screentest = pluginHandle;
-              Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
-              // Prepare the username registration
+							textroom = pluginHandle;
+							Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
+							var body = { request: "setup" };
+							Janus.debug("Sending message:", body);
+							screentest.send({ message: body });
           },
           error: function(error) {},
 					iceState: function(state) {
@@ -266,25 +261,45 @@ function initJanus(){
                 if(Janus.webRTCAdapter.browserDetails.browser === "safari") {
                   console.log("Rip Apple users");
                 } else {
+									if (camStream.getVideoTracks().length == 1) {
+										screentest.createOffer({
+											tracks: [
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+												{ type: 'data'}
+											],
+											success: function(jsep) {
+												Janus.debug("Got publisher SDP!", jsep);
+												Janus.log("Got publisher SDP!", jsep);
+												var publish = { request: "configure", audio: true, video: true, data: true };
+												screentest.send({ message: publish, jsep: jsep });
+											},
+											error: function(error) {
+												Janus.error("WebRTC error:", error);
+												console.error("WebRTC error... " + error.message);
+											}
+										});
+									} else {
+										screentest.createOffer({
+											tracks: [
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+												{ type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false },
+												{ type: 'data'}
+											],
+											success: function(jsep) {
+												Janus.debug("Got publisher SDP!", jsep);
+												Janus.log("Got publisher SDP!", jsep);
+												var publish = { request: "configure", audio: true, video: true, data: true };
+												screentest.send({ message: publish, jsep: jsep });
+											},
+											error: function(error) {
+												Janus.error("WebRTC error:", error);
+												console.error("WebRTC error... " + error.message);
+											}
+										});
+									}
 
-                  screentest.createOffer({
-                    tracks: [
-                      { type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
-                      { type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-                      { type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false },
-											{ type: 'data', mid:'3'}
-                    ],
-                    success: function(jsep) {
-                      Janus.debug("Got publisher SDP!", jsep);
-                      Janus.log("Got publisher SDP!", jsep);
-                      var publish = { request: "configure", audio: true, video: true, data: true };
-                      screentest.send({ message: publish, jsep: jsep });
-                    },
-                    error: function(error) {
-                      Janus.error("WebRTC error:", error);
-                      console.error("WebRTC error... " + error.message);
-                    }
-                  });
 
                 }
 
@@ -300,33 +315,7 @@ function initJanus(){
           },
           ondataopen: function(data) {
             Janus.log("The DataChannel is available!");
-
-          },
-          ondata: function(data) {
-            Janus.debug("We got data from the DataChannel!", data);
-            //~ $('#datarecv').val(data);
-            var json = JSON.parse(data);
-            var transaction = json["transaction"];
-            if(transactions[transaction]) {
-              // Someone was waiting for this
-              transactions[transaction](json);
-              delete transactions[transaction];
-              return;
-            }
-            var what = json["videoroom"];
-            if(what === "message") {
-              // Incoming message: public or private?
-              var msg = escapeXmlTags(json["text"]);
-              var from = json["from"];
-              var dateString = getDateString(json["date"]);
-              var whisper = json["whisper"];
-              var sender = participants[from] ? participants[from] : escapeXmlTags(json["display"]);
-                // Public message
-                var chat = document.getElementById("chat").value;
-                Janus.log('<p>[' + dateString + '] <b>' + sender + ':</b> ' + msg);
-                //$('#chatroom').get(0).scrollTop = $('#chatroom').get(0).scrollHeight;
-              }
-
+						con2Chat();
           },
           oncleanup: function() {
             Janus.log(" ::: Got a cleanup notification :::");
@@ -347,6 +336,70 @@ function initJanus(){
     }});
 }
 
+function con2Chat(){
+	source = screentest.getId();
+	janus.attach({
+		plugin: "janus.plugin.videoroom",
+		opaqueId: opaqueId,
+		success: function(pluginHandle) {
+			textroom = pluginHandle;
+			Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
+			Janus.log("  -- This is a subscriber");
+			var listen = {
+				request: "join",
+				room: room,
+				ptype: "subscriber",
+				feed: myid
+			};
+			textroom.send({ message: listen });
+		},
+		error: function(error) {
+			Janus.error("  -- Error attaching plugin...", error);
+			console.log("Error attaching plugin... " + error);
+		},
+		onmessage: function(msg, jsep) {
+
+			Janus.debug(" ::: Got a message (listener) :::", msg);
+			var event = msg["videoroom"];
+			Janus.debug("Event: " + event);
+
+			if(event){
+        if(event === "attached"){
+          Janus.log("Successfully attached to feed " + myid + " in room " + msg["room"]);
+        }
+      }
+      if(jsep){
+        Janus.debug("Handling SDP as well...", jsep);
+
+        textroom.createAnswer(
+          {
+            jsep: jsep,
+
+            tracks: [
+              { type: 'data' }
+            ],
+            success: function(jsep) {
+              Janus.debug("Got SDP!", jsep);
+              var body = { request: "start", room: room };
+              textroom.send({ message: body, jsep: jsep });
+            },
+            error: function(error) {
+              Janus.error("WebRTC error:", error);
+              console.error("WebRTC error... " + error.message);
+            }
+          });
+
+      }
+
+		},
+		ondataopen: function(data) {
+			console.log("SUB CONNECTED TO CHAT");
+		},
+		ondata: function(data) {
+			console.log("DATA INCOMMING");
+		}
+	});
+}
 
 function shareScreen() {
 	// Create a new room
@@ -377,6 +430,7 @@ function shareScreen() {
 			screentest.send({ message: register });
 		}
 	}});
+
 }
 
 function escapeXmlTags(value) {
@@ -417,7 +471,7 @@ function sendData() {
 		return;
 	}
 	var message = {
-		videoroom: "message",
+		textroom: "message",
 		transaction: randomString(12),
 		room: room,
  		text: messageText
@@ -428,9 +482,13 @@ function sendData() {
 	// just add an ack:false property to the message above, and server won't send
 	// you a response (meaning you just have to hope it succeeded).
 	screentest.data({
-		text: JSON.stringify(message),
+		text: messageText,
+		// text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
-		success: function(message) { Janus.log(messageText); }
+		success: function(message) {
+			Janus.log(messageText);
+		 }
 	});
 }
+
 export default GoLive;
