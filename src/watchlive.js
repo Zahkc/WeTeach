@@ -6,6 +6,7 @@ import {Spinner} from 'spin.js';
 import {server, iceServers} from './settings'
 
 let stream = new MediaStream([])
+let screenStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
 var screentest, room, role, myid, source, spinner, roomid;
@@ -265,54 +266,27 @@ function newRemoteFeed(id, display) {
       } else {
         // New video track: create a stream out of it
         remoteVideos++;
-        stream.addTrack(track);
-        remoteFeed.remoteTracks[mid] = stream;
-        Janus.log("Created remote video stream:", stream);
-        let localVid = document.getElementById('local_vid');
-        localVid.srcObject = stream;
-        console.log("test")
-        console.log(stream);
-        console.log("test")
+				if (remoteVideos > 1) {
+					stream.addTrack(track);
+					remoteFeed.remoteTracks[mid] = stream;
+					Janus.log("Created remote video stream:", stream);
+					let localVid = document.getElementById('local_vid');
+					localVid.srcObject = stream;
+					let localCam = document.getElementById('local_cam');
+					localCam.srcObject = screenStream;
+				} else {
+					screenStream.addTrack(track);
+					remoteFeed.remoteTracks[mid] = screenStream;
+					Janus.log("Created remote video stream:", screenStream);
+					let localVid = document.getElementById('local_vid');
+					localVid.srcObject = screenStream;
+				}
+
       }
     }
   })
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 export default WatchLive;
