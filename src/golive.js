@@ -21,8 +21,11 @@ var participants = {};
 var transactions = {};
 let textroom;
 let stage = 0;
+let chatbox = document.getElementById("chatbox");
 
-
+const chatStyle = {
+  fontSize: '16px',
+};
 
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
@@ -31,6 +34,12 @@ function GoLive() {
     getMedia();
     initJanus();
   });
+  
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      document.getElementById("chatSubmit").click();
+    }
+  };
 
   return (
     <div className="goLive">
@@ -50,13 +59,13 @@ function GoLive() {
           <video className="App-camera" id="local_cam" autoPlay></video>
           </tr>
           <tr>
-          <textarea disabled className="chat_window" id = "chat" ></textarea>
+          <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
           </tr>
           <tr>
           <td>
-          <textarea className="new_message" id = "msg_box"></textarea>
+          <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
           </td>
-          <button onClick={sendData}>Send</button>
+          <button onClick={sendData} id = "chatSubmit">Send</button>
           <td>
           </td>
           </tr>
@@ -96,7 +105,6 @@ function GoLive() {
     </div>
   );
 }
-
 
 function getInfo(){
   console.log();
@@ -396,11 +404,18 @@ function con2Chat(){
 			console.log("SUB CONNECTED TO CHAT");
 		},
 		ondata: function(data) {
-			console.log("DATA INCOMMING");
+      // Chat message recieved
+      chatbox = document.getElementById("chatbox");
+      chatbox.value += (formatChatMsg(data)+"\n");
+      chatbox.scrollTop = chatbox.scrollHeight;
 		}
 	});
 }
 
+function formatChatMsg(data){
+  var msg = JSON.parse(data);
+  return "["+msg.time + "] Username: "+msg.text;
+}
 function shareScreen() {
 	// Create a new room
   capture = "screen";
@@ -474,7 +489,8 @@ function sendData() {
 		textroom: "message",
 		transaction: randomString(12),
 		room: room,
- 		text: messageText
+ 		text: messageText,
+    time: getDateString(false)
 	};
 	// Note: messages are always acknowledged by default. This means that you'll
 	// always receive a confirmation back that the message has been received by the
@@ -482,13 +498,11 @@ function sendData() {
 	// just add an ack:false property to the message above, and server won't send
 	// you a response (meaning you just have to hope it succeeded).
 	screentest.data({
-		text: messageText,
-		// text: JSON.stringify(message),
+		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
-		success: function(message) {
-			Janus.log(messageText);
-		 }
+		success: function(message) {}		 
 	});
+  var msgBox = document.getElementById("msg_box");
+  msgBox.value = "";
 }
-
 export default GoLive;
