@@ -414,7 +414,7 @@ function con2Chat(){
 
 function formatChatMsg(data){
   var msg = JSON.parse(data);
-  return "["+msg.time + "] Username: "+msg.text;
+  return "["+msg.time + "] Streamer: "+msg.text;
 }
 function shareScreen() {
 	// Create a new room
