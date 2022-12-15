@@ -13,7 +13,12 @@ var screentest, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
+let textroom;
+let chatbox = document.getElementById("chatbox");
 
+const chatStyle = {
+  fontSize: '16px',
+};
 
 function WatchLive() {
   const inputRef = useRef(null);
@@ -27,6 +32,12 @@ function WatchLive() {
   useEffect(() => {
     initJanus();
   });
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      document.getElementById("chatSubmit").click();
+    }
+  };
+
   return (
     <div className="goLive">
     <header className="Live-header">
@@ -44,13 +55,13 @@ function WatchLive() {
           <video className="App-camera" id="local_cam" autoPlay></video>
           </tr>
           <tr>
-          <textarea disabled className="chat_window" ></textarea>
+          <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
           </tr>
           <tr>
           <td>
-          <textarea className="new_message"></textarea>
+          <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
           </td>
-          <button>Send</button>
+          <button onClick={sendData} id = "chatSubmit">Send</button>
           <td>
           </td>
           </tr>
@@ -249,6 +260,12 @@ function newRemoteFeed(id, display) {
 
       }
     },
+    ondata: function(data) {
+      // Chat message recieved
+      chatbox = document.getElementById("chatbox");
+      chatbox.value += (formatChatMsg(data)+"\n");
+      chatbox.scrollTop = chatbox.scrollHeight;
+		},
     onremotetrack: function(track, mid, on) {
       Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
 
@@ -288,5 +305,58 @@ function newRemoteFeed(id, display) {
 
 }
 
+// Just an helper to generate random usernames
+function randomString(len, charSet) {
+  charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var randomString = '';
+  for (var i = 0; i < len; i++) {
+    var randomPoz = Math.floor(Math.random() * charSet.length);
+    randomString += charSet.substring(randomPoz,randomPoz+1);
+  }
+  return randomString;
+}
+function formatChatMsg(data){
+  var msg = JSON.parse(data);
+  return "["+msg.time + "] Streamer: "+msg.text;
+}
+// Helper to format times
+function getDateString(jsonDate) {
+	var when = new Date();
+	if(jsonDate) {
+		when = new Date(Date.parse(jsonDate));
+	}
+	var dateString =
+			("0" + when.getUTCHours()).slice(-2) + ":" +
+			("0" + when.getUTCMinutes()).slice(-2) + ":" +
+			("0" + when.getUTCSeconds()).slice(-2);
+	return dateString;
+}
+// Sends chat message
+function sendData() {
+	var messageText = document.getElementById("msg_box").value;
+	if(messageText === "") {
+    // Does nothing
+		return;
+	}
+	var message = {
+		textroom: "message",
+		transaction: randomString(12),
+		room: room,
+ 		text: messageText,
+    time: getDateString(false)
+	};
+	// Note: messages are always acknowledged by default. This means that you'll
+	// always receive a confirmation back that the message has been received by the
+	// server and forwarded to the recipients. If you do not want this to happen,
+	// just add an ack:false property to the message above, and server won't send
+	// you a response (meaning you just have to hope it succeeded).
+	screentest.data({
+		text: JSON.stringify(message),
+		error: function(reason) { Janus.log(reason); },
+		success: function(message) {}		 
+	});
+  var msgBox = document.getElementById("msg_box");
+  msgBox.value = "";
+}
 
 export default WatchLive;
