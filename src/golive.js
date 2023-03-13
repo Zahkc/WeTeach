@@ -5,6 +5,9 @@ import './golive.css';
 import {Spinner} from 'spin.js';
 import {server, iceServers} from './settings'
 
+import NavBar from './pages/navBar'
+import SideBar from './pages/sidebar(Teacher)'
+
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
@@ -43,6 +46,8 @@ function GoLive() {
 
   return (
     <div className="goLive">
+		{NavBar()}
+		{SideBar()}
     <header className="Live-header">
       <p>
         Going Live Interface

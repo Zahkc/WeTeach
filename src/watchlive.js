@@ -5,6 +5,10 @@ import './golive.css';
 import {Spinner} from 'spin.js';
 import {server, iceServers} from './settings'
 
+import NavBar from './pages/navBar'
+import SideBar from './pages/sidebar(Teacher)'
+
+
 let stream = new MediaStream([])
 let screenStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
@@ -40,6 +44,8 @@ function WatchLive() {
 
   return (
     <div className="goLive">
+		{NavBar()}
+		{SideBar()}
     <header className="Live-header">
       <p>
         Going Live Interface
@@ -353,7 +359,7 @@ function sendData() {
 	screentest.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
-		success: function(message) {}		 
+		success: function(message) {}
 	});
   var msgBox = document.getElementById("msg_box");
   msgBox.value = "";
