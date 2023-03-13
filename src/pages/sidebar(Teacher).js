@@ -28,25 +28,19 @@ function SideBar() {
                 </li>
 
                 <li className="nav-item">
+                <NavLink to = "/watchStream">
+                <i className="fas fa-fw fa-video"></i>
+                <span>Watch Stream</span>
+                </NavLink>
+                </li>
+
+                <li className="nav-item">
                 <NavLink to = "/upload">
                 <i className="fas fa-fw fa-cloud-upload-alt"></i>
                 <span>Upload Video</span>
                 </NavLink>
                 </li>
 
-                <li className="nav-item">
-                <NavLink to = "/GoLive">
-                <i className="fas fa-fw fa-cloud-upload-alt"></i>
-                <span>GoLive</span>
-                </NavLink>
-                </li>
-
-                <li className="nav-item">
-                <NavLink to = "/WatchLive">
-                <i className="fas fa-fw fa-cloud-upload-alt"></i>
-                <span>WatchLive</span>
-                </NavLink>
-                </li>
             </ul>
         </Fragment>
     )

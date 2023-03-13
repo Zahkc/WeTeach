@@ -34,7 +34,7 @@ function GoLive() {
     getMedia();
     initJanus();
   });
-  
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       document.getElementById("chatSubmit").click();
@@ -500,7 +500,7 @@ function sendData() {
 	screentest.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
-		success: function(message) {}		 
+		success: function(message) {}
 	});
   var msgBox = document.getElementById("msg_box");
   msgBox.value = "";

@@ -3,7 +3,7 @@ import NavBar from './navBar'
 import SideBarTeacher from './sidebar(Teacher)'
 import {NavLink, Link} from 'react-router-dom';
 
-class StartStream extends React.Component{
+class WatchStream extends React.Component{
     render(){
         return(
          <Fragment>
@@ -14,7 +14,7 @@ class StartStream extends React.Component{
                   </div>
                   <div id="content-wrapper">
                     <div className="container-fluid pt-5 pb-5">
-                      <iframe src="http://localhost:3000/GoLive" width="100%" height="1300"></iframe>
+                      <iframe src="http://localhost:3000/WatchLive" width="100%" height="1300"></iframe>
                     </div>
                     </div>
             </div>
@@ -23,4 +23,4 @@ class StartStream extends React.Component{
     }
 }
 
-export default StartStream;
+export default WatchStream;
