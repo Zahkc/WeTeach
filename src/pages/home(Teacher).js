@@ -32,7 +32,7 @@ class Home extends React.Component{
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className="main-title">
-                                        <h6>Enrolled Streams</h6>
+                                        <h6>Example Listings</h6>
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-sm-6 mb-3">
