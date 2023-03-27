@@ -15,7 +15,7 @@ class Home extends React.Component{
                             <div className="container-fluid pb-0">
                             <div className="top-mobile-search">
                                 <div className="row">
-                                    <div className="col-md-12">   
+                                    <div className="col-md-12">
                                         <form className="mobile-search">
                                         <div className="input-group">
                                             <input type="text" placeholder="Search for..." className="form-control" />
@@ -23,7 +23,7 @@ class Home extends React.Component{
                                                 <button type="button" className="btn btn-dark"><i className="fas fa-search"></i></button>
                                             </div>
                                         </div>
-                                        </form>   
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -32,7 +32,7 @@ class Home extends React.Component{
                                 <div className="row">
                                     <div className="col-md-12">
                                         <div className="main-title">
-                                        <h6>Enrolled Streams</h6>
+                                        <h6>Example Listings</h6>
                                         </div>
                                     </div>
                                     <div className="col-xl-3 col-sm-6 mb-3">

@@ -5,7 +5,7 @@ function Navbar() {
     return(
         <Fragment>
             <nav className="navbar navbar-expand navbar-light bg-white static-top osahan-nav sticky-top">
-                        &nbsp;&nbsp; 
+                        &nbsp;&nbsp;
                         <button className="btn btn-link btn-sm text-secondary order-1 order-sm-0" id="sidebarToggle">
                         <i className="fas fa-bars"></i>
                         </button> &nbsp;&nbsp;
@@ -16,7 +16,7 @@ function Navbar() {
                             <input type="text" className="form-control" placeholder="Search for..." />
                             <div className="input-group-append">
                                 <button className="btn btn-light" type="button">
-                                <i className="fas fa-search"></i> 
+                                <i className="fas fa-search"></i>
                                 </button>
                             </div>
                             </div>

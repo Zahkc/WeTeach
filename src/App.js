@@ -2,7 +2,9 @@ import Home from './pages/home(Teacher)';
 import VideoPage from './pages/videoPage(Teacher)';
 import Upload from './pages/upload';
 import UploadVideo from './pages/uploadVideo';
-import StartStream from './pages/startStream'
+import StartStream from './pages/startStream';
+import WatchStream from './pages/watchStream';
+import WatchLive from './watchlive';
 import GoLive from './golive';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -20,7 +22,9 @@ function UI() {
           <Route path='/upload' element={<Upload/>}/>
           <Route path='/uploadVideo' element={<UploadVideo/>}/>
           <Route path='/startStream' element={<StartStream/>}/>
+          <Route path='/watchStream' element={<WatchStream/>}/>
           <Route path='/GoLive' element={<GoLive/>}/>
+          <Route path='/WatchLive' element={<WatchLive/>}/>
         </Routes>
       </Router>
     </div>

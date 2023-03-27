@@ -1,30 +1,58 @@
 import React from 'react';
-import {useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
+import Janus from './janus'
 import './golive.css';
+import {Spinner} from 'spin.js';
+import {server, iceServers} from './settings'
+
+import NavBar from './pages/navBar'
+import SideBar from './pages/sidebar(Teacher)'
 
 let camStream = null;
+let janusInstance, setJanusInstance, janus, chanus;
+var opaqueId = "screensharingtest-"+Janus.randomString(12);
+var capture, screentest, room, role, myid, source, spinner, roomid;
+var localTracks = {}, localVideos = 0,
+	remoteTracks = {}, remoteVideos = 0;
 let vidStream = null;
 let screenStream = null;
+let outStream = new MediaStream([]);
 let localCam = null;
 let localVid = null;
+var myusername = Janus.randomString(12);
+var participants = {};
+var transactions = {};
+let textroom;
 let stage = 0;
-let pc1;
-let startTime;
-const offerOptions = {
-  offerToReceiveAudio: 1,
-  offerToReceiveVideo: 1
+let chatbox = document.getElementById("chatbox");
+
+const chatStyle = {
+  fontSize: '16px',
 };
 
 function GoLive() {
+  const [janusInstance, setJanusInstance] = useState(null);
+
   useEffect(() => {
     getMedia();
+    initJanus();
   });
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      document.getElementById("chatSubmit").click();
+    }
+  };
+
   return (
     <div className="goLive">
+		{NavBar()}
+		{SideBar()}
     <header className="Live-header">
       <p>
         Going Live Interface
       </p>
+			<input type="text" id="codeDisp" value="Room Code"/>
       <table>
         <tr>
           <td>
@@ -36,26 +64,21 @@ function GoLive() {
           <video className="App-camera" id="local_cam" autoPlay></video>
           </tr>
           <tr>
-          <textarea disabled className="chat_window" ></textarea>
+          <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
           </tr>
           <tr>
           <td>
-          <textarea className="new_message"></textarea>
+          <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
           </td>
-          <button>Send</button>
+          <button onClick={sendData} id = "chatSubmit">Send</button>
           <td>
           </td>
           </tr>
           </table>
           </td>
         </tr>
-        <tr>
-          <td>
-          <input type ="text" id="title" placeholder="Enter your title here."></input>
-          </td>
-        </tr>
       </table>
-      
+
       <table>
         <tr>
           <td>
@@ -69,12 +92,12 @@ function GoLive() {
           </td>
           <td>
           <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
-          </td>          
+          </td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <button onClick={getInfo}>Go Live</button>
+            <button onClick={shareScreen}>Go Live</button>
           </td>
           <td>
             <button onClick={stopStream}>Stop Stream</button>
@@ -89,7 +112,7 @@ function GoLive() {
 }
 
 function getInfo(){
-  console.log(camStream.getVideoTracks());
+  console.log();
 }
 
 async function getMedia(){
@@ -127,15 +150,26 @@ async function swapScreen(){
   camStream.addTrack(screenStream.getVideoTracks()[0]);
   console.log(camStream.getVideoTracks().count);
   stage = 1;
+
+	screentest.replaceTracks([
+		{
+			type:'screen',
+			mid: '2',
+			capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1]
+		}
+	]);
+
   startStream()
 }
 
 async function stopStream(){
-  vidStream = null
-  camStream = null
-  localCam.srcObject = null
-  localVid.srcObject = null
+  vidStream = null;
+  camStream = null;
+  localCam.srcObject = null;
+  localVid.srcObject = null;
+	janus.destroy();
 }
+
 async function muteMic(){
   if(camStream.getAudioTracks()[0].enabled){
     document.getElementById("mic-mute-button").textContent = "Unmute Audio";
@@ -183,89 +217,297 @@ async function toggleScreenShare(){
 }
 
 
-function call(){
-  console.log('Starting call');
-  startTime = window.performance.now();
-  const videoTracks = vidStream.getVideoTracks();
-  const audioTracks = vidStream.getAudioTracks();
-  if (videoTracks.length > 0) {
-    console.log(`Using video device: ${videoTracks[0].label}`);
+function initJanus(){
+    Janus.init({debug: "all", callback: function() {
+        if(!Janus.isWebrtcSupported()) {
+    console.log("No WebRTC support... ");
+    return;
+        }
+        janus = new Janus(
+    {
+			server: server,
+      success: function() {
+        console.log("Janus loaded");
+        // setJanusInstance(janus);
+        // Attach to echo test plugin
+        janus.attach({
+          plugin: "janus.plugin.videoroom",
+          opaqueId: opaqueId,
+          success: function(pluginHandle) {
+              screentest = pluginHandle;
+							textroom = pluginHandle;
+							Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
+							var body = { request: "setup" };
+							Janus.debug("Sending message:", body);
+							screentest.send({ message: body });
+          },
+          error: function(error) {},
+					iceState: function(state) {
+						Janus.log("ICE state changed to " + state);
+					},
+					mediaState: function(medium, on, mid) {
+						Janus.log("Janus " + (on ? "started" : "stopped") + " receiving our " + medium + " (mid=" + mid + ")");
+					},
+					webrtcState: function(on) {
+						Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
+						if(on) {
+							console.log("Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.");
+						} else {
+							console.log("Your screen sharing session just stopped.", function() {
+								janus.destroy();
+								window.location.reload();
+							});
+						}
+					},
+          onmessage: function(msg, jsep) {
+            Janus.debug(" ::: Got a message (publisher) :::", msg);
+            var event = msg["videoroom"];
+            Janus.debug("Event: " + event);
+
+            if(event){
+              if (event === "joined") {
+
+                myid = msg["id"];
+                Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
+                Janus.debug("Negotiating WebRTC stream for our screen (capture " + capture + ")");
+
+                if(Janus.webRTCAdapter.browserDetails.browser === "safari") {
+                  console.log("Rip Apple users");
+                } else {
+									if (camStream.getVideoTracks().length == 1) {
+										screentest.createOffer({
+											tracks: [
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+												{ type: 'data'}
+											],
+											success: function(jsep) {
+												Janus.debug("Got publisher SDP!", jsep);
+												Janus.log("Got publisher SDP!", jsep);
+												var publish = { request: "configure", audio: true, video: true, data: true };
+												screentest.send({ message: publish, jsep: jsep });
+											},
+											error: function(error) {
+												Janus.error("WebRTC error:", error);
+												console.error("WebRTC error... " + error.message);
+											}
+										});
+									} else {
+										screentest.createOffer({
+											tracks: [
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+												{ type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false },
+												{ type: 'data'}
+											],
+											success: function(jsep) {
+												Janus.debug("Got publisher SDP!", jsep);
+												Janus.log("Got publisher SDP!", jsep);
+												var publish = { request: "configure", audio: true, video: true, data: true };
+												screentest.send({ message: publish, jsep: jsep });
+											},
+											error: function(error) {
+												Janus.error("WebRTC error:", error);
+												console.error("WebRTC error... " + error.message);
+											}
+										});
+									}
+
+
+                }
+
+              } else if(msg["error"]) {
+                  console.error(msg["error"]);
+                }
+              }
+
+						if(jsep) {
+							Janus.debug("Handling SDP as well...", jsep);
+							screentest.handleRemoteJsep({ jsep: jsep });
+						}
+          },
+          ondataopen: function(data) {
+            Janus.log("The DataChannel is available!");
+						con2Chat();
+          },
+          oncleanup: function() {
+            Janus.log(" ::: Got a cleanup notification :::");
+            //$('#datasend').attr('disabled', true);
+          }
+        });
+
+      },
+      error: function(error) {
+        Janus.error(error);
+                    setJanusInstance(null);
+      },
+      destroyed: function() {
+                    setJanusInstance(null);
+      }
+            });
+
+    }});
+}
+
+function con2Chat(){
+	source = screentest.getId();
+	janus.attach({
+		plugin: "janus.plugin.videoroom",
+		opaqueId: opaqueId,
+		success: function(pluginHandle) {
+			textroom = pluginHandle;
+			Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
+			Janus.log("  -- This is a subscriber");
+			var listen = {
+				request: "join",
+				room: room,
+				ptype: "subscriber",
+				feed: myid
+			};
+			textroom.send({ message: listen });
+		},
+		error: function(error) {
+			Janus.error("  -- Error attaching plugin...", error);
+			console.log("Error attaching plugin... " + error);
+		},
+		onmessage: function(msg, jsep) {
+
+			Janus.debug(" ::: Got a message (listener) :::", msg);
+			var event = msg["videoroom"];
+			Janus.debug("Event: " + event);
+
+			if(event){
+        if(event === "attached"){
+          Janus.log("Successfully attached to feed " + myid + " in room " + msg["room"]);
+        }
+      }
+      if(jsep){
+        Janus.debug("Handling SDP as well...", jsep);
+
+        textroom.createAnswer(
+          {
+            jsep: jsep,
+
+            tracks: [
+              { type: 'data' }
+            ],
+            success: function(jsep) {
+              Janus.debug("Got SDP!", jsep);
+              var body = { request: "start", room: room };
+              textroom.send({ message: body, jsep: jsep });
+            },
+            error: function(error) {
+              Janus.error("WebRTC error:", error);
+              console.error("WebRTC error... " + error.message);
+            }
+          });
+
+      }
+
+		},
+		ondataopen: function(data) {
+			console.log("SUB CONNECTED TO CHAT");
+		},
+		ondata: function(data) {
+      // Chat message recieved
+      chatbox = document.getElementById("chatbox");
+      chatbox.value += (formatChatMsg(data)+"\n");
+      chatbox.scrollTop = chatbox.scrollHeight;
+		}
+	});
+}
+
+function formatChatMsg(data){
+  var msg = JSON.parse(data);
+  return "["+msg.time + "] Streamer: "+msg.text;
+}
+function shareScreen() {
+	// Create a new room
+  capture = "screen";
+  var desc = "Test transmit Page";
+	var role = "publisher";
+	var create = {
+		request: "create",
+		description: desc,
+		bitrate: 500000,
+		publishers: 1
+	};
+	screentest.send({ message: create, success: function(result) {
+		var event = result["videoroom"];
+		Janus.debug("Event: " + event);
+		if(event) {
+			// Our own screen sharing session has been created, join it
+			room = result["room"];
+			Janus.log("Screen sharing session created: " + room);
+			document.getElementById("codeDisp").value = room;
+			myusername = Janus.randomString(12);
+			var register = {
+				request: "join",
+				room: room,
+				ptype: "publisher",
+				display: myusername
+			};
+			screentest.send({ message: register });
+		}
+	}});
+
+}
+
+function escapeXmlTags(value) {
+	if(value) {
+		var escapedValue = value.replace(new RegExp('<', 'g'), '&lt');
+		escapedValue = escapedValue.replace(new RegExp('>', 'g'), '&gt');
+		return escapedValue;
+	}
+}
+// Helper to format times
+function getDateString(jsonDate) {
+	var when = new Date();
+	if(jsonDate) {
+		when = new Date(Date.parse(jsonDate));
+	}
+	var dateString =
+			("0" + when.getUTCHours()).slice(-2) + ":" +
+			("0" + when.getUTCMinutes()).slice(-2) + ":" +
+			("0" + when.getUTCSeconds()).slice(-2);
+	return dateString;
+}
+// Just an helper to generate random usernames
+function randomString(len, charSet) {
+  charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var randomString = '';
+  for (var i = 0; i < len; i++) {
+    var randomPoz = Math.floor(Math.random() * charSet.length);
+    randomString += charSet.substring(randomPoz,randomPoz+1);
   }
-  if (audioTracks.length > 0) {
-    console.log(`Using audio device: ${audioTracks[0].label}`);
-  }
-  const servers = null;
-  pc1 = new RTCPeerConnection(servers);
-  console.log('Created local peer connection object pc1');
-  pc1.onicecandidate = e => onIceCandidate(pc1, e);
-  // pc2 = new RTCPeerConnection(servers);
-  // console.log('Created remote peer connection object pc2');
-  // pc2.onicecandidate = e => onIceCandidate(pc2, e);
-  pc1.oniceconnectionstatechange = e => onIceStateChange(pc1, e);
-  // pc2.oniceconnectionstatechange = e => onIceStateChange(pc2, e);
-  // pc2.ontrack = gotRemoteStream;
-
-  vidStream.getTracks().forEach(track => pc1.addTrack(track, vidStream));
-  console.log('Added local stream to pc1');
-
-  console.log('pc1 createOffer start');
-  pc1.createOffer(onCreateOfferSuccess, onCreateSessionDescriptionError, offerOptions);
+  return randomString;
 }
 
-function onCreateSessionDescriptionError(error) {
-  console.log(`Failed to create session description: ${error.toString()}`);
+// Sends chat message
+function sendData() {
+	var messageText = document.getElementById("msg_box").value;
+	if(messageText === "") {
+    // Does nothing
+		return;
+	}
+	var message = {
+		textroom: "message",
+		transaction: randomString(12),
+		room: room,
+ 		text: messageText,
+    time: getDateString(false)
+	};
+	// Note: messages are always acknowledged by default. This means that you'll
+	// always receive a confirmation back that the message has been received by the
+	// server and forwarded to the recipients. If you do not want this to happen,
+	// just add an ack:false property to the message above, and server won't send
+	// you a response (meaning you just have to hope it succeeded).
+	screentest.data({
+		text: JSON.stringify(message),
+		error: function(reason) { Janus.log(reason); },
+		success: function(message) {}
+	});
+  var msgBox = document.getElementById("msg_box");
+  msgBox.value = "";
 }
-
-function onCreateOfferSuccess(desc) {
-  console.log(`Offer from pc1
-${desc.sdp}`);
-  console.log('pc1 setLocalDescription start');
-  pc1.setLocalDescription(desc, () => onSetLocalSuccess(pc1), onSetSessionDescriptionError);
-  // console.log('pc2 setRemoteDescription start');
-  // pc2.setRemoteDescription(desc, () => onSetRemoteSuccess(pc2), onSetSessionDescriptionError);
-  // console.log('pc2 createAnswer start');
-  // Since the 'remote' side has no media stream we need
-  // to pass in the right constraints in order for it to
-  // accept the incoming offer of audio and video.
-  // pc2.createAnswer(onCreateAnswerSuccess, onCreateSessionDescriptionError);
-}
-function onSetLocalSuccess(pc) {
-  console.log(`pc1 setLocalDescription complete`);
-}
-
-function onSetRemoteSuccess(pc) {
-  console.log(`pc1 setRemoteDescription complete`);
-}
-
-function onSetSessionDescriptionError(error) {
-  console.log(`Failed to set session description: ${error.toString()}`);
-}
-
-function onIceCandidate(pc, event) {
-  pc1.addIceCandidate(event.candidate)
-      .then(
-          () => onAddIceCandidateSuccess(pc),
-          err => onAddIceCandidateError(pc, err)
-      );
-  console.log(`PC1 ICE candidate:
-${event.candidate ?
-    event.candidate.candidate : '(null)'}`);
-}
-
-function onAddIceCandidateSuccess(pc) {
-  console.log(`pc1 addIceCandidate success`);
-}
-
-function onAddIceCandidateError(pc, error) {
-  console.log(`pc1 failed to add ICE Candidate: ${error.toString()}`);
-}
-
-function onIceStateChange(pc, event) {
-  if (pc) {
-    console.log(`pc1 ICE state: ${pc.iceConnectionState}`);
-    console.log('ICE state change event: ', event);
-  }
-}
-
-
 export default GoLive;
