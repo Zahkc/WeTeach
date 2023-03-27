@@ -1,21 +1,7 @@
-{"_Id" : "",
-"cname" : "",
-"dname" : "",
-"name" : "",
-"createdBy" : "",
-"createdDateTime" : "2023-03-01T00:00:00Z",
-"lastModifiedBy" : "",
-"lastModifiedDateTime" : "2023-03-01T00:00:00Z",
-"purged" : 0,
-"purgedDateTime" : "",
-"permission" :
-!!!!DELETE ME LATER!!!!}
-
 {
     "Root" : {
         "_Id" : "RO001",
         "cname" : "Root",
-        "dname" : "Root",
         "name" : "Root",
         "createdBy" : "",
         "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -29,7 +15,6 @@
             "User" : {
                 "_Id" : "OW001",
                 "cname" : "Public",
-                "dname" : "",
                 "name" : "Owner001",
                 "createdBy" : "",
                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -50,7 +35,6 @@
             "User" : {
                 "_Id" : "ME001",
                 "cname" : "Presenter001",
-                "dname" : "",
                 "name" : "Presenter001",
                 "createdBy" : "",
                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -69,7 +53,6 @@
             "User" : {
                 "_Id" : "ME002",
                 "cname" : "Presenter002",
-                "dname" : "",
                 "name" : "Presenter002",
                 "createdBy" : "",
                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -88,7 +71,6 @@
             "User" : {
                 "_Id" : "ME003",
                 "cname" : "Attendee001",
-                "dname" : "",
                 "name" : "Attendee001",
                 "createdBy" : "",
                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -115,7 +97,6 @@
             "Channel" : {
                 "_Id" : "CH300",
                 "cname" : "CH300",
-                "dname" : "",
                 "name" : "RootEISChannel",
                 "createdBy" : "",
                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -134,7 +115,6 @@
                     "Channel" : {
                         "_Id" : "CH302",
                         "cname" : "CH302",
-                        "dname" : "",
                         "name" : "CITEISChannel",
                         "createdBy" : "",
                         "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -150,7 +130,6 @@
                             "Media" : {
                                 "_Id" : "MD301",
                                 "cname" : "MD301",
-                                "dname" : "",
                                 "name" : "CSIT111 Lecture 1 - Introduction to Java pt.1",
                                 "createdBy" : "ME001",
                                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -169,7 +148,6 @@
                             "Media" : {
                                 "_Id" : "MD302",
                                 "cname" : "MD302",
-                                "dname" : "",
                                 "name" : "CSIT111 Lecture 2 - Introduction to Java pt.2",
                                 "createdBy" : "ME001",
                                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -195,7 +173,6 @@
                     "Channel" : {
                         "_Id" : "CH303",
                         "cname" : "CH303",
-                        "dname" : "",
                         "name" : "ECTEISChannel",
                         "createdBy" : "",
                         "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -211,7 +188,6 @@
                             "Media" : {
                                 "_Id" : "MD303",
                                 "cname" : "MD303",
-                                "dname" : "",
                                 "name" : "ENGG102 Lecture 1 - Introduction to Fundamental Engineering Mechanics pt.1",
                                 "createdBy" : "ME002",
                                 "createdDateTime" : "2023-03-01T00:00:00Z",
@@ -230,7 +206,6 @@
                             "Media" : {
                                 "_Id" : "MD304",
                                 "cname" : "MD304",
-                                "dname" : "",
                                 "name" : "ENGG102 Lecture 1 - Introduction to Fundamental Engineering Mechanics pt.2",
                                 "createdBy" : "ME002",
                                 "createdDateTime" : "2023-03-01T00:00:00Z",
