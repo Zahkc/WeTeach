@@ -1,0 +1,266 @@
+{"_Id" : "",
+"cname" : "",
+"dname" : "",
+"name" : "",
+"createdBy" : "",
+"createdDateTime" : "2023-03-01T00:00:00Z",
+"lastModifiedBy" : "",
+"lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+"purged" : 0,
+"purgedDateTime" : "",
+"permission" :
+!!!!DELETE ME LATER!!!!}
+
+{
+    "Root" : {
+        "_Id" : "RO001",
+        "cname" : "Root",
+        "dname" : "Root",
+        "name" : "Root",
+        "createdBy" : "",
+        "createdDateTime" : "2023-03-01T00:00:00Z",
+        "lastModifiedBy" : "",
+        "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+        "purged" : 0,
+        "purgedDateTime" : "",
+        "permission" : 750,
+        
+        "owners" : [{
+            "User" : {
+                "_Id" : "OW001",
+                "cname" : "Public",
+                "dname" : "",
+                "name" : "Owner001",
+                "createdBy" : "",
+                "createdDateTime" : "2023-03-01T00:00:00Z",
+                "lastModifiedBy" : "",
+                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                "purged" : 0,
+                "purgedDateTime" : "",
+                "permission" : 750,
+                
+                "upn" : "LoginOW001",
+                "key" : "",
+                "community" : "f48fa4bf-eb9f-405e-abba-85ec015cb21d",
+                "secret" : "ebff5f55-01d1-4dd1-8cc8-8bf5734b9d9d",
+                "mask" : "8"
+            } 
+        }],
+        "members" : [{
+            "User" : {
+                "_Id" : "ME001",
+                "cname" : "Presenter001",
+                "dname" : "",
+                "name" : "Presenter001",
+                "createdBy" : "",
+                "createdDateTime" : "2023-03-01T00:00:00Z",
+                "lastModifiedBy" : "",
+                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                "purged" : 0,
+                "purgedDateTime" : "",
+                "permission" : 750,
+                
+                "upn" : "LoginME001",
+                "key" : "",
+                "community" : "e3c11c73-fa45-4290-8c41-dd5fe1c1870e",
+                "secret" : "a3526967-cf1b-4dbf-9808-df626de9e644",
+                "mask" : "0"
+            },
+            "User" : {
+                "_Id" : "ME002",
+                "cname" : "Presenter002",
+                "dname" : "",
+                "name" : "Presenter002",
+                "createdBy" : "",
+                "createdDateTime" : "2023-03-01T00:00:00Z",
+                "lastModifiedBy" : "",
+                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                "purged" : 0,
+                "purgedDateTime" : "",
+                "permission" : 750,
+                
+                "upn" : "LoginME002",
+                "key" : "",
+                "community" : "56e15903-4006-4610-b9ee-057397f38181",
+                "secret" : "6536eaee-1885-4493-878e-b016c0d64fad",
+                "mask" : "0"
+            },
+            "User" : {
+                "_Id" : "ME003",
+                "cname" : "Attendee001",
+                "dname" : "",
+                "name" : "Attendee001",
+                "createdBy" : "",
+                "createdDateTime" : "2023-03-01T00:00:00Z",
+                "lastModifiedBy" : "",
+                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                "purged" : 0,
+                "purgedDateTime" : "",
+                "permission" : 750,
+                
+                "upn" : "LoginME003",
+                "key" : "",
+                "community" : "1fb78d64-1716-4643-b470-19d7d1c8a70e",
+                "secret" : "f90668bb-b76f-48b2-8f3a-ba11ed4d59b8",
+                "mask" : "6"
+            }
+        }],
+        "disciplines" : [
+            "ASH",
+            "BAL",
+            "EIS",
+            "SMH"
+        ],
+        "channels" : [{
+            "Channel" : {
+                "_Id" : "CH300",
+                "cname" : "CH300",
+                "dname" : "",
+                "name" : "RootEISChannel",
+                "createdBy" : "",
+                "createdDateTime" : "2023-03-01T00:00:00Z",
+                "lastModifiedBy" : "",
+                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                "purged" : 0,
+                "purgedDateTime" : "",
+                "permission" : 755,
+                
+                "discipline" : "EIS",
+                "course_id" : "",
+                "media" : [{
+                    
+                }],
+                "channels" : [{
+                    "Channel" : {
+                        "_Id" : "CH302",
+                        "cname" : "CH302",
+                        "dname" : "",
+                        "name" : "CITEISChannel",
+                        "createdBy" : "",
+                        "createdDateTime" : "2023-03-01T00:00:00Z",
+                        "lastModifiedBy" : "",
+                        "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                        "purged" : 0,
+                        "purgedDateTime" : "",
+                        "permission" : 755,
+                                
+                        "discipline" : "EIS",
+                        "course_id" : "",
+                        "media" : [{
+                            "Media" : {
+                                "_Id" : "MD301",
+                                "cname" : "MD301",
+                                "dname" : "",
+                                "name" : "CSIT111 Lecture 1 - Introduction to Java pt.1",
+                                "createdBy" : "ME001",
+                                "createdDateTime" : "2023-03-01T00:00:00Z",
+                                "lastModifiedBy" : "ME001",
+                                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                                "purged" : 0,
+                                "purgedDateTime" : "",
+                                "permission" : "",
+                                
+                                "description" : "An introduction to the Java Programming Language.",
+                                "labels" : ["EIS", "CIT", "CSIT", "111", "Lecture", "Java", "Introduction"],
+                                "stream" : "",
+                                "video" : "",
+                                "thumbnail" : ""
+                            },
+                            "Media" : {
+                                "_Id" : "MD302",
+                                "cname" : "MD302",
+                                "dname" : "",
+                                "name" : "CSIT111 Lecture 2 - Introduction to Java pt.2",
+                                "createdBy" : "ME001",
+                                "createdDateTime" : "2023-03-01T00:00:00Z",
+                                "lastModifiedBy" : "ME001",
+                                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                                "purged" : 0,
+                                "purgedDateTime" : "",
+                                "permission" : "",
+                                
+                                "description" : "An introduction to the Java Programming Language, Continued.",
+                                "labels" : ["EIS", "CIT", "CSIT", "111", "Lecture", "Java", "Introduction"],
+                                "stream" : "",
+                                "video" : "",
+                                "thumbnail" : ""
+                            }
+                        }],
+                        "channels" : [{}],
+                        "permission" : 755,
+                        "owners" : ["OW001", "ME001"],
+                        "members" : [],
+                        "storage_location" : ""
+                    },
+                    "Channel" : {
+                        "_Id" : "CH303",
+                        "cname" : "CH303",
+                        "dname" : "",
+                        "name" : "ECTEISChannel",
+                        "createdBy" : "",
+                        "createdDateTime" : "2023-03-01T00:00:00Z",
+                        "lastModifiedBy" : "",
+                        "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                        "purged" : 0,
+                        "purgedDateTime" : "",
+                        "permission" : 755,
+                                
+                        "discipline" : "EIS",
+                        "course_id" : "",
+                        "media" : [{
+                            "Media" : {
+                                "_Id" : "MD303",
+                                "cname" : "MD303",
+                                "dname" : "",
+                                "name" : "ENGG102 Lecture 1 - Introduction to Fundamental Engineering Mechanics pt.1",
+                                "createdBy" : "ME002",
+                                "createdDateTime" : "2023-03-01T00:00:00Z",
+                                "lastModifiedBy" : "ME002",
+                                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                                "purged" : 0,
+                                "purgedDateTime" : "",
+                                "permission" : "",
+                                
+                                "description" : "An introduction to the Fundamental Engineering Mechanics.",
+                                "labels" : ["EIS", "ECT", "ENGG", "102", "Lecture", "Engineering", "Introduction"],
+                                "stream" : "",
+                                "video" : "",
+                                "thumbnail" : ""
+                            },
+                            "Media" : {
+                                "_Id" : "MD304",
+                                "cname" : "MD304",
+                                "dname" : "",
+                                "name" : "ENGG102 Lecture 1 - Introduction to Fundamental Engineering Mechanics pt.2",
+                                "createdBy" : "ME002",
+                                "createdDateTime" : "2023-03-01T00:00:00Z",
+                                "lastModifiedBy" : "ME002",
+                                "lastModifiedDateTime" : "2023-03-01T00:00:00Z",
+                                "purged" : 0,
+                                "purgedDateTime" : "",
+                                "permission" : "",
+                                
+                                "description" : "An introduction to the Fundamental Engineering Mechanics, Continued.",
+                                "labels" : ["EIS", "ECT", "ENGG", "102", "Lecture", "Engineering", "Introduction"],
+                                "stream" : "",
+                                "video" : "",
+                                "thumbnail" : ""
+                            }
+                        }],
+                        "channels" : [{}],
+                        "permission" : 755,
+                        "owners" : ["OW001", "ME002"],
+                        "members" : [],
+                        "storage_location" : ""
+                    }
+                }],
+                "permission" : 755,
+                "owners" : ["OW001"],
+                "members" : ["ME003"],
+                "storage_location" : ""
+            }
+        }],
+        "config" : "",
+        "default_storage_location" : ""
+    }
+}
