@@ -19,7 +19,7 @@ class VideoPage extends React.Component{
                                  <div className="col-md-8">
                                     <div className="single-video-left">
                                        <div className="single-video">
-                                          <iframe width="100%" height="315" src="https://www.youtube.com/embed/O5nskjZ_GoI?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                          <iframe width="100%" height="315" src="https://media.istockphoto.com/id/1141389595/video/person-paddling-in-a-tandem-sea-kayak-on-a-sunny-day.mp4?s=mp4-640x640-is&k=20&c=n4Peyl0ghmU4EHd8qHSFJl0kIgZWl3YG04bjIPGzjp0=" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                                        </div>
                                        <div className="single-video-title box mb-3">
                                           <h2><a href="#">Early Computing: Crash Course Computer Science #1</a></h2>
