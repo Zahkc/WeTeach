@@ -1,6 +1,7 @@
 use weteach_live
 db.createCollection("records");
 db.records.insertOne({
+	ssid: "all-streams",
 	type: "CHANNEL",
 	name: "All Streams",
 	description: "Default collection",
@@ -14,6 +15,7 @@ db.records.insertOne({
 });
 
 db.records.insertOne({
+	ssid: "wtapp",
 	type: "USER",
 	name: "System Administrator",
 	description: "Root account",
@@ -28,6 +30,7 @@ db.records.insertOne({
 	locked: 1
 });
 db.records.insertOne({
+	ssid: "public",
 	type: "USER",
 	name: "Anonynmous User",
 	description: "Public account",

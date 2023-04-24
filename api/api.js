@@ -177,6 +177,12 @@ graph.route("/api/v1/channels/search").get(async function (req, res) {
  catch (e){console.log(e)}
 });
 
+// Get Default Channel
+graph.route("/api/v1/channels/.default").get(async function (req,res) {
+	let db_connect = dbo.getDatabase()
+	db_connect.collection("records").find({ssid: "all-streams"}).toArray().then((data) => {res.json(data)}).catch((e) => console.log(e));
+});
+
 // Get Single Channel
 graph.route("/api/v1/channels/:id").get(async function (req, res) {
  try {
