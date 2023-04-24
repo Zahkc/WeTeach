@@ -40,7 +40,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v1.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -58,7 +58,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v2.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -75,7 +75,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v3.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -92,7 +92,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v4.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -109,7 +109,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v5.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -126,7 +126,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v6.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -143,7 +143,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v7.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -160,7 +160,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v8.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -187,7 +187,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v1.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -205,7 +205,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v2.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -222,7 +222,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v3.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -239,7 +239,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v4.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -256,7 +256,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v5.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -273,7 +273,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v6.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -290,7 +290,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v7.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
@@ -307,7 +307,7 @@ class Home extends React.Component{
                                         <div className="video-card-image">
                                             <a className="play-icon" href="#"><i className="fas fa-play-circle"></i></a>
                                             <a href="#"><img className="img-fluid" src="assets/img/v8.png" alt="" /></a>
-                                            <div className="time">3:50</div>
+                                            <div className="time">Live</div>
                                         </div>
                                         <div className="video-card-body">
                                             <div className="video-title">
