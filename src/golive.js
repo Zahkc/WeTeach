@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
 import Janus from './janus'
 import './golive.css';
@@ -45,69 +45,81 @@ function GoLive() {
   };
 
   return (
-    <div className="goLive">
-		{NavBar()}
-		{SideBar()}
-    <header className="Live-header">
-      <p>
-        Going Live Interface
-      </p>
-			<input type="text" id="codeDisp" value="Room Code"/>
-      <table>
-        <tr>
-          <td>
-          <video className="App-video" id="local_vid" autoPlay></video>
-          </td>
-          <td>
-          <table>
-          <tr>
-          <video className="App-camera" id="local_cam" autoPlay></video>
-          </tr>
-          <tr>
-          <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
-          </tr>
-          <tr>
-          <td>
-          <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
-          </td>
-          <button onClick={sendData} id = "chatSubmit">Send</button>
-          <td>
-          </td>
-          </tr>
-          </table>
-          </td>
-        </tr>
-      </table>
+    <Fragment>
+      <div>
+        <NavBar/>
+        <div id = "wrapper">
+          <SideBar/>
+            <div id="content-wrapper">
+              <div className="container-fluid pb-0">
+                <div className="video-block section-padding">
+                  <div className="row">
+                      <div className="goLive">
+                      <header className="Live-header">
+                        <p>
+                          Going Live Interface
+                        </p>
+                        <input type="text" id="codeDisp" value="Room Code"/>
+                        <table>
+                          <tr>
+                            <td style = {{verticalAlign:"unset"}}>
+                            <video className="App-video" id="local_vid" autoPlay></video>
+                            </td>
+                            <td>
+                            <table>
+                            <tr>
+                            <video className="App-camera" id="local_cam" autoPlay></video>
+                            </tr>
+                            <tr>
+                            <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
+                            </tr>
+                            <tr>
+                            <td>
+                            <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
+                            </td>
+                            <button onClick={sendData} id = "chatSubmit">Send</button>
+                            <td>
+                            </td>
+                            </tr>
+                            </table>
+                            </td>
+                          </tr>
+                        </table>
 
-      <table>
-        <tr>
-          <td>
-          <button id="cam-mute-button" onClick={muteCam}>Disable Camera</button>
-          </td>
-          <td>
-          <button id="screen-mute-button" onClick={toggleScreenShare}>Enable Screen Share</button>
-          </td>
-          <td>
-          <button onClick={swapScreen}>Swap Screen</button>
-          </td>
-          <td>
-          <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <button onClick={shareScreen}>Go Live</button>
-          </td>
-          <td>
-            <button onClick={stopStream}>Stop Stream</button>
-          </td>
-        </tr>
-      </table>
-
-
-      </header>
-    </div>
+                        <table>
+                          <tr>
+                            <td>
+                            <button id="cam-mute-button" onClick={muteCam}>Disable Camera</button>
+                            </td>
+                            <td>
+                            <button id="screen-mute-button" onClick={toggleScreenShare}>Enable Screen Share</button>
+                            </td>
+                            <td>
+                            <button onClick={swapScreen}>Swap Screen</button>
+                            </td>
+                            <td>
+                            <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>
+                              <button onClick={shareScreen}>Go Live</button>
+                            </td>
+                            <td>
+                              <button onClick={stopStream}>Stop Stream</button>
+                            </td>
+                          </tr>
+                        </table>
+                        </header>
+                      </div>
+                      </div>
+                    </div>
+                  </div>    
+                </div>
+              </div> 
+          </div>
+    </Fragment>
   );
 }
 

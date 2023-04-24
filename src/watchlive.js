@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
 import Janus from './janus'
 import './golive.css';
@@ -22,6 +22,8 @@ let chatbox = document.getElementById("chatbox");
 
 const chatStyle = {
   fontSize: '16px',
+  resize: "none",
+  overflowY: 'scroll'
 };
 
 function WatchLive() {
@@ -43,48 +45,62 @@ function WatchLive() {
   };
 
   return (
-    <div className="goLive">
-		{NavBar()}
-		{SideBar()}
-    <header className="Live-header">
-      <p>
-        Going Live Interface
-      </p>
-      <table>
-        <tr>
-          <td>
-          <video className="App-video" id="local_vid" autoPlay></video>
-          </td>
-          <td>
-          <table>
-          <tr>
-          <video className="App-camera" id="local_cam" autoPlay></video>
-          </tr>
-          <tr>
-          <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
-          </tr>
-          <tr>
-          <td>
-          <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
-          </td>
-          <button onClick={sendData} id = "chatSubmit">Send</button>
-          <td>
-          </td>
-          </tr>
-          </table>
-          </td>
-        </tr>
-        <tr>
-          <td>
-          <p>Enter Session ID</p>
-          <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-          <button onClick={handleClick} id="connect">connect</button>
-          <button onClick={leaveStream} id="disconnect">disconnect</button>
-          </td>
-        </tr>
-      </table>
-      </header>
-    </div>
+    <Fragment>
+      <div>
+          <NavBar/>
+          <div id = "wrapper">
+            <SideBar/>
+              <div id="content-wrapper">
+                <div className="container-fluid pb-0">
+                  <div className="video-block section-padding">
+                    <div className="row">
+                      <div className="goLive">
+                        <header className="Live-header">
+                          <p>
+                            Watch Live Interface
+                          </p>
+                          <table>
+                            <tr>
+                              <td style = {{verticalAlign:"unset"}}>
+                              <video className="App-video" id="local_vid" autoPlay></video>
+                              </td>
+                              <td>
+                              <table>
+                              <tr>
+                              <video className="App-camera" id="local_cam" autoPlay></video>
+                              </tr>
+                              <tr>
+                              <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
+                              </tr>
+                              <tr>
+                              <td>
+                              <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
+                              </td>
+                              <button onClick={sendData} id = "chatSubmit">Send</button>
+                              <td>
+                              </td>
+                              </tr>
+                              </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                              <p>Enter Session ID</p>
+                              <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
+                              <button onClick={handleClick} id="connect">connect</button>
+                              <button onClick={leaveStream} id="disconnect">disconnect</button>
+                              </td>
+                            </tr>
+                          </table>
+                        </header>
+                      </div>
+                    </div>
+                  </div>    
+                </div>
+              </div> 
+          </div>
+      </div>
+    </Fragment>
   );
 }
 
