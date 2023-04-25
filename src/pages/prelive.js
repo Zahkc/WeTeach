@@ -17,7 +17,7 @@ function PreLive() {
     <Fragment>
     <NavBar/>
     <SideBar/>
-
+    <body className="align">
       <table>
         <tr>
           <td>
@@ -66,6 +66,7 @@ function PreLive() {
           </td>
         </tr>
       </table>
+      </body>
     <NavLink to="/GoLive">
       <a>GOLIVE</a>
     </NavLink>

@@ -1,4 +1,5 @@
 import Home from './pages/home(Teacher)';
+import Search from './pages/search';
 import VideoPage from './pages/videoPage(Teacher)';
 import Upload from './pages/upload';
 import UploadVideo from './pages/uploadVideo';
@@ -19,6 +20,7 @@ function UI() {
       <Router>
         <Routes>
           <Route path='/' element={<Home/>}/>
+          <Route path='/search' element={<Search/>}/>
           <Route path='/videoPage' element={<VideoPage/>}/>
           <Route path='/upload' element={<Upload/>}/>
           <Route path='/uploadVideo' element={<UploadVideo/>}/>

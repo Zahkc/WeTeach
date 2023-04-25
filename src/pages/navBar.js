@@ -1,7 +1,9 @@
-import React, { Fragment } from "react";
-import {NavLink, Link} from 'react-router-dom';
+import React, { Fragment , useState } from "react";
+import {NavLink, Link, useNavigate} from 'react-router-dom';
 
 function Navbar() {
+    const navigate = useNavigate();
+    const [searchVar, setSearchVar] = useState('');
     return(
         <Fragment>
             <nav className="navbar navbar-expand navbar-light bg-white static-top osahan-nav sticky-top">
@@ -13,9 +15,9 @@ function Navbar() {
                         {/*<!-- Navbar Search -->*/}
                         <form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 osahan-navbar-search">
                             <div className="input-group">
-                            <input type="text" className="form-control" placeholder="Search for..." />
+                            <input type="text" className="form-control" placeholder="Search for..." value={searchVar} onChange={(e) => setSearchVar(e.target.value)} />
                             <div className="input-group-append">
-                                <button className="btn btn-light" type="button">
+                                <button className="btn btn-light" type="button" onClick={() => submitSearch(navigate, searchVar)}>
                                 <i className="fas fa-search"></i>
                                 </button>
                             </div>
@@ -65,6 +67,18 @@ function Navbar() {
                     </nav>
         </Fragment>
     )
+}
+
+function submitSearch(navigate, searchVar){
+
+  navigate('/search',
+    {
+      state : {
+        searchVar: searchVar
+      }
+    }
+  );
+
 }
 
 export default Navbar;
