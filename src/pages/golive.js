@@ -3,10 +3,10 @@ import {useState, useEffect, useRef} from 'react';
 import Janus from './janus'
 import './golive.css';
 import {Spinner} from 'spin.js';
-import {server, iceServers} from './settings'
+import {server, iceServers} from '../settings'
 
-import NavBar from './pages/navBar'
-import SideBar from './pages/sidebar(Teacher)'
+import NavBar from './navBar'
+import SideBar from './sidebar(Teacher)'
 
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
@@ -115,9 +115,9 @@ function GoLive() {
                       </div>
                       </div>
                     </div>
-                  </div>    
+                  </div>
                 </div>
-              </div> 
+              </div>
           </div>
     </Fragment>
   );

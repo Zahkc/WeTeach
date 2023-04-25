@@ -4,8 +4,9 @@ import Upload from './pages/upload';
 import UploadVideo from './pages/uploadVideo';
 import StartStream from './pages/startStream';
 import WatchStream from './pages/watchStream';
-import WatchLive from './watchlive';
-import GoLive from './golive';
+import WatchLive from './pages/watchlive';
+import GoLive from './pages/golive';
+import PreLive from './pages/prelive';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -25,6 +26,7 @@ function UI() {
           <Route path='/watchStream' element={<WatchStream/>}/>
           <Route path='/GoLive' element={<GoLive/>}/>
           <Route path='/WatchLive' element={<WatchLive/>}/>
+          <Route path='/PreLive' element={<PreLive/>}/>
         </Routes>
       </Router>
     </div>
