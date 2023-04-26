@@ -6,7 +6,8 @@ import UpNext from './buttonUpNext'
 
 
 var srcVideoURL = "https://storage.googleapis.com/media-session/caminandes/short.mp4";
-var thumbnail = "https://i.imgur.com/MEAv9zb.png"
+var thumbnail = "https://i.imgur.com/MEAv9zb.png";
+var views = 17324;
 
 class VideoPage extends React.Component{
    render(){
@@ -26,8 +27,8 @@ class VideoPage extends React.Component{
                                        <video 
                                           width="100%" 
                                           height="315" 
-                                          poster="https://i.imgur.com/MEAv9zb.png"
-                                          src="https://storage.googleapis.com/media-session/caminandes/short.mp4" 
+                                          poster= {thumbnail}
+                                          src={srcVideoURL}
                                           frameborder="1" 
                                           allow="encrypted-media" 
                                           allowfullscreen="true" 
@@ -39,7 +40,7 @@ class VideoPage extends React.Component{
                                        <div className="single-video-title box mb-3">
                                           <h2><a href="#">Computer Science 101 - Lecture 1</a></h2>
                                           <h10>12th April 2023</h10>
-                                          <p className="mb-0"><i className="fas fa-eye"></i> 79,429 views</p>
+                                          <p className="mb-0"><i className="fas fa-eye"></i> {views} views</p>
                                        </div>
                                        <div className="single-video-author box mb-3">
                                           <div className="float-right"><button className="btn btn-danger" type="button">Subscribe <strong>1.4M</strong></button> <button className="btn btn btn-outline-danger" type="button"><i className="fas fa-bell"></i></button></div>
