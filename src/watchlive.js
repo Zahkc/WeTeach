@@ -326,77 +326,20 @@ function newRemoteFeed(id, display) {
   })
 
 }
-function con2Chat(){
-	source = screentest.getId();
-	janus.attach({
-		plugin: "janus.plugin.videoroom",
-		opaqueId: opaqueId,
-		success: function(pluginHandle) {
-			textroom = pluginHandle;
-			Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
-			Janus.log("  -- This is a subscriber");
-			var listen = {
-				request: "join",
-				room: room,
-				ptype: "subscriber",
-				feed: myid
-			};
-			textroom.send({ message: listen });
-		},
-		error: function(error) {
-			Janus.error("  -- Error attaching plugin...", error);
-			console.log("Error attaching plugin... " + error);
-		},
-		onmessage: function(msg, jsep) {
 
-			Janus.debug(" ::: Got a message (listener) :::", msg);
-			var event = msg["videoroom"];
-			Janus.debug("Event: " + event);
-
-			if(event){
-        if(event === "attached"){
-          Janus.log("Successfully attached to feed " + myid + " in room " + msg["room"]);
-        }
-      }
-      if(jsep){
-        Janus.debug("Handling SDP as well...", jsep);
-
-        textroom.createAnswer(
-          {
-            jsep: jsep,
-
-            tracks: [
-              { type: 'data' }
-            ],
-            success: function(jsep) {
-              Janus.debug("Got SDP!", jsep);
-              var body = { request: "start", room: room };
-              textroom.send({ message: body, jsep: jsep });
-            },
-            error: function(error) {
-              Janus.error("WebRTC error:", error);
-              console.error("WebRTC error... " + error.message);
-            }
-          });
-
-      }
-
-		},
-		ondataopen: function(data) {
-			console.log("SUB CONNECTED TO CHAT");
-		},
-		ondata: function(data) {
-      // Chat message recieved
-      chatbox = document.getElementById("chatbox");
-      chatbox.value += (formatChatMsg(data)+"\n");
-      chatbox.scrollTop = chatbox.scrollHeight;
-		}
-	});
+// Just an helper to generate random usernames
+function randomString(len, charSet) {
+  charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var randomString = '';
+  for (var i = 0; i < len; i++) {
+    var randomPoz = Math.floor(Math.random() * charSet.length);
+    randomString += charSet.substring(randomPoz,randomPoz+1);
+  }
+  return randomString;
 }
-
 function formatChatMsg(data){
   var msg = JSON.parse(data);
-  return "["+msg.time + "] Viewer: "+msg.text;
+  return "["+msg.time + "] Streamer: "+msg.text;
 }
 // Helper to format times
 function getDateString(jsonDate) {
@@ -410,17 +353,6 @@ function getDateString(jsonDate) {
 			("0" + when.getUTCSeconds()).slice(-2);
 	return dateString;
 }
-// Just an helper to generate random usernames
-function randomString(len, charSet) {
-  charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var randomString = '';
-  for (var i = 0; i < len; i++) {
-    var randomPoz = Math.floor(Math.random() * charSet.length);
-    randomString += charSet.substring(randomPoz,randomPoz+1);
-  }
-  return randomString;
-}
-
 // Sends chat message
 function sendData() {
 	var messageText = document.getElementById("msg_box").value;
