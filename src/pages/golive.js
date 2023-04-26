@@ -36,6 +36,8 @@ function GoLive() {
   useEffect(() => {
     getMedia();
     initJanus();
+		document.getElementById("swapButton").disabled = true;
+		document.getElementById("stopButton").disabled = true;
   });
 
   const handleKeyDown = (event) => {
@@ -95,7 +97,7 @@ function GoLive() {
                             <button id="screen-mute-button" onClick={toggleScreenShare}>Enable Screen Share</button>
                             </td>
                             <td>
-                            <button onClick={swapScreen}>Swap Screen</button>
+                            <button id="swapButton" onClick={swapScreen}>Swap Screen</button>
                             </td>
                             <td>
                             <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
@@ -104,10 +106,10 @@ function GoLive() {
                           <tr>
                             <td></td>
                             <td>
-                              <button onClick={shareScreen}>Go Live</button>
+                              <button id="startButton" onClick={startLiveStream}>Go Live</button>
                             </td>
                             <td>
-                              <button onClick={stopStream}>Stop Stream</button>
+                              <button id="stopButton" onClick={stopStream}>Stop Stream</button>
                             </td>
                           </tr>
                         </table>
@@ -142,44 +144,54 @@ async function startStream(){
     localCam.srcObject = null;
     localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
   } else {
-    localVid.srcObject = new MediaStream([camStream.getVideoTracks()[(camStream.getVideoTracks().length - 1)]]);
+    localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
     localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
   }
 }
 
-async function swapScreen(){
-
-  console.log(camStream.getVideoTracks().length);
-  try {
-    if (camStream.getVideoTracks().length > 1) {
-      camStream.getVideoTracks()[camStream.getVideoTracks().length - 1].stop();
-    }
-  } catch (e) {
-    console.log(e);
-    console.log("no track, continuing");
-  }
-  screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }});
-  camStream.addTrack(screenStream.getVideoTracks()[0]);
-  console.log(camStream.getVideoTracks().count);
-  stage = 1;
-
-	screentest.replaceTracks([
-		{
-			type:'screen',
-			mid: '2',
-			capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1]
-		}
-	]);
-
-  startStream()
+async function stopStream(){
+	sendData("Stream has concluded, thank you for attending!");
+	screentest.send({ message: { request: "stop" } });
+	screentest.hangup();
+	janus.destroy();
+	document.getElementById("startButton").disabled = false;
+	document.getElementById("stopButton").disabled = true;
+	localVid.srcObject = null;
+	localCam.srcObject = null;
 }
 
-async function stopStream(){
-  vidStream = null;
-  camStream = null;
-  localCam.srcObject = null;
-  localVid.srcObject = null;
-	janus.destroy();
+async function swapScreen(){
+
+
+	screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
+	stage = 1;
+
+	console.log(camStream.getVideoTracks().length);
+	try {
+		if (camStream.getVideoTracks().length == 1) {
+			console.log("Adding track vid 2");
+			camStream.addTrack(screenStream.getVideoTracks()[0]);
+		} else {
+			console.log("Replacing track vid 2");
+
+			let tracks = [];
+			tracks.push({
+				type:'screen',
+				mid: '2',
+				capture: screenStream.getVideoTracks()[0]
+			});
+
+			screentest.replaceTracks({tracks: tracks});
+
+		}
+	} catch (e) {
+		console.log(e);
+		console.log("no track, continuing");
+	}
+
+
+
+	startStream();
 }
 
 async function muteMic(){
@@ -209,25 +221,27 @@ async function muteCam(){
 }
 
 async function toggleScreenShare(){
-  if (camStream.getVideoTracks()[1] == null) {
+  if (screenStream == null) {
     swapScreen();
+		document.getElementById("swapButton").disabled = false;
   }
   if(stage == 1){
     stage = 0;
     document.getElementById("screen-mute-button").textContent = "Enable Screen Share";
     document.getElementById("screen-mute-button").style.background='#800000';
-    camStream.getVideoTracks()[(camStream.getVideoTracks().length - 1)].enabled = false;
-    startStream();
+    screenStream.getVideoTracks()[0].enabled = false;
+		startStream();
+		screentest.send({ message: { stage : stage } });
   }
   else{
     stage = 1;
     document.getElementById("screen-mute-button").textContent = "Disable Screen Share";
     document.getElementById("screen-mute-button").style.background='#FFFFFF';
-    camStream.getVideoTracks()[(camStream.getVideoTracks().length - 1)].enabled = true;
-    startStream();
+    screenStream.getVideoTracks()[0].enabled = true;
+		startStream();
+		screentest.send({ message: { stage : stage } });
   }
 }
-
 
 function initJanus(){
     Janus.init({debug: "all", callback: function() {
@@ -240,8 +254,6 @@ function initJanus(){
 			server: server,
       success: function() {
         console.log("Janus loaded");
-        // setJanusInstance(janus);
-        // Attach to echo test plugin
         janus.attach({
           plugin: "janus.plugin.videoroom",
           opaqueId: opaqueId,
@@ -291,6 +303,7 @@ function initJanus(){
 											tracks: [
 												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
 												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
+												{ type: 'screen',  mid:'2', capture: null, recv: false },
 												{ type: 'data'}
 											],
 											success: function(jsep) {
@@ -309,7 +322,7 @@ function initJanus(){
 											tracks: [
 												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
 												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-												{ type: 'screen',  mid:'2', capture: camStream.getVideoTracks()[camStream.getVideoTracks().length - 1], recv: false },
+												{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false },
 												{ type: 'data'}
 											],
 											success: function(jsep) {
@@ -433,7 +446,8 @@ function formatChatMsg(data){
   var msg = JSON.parse(data);
   return "["+msg.time + "] Streamer: "+msg.text;
 }
-function shareScreen() {
+
+function startLiveStream() {
 	// Create a new room
   capture = "screen";
   var desc = "Test transmit Page";
@@ -462,7 +476,8 @@ function shareScreen() {
 			screentest.send({ message: register });
 		}
 	}});
-
+	document.getElementById("startButton").disabled = true;
+	document.getElementById("stopButton").disabled = false;
 }
 
 function escapeXmlTags(value) {
@@ -496,8 +511,15 @@ function randomString(len, charSet) {
 }
 
 // Sends chat message
-function sendData() {
-	var messageText = document.getElementById("msg_box").value;
+function sendData(override) {
+	let messageText = "";
+	console.log(typeof(override));
+	if (typeof(override) === 'string') {
+		console.log("Over Ride");
+		messageText = override;
+	} else {
+		messageText = document.getElementById("msg_box").value;
+	}
 	if(messageText === "") {
     // Does nothing
 		return;
@@ -509,11 +531,6 @@ function sendData() {
  		text: messageText,
     time: getDateString(false)
 	};
-	// Note: messages are always acknowledged by default. This means that you'll
-	// always receive a confirmation back that the message has been received by the
-	// server and forwarded to the recipients. If you do not want this to happen,
-	// just add an ack:false property to the message above, and server won't send
-	// you a response (meaning you just have to hope it succeeded).
 	screentest.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },

@@ -337,6 +337,7 @@ function randomString(len, charSet) {
   }
   return randomString;
 }
+
 function formatChatMsg(data){
   var msg = JSON.parse(data);
   return "["+msg.time + "] Streamer: "+msg.text;
