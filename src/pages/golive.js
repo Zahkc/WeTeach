@@ -8,6 +8,14 @@ import {server, iceServers} from '../settings'
 import NavBar from './navBar'
 import SideBar from './sidebar(Teacher)'
 
+import mutedIcon from './assets/Mic-Off.png';
+import unmutedIcon from './assets/Mic-On.png';
+import cameraOnIcon from './assets/Camera-On.png';
+import cameraOffIcon from './assets/Camera-Off.png';
+import screenshareOnIcon from './assets/Screenshare-On.png';
+import screenshareOffIcon from './assets/Screenshare-Off.png';
+import screenshareOffSwap from './assets/Screenshare-Swap.png';
+
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
@@ -32,7 +40,16 @@ const chatStyle = {
 
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
-
+  
+  // // Set mutemic button
+  // var micMuteButton = document.getElementById("mic-mute-button");
+  window.onload = function() {
+    document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
+    document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
+    document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
+    document.getElementById("swapButton").style.backgroundImage = `url(${screenshareOffSwap})`;
+  }
+  
   useEffect(() => {
     getMedia();
     initJanus();
@@ -87,32 +104,41 @@ function GoLive() {
                             </td>
                           </tr>
                         </table>
+  
+                        <table className="button-table">
+                        <tr>
 
-                        <table>
-                          <tr>
-                            <td>
-                            <button id="cam-mute-button" onClick={muteCam}>Disable Camera</button>
-                            </td>
-                            <td>
-                            <button id="screen-mute-button" onClick={toggleScreenShare}>Enable Screen Share</button>
-                            </td>
-                            <td>
-                            <button id="swapButton" onClick={swapScreen}>Swap Screen</button>
-                            </td>
-                            <td>
-                            <button id="mic-mute-button" onClick={muteMic}>Mute Audio</button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td>
-                              <button id="startButton" onClick={startLiveStream}>Go Live</button>
-                            </td>
-                            <td>
-                              <button id="stopButton" onClick={stopStream}>Stop Stream</button>
-                            </td>
-                          </tr>
+                          <td>
+                          <button id="mic-mute-button" onClick={muteMic} className="mic-mute-button"></button>
+                          </td>
+                                                              
+                          <td>
+                            <button id="cam-mute-button" onClick={muteCam} className="mic-mute-button"></button>
+                          </td>
+                          
+                          <td>
+                            <button id="screen-mute-button" onClick={toggleScreenShare} className="mic-mute-button"></button>
+                          </td>
+                                
+                          <td>
+                            <button id="swapButton" onClick={swapScreen} className="mic-mute-button"></button>
+                          </td>
+
+                          <td>
+                            <button id="startButton" onClick={startLiveStream} className='go-live'>Start Stream</button>
+                          </td>
+
+                          <td>
+                            <button id="stopButton" onClick={stopStream} className='stop-stream'>Stop Stream</button>
+                          </td>
+
+                          <td className="buffer">
+                             
+                          </td>
+
+                        </tr>
                         </table>
+    
                         </header>
                       </div>
                       </div>
@@ -196,26 +222,22 @@ async function swapScreen(){
 
 async function muteMic(){
   if(camStream.getAudioTracks()[0].enabled){
-    document.getElementById("mic-mute-button").textContent = "Unmute Audio";
-    document.getElementById("mic-mute-button").style.background='#800000';
+    document.getElementById("mic-mute-button").style.backgroundImage = `url(${mutedIcon})`;
     camStream.getAudioTracks()[0].enabled = false;
   }
   else if(!camStream.getAudioTracks()[0].enabled){
-    document.getElementById("mic-mute-button").textContent = "Mute Audio";
-    document.getElementById("mic-mute-button").style.background='#FFFFFF';
+    document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
     camStream.getAudioTracks()[0].enabled = true;
   }
 }
 
 async function muteCam(){
   if(camStream.getVideoTracks()[0].enabled){
-    document.getElementById("cam-mute-button").textContent = "Enable Camera";
-    document.getElementById("cam-mute-button").style.background='#800000';
+    document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOffIcon})`;
     camStream.getVideoTracks()[0].enabled = false;
   }
   else if(!camStream.getVideoTracks()[0].enabled){
-    document.getElementById("cam-mute-button").textContent = "Disable Camera";
-    document.getElementById("cam-mute-button").style.background='#FFFFFF';
+    document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
     camStream.getVideoTracks()[0].enabled = true;
   }
 }
@@ -227,16 +249,14 @@ async function toggleScreenShare(){
   }
   if(stage == 1){
     stage = 0;
-    document.getElementById("screen-mute-button").textContent = "Enable Screen Share";
-    document.getElementById("screen-mute-button").style.background='#800000';
+    document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
     screenStream.getVideoTracks()[0].enabled = false;
 		startStream();
 		screentest.send({ message: { stage : stage } });
   }
   else{
     stage = 1;
-    document.getElementById("screen-mute-button").textContent = "Disable Screen Share";
-    document.getElementById("screen-mute-button").style.background='#FFFFFF';
+    document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
     screenStream.getVideoTracks()[0].enabled = true;
 		startStream();
 		screentest.send({ message: { stage : stage } });
