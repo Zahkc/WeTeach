@@ -72,6 +72,19 @@ body.fixed-nav.sidebar-toggled #content-wrapper {
       padding-left: 90px;
  }
 }
+
+input[type=button],input[type=submit] {
+	background-color: #555555 !important;
+	text-decoration: none;
+	cursor: pointer;
+	color: rgb(255, 255, 255) !important;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	color: #FFFFFF !important;
+}
+
+
 .carousel-login-card {
  padding: 11px 0;
 }

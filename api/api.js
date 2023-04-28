@@ -482,40 +482,57 @@ graph.route("/api/v1/media/:id/transcript").delete(async function (req, res) {
 graph.route("/api/v1/channels/:id/disciplines").post((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			disciplines: req.body.discipline,
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.discipline
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+			disciplines: {$each: db_content},
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
+
 });
 
 // Push a media onto a channel. This is required for searching content
 graph.route("/api/v1/channels/:id/media").post((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			media: req.body.media
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.media
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+				media: {$each: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -524,19 +541,27 @@ graph.route("/api/v1/channels/:id/media").post((req, res) => {
 graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			presenters: req.body.user
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.user
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
- db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+				presenters: {$each: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -545,19 +570,27 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
  try { 
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			attendees: req.body.user
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.user
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+				attendees: {$each: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -566,19 +599,27 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 graph.route("/api/v1/media/:id/disciplines").post((req, res) => {
  try {	
 	let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", locked: 0, purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			disciplines: req.body.discipline,
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.discipline
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
- db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+				disciplines: {$each: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -589,19 +630,28 @@ graph.route("/api/v1/media/:id/disciplines").post((req, res) => {
 graph.route("/api/v1/channels/:id/disciplines").delete((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL"};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			disciplines: req.body.discipline,
-		},
-		$set: {
-			lastModifiedBy: 0
+	
+	let db_content = req.body.discipline
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$push: {
+				disciplines: {$in: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -610,40 +660,56 @@ graph.route("/api/v1/channels/:id/disciplines").delete((req, res) => {
 graph.route("/api/v1/channels/:id/media").delete((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$push: {
-			media: req.body.media
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.media
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$pull: {
+				media: {$in: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
 
-// Push a presenter from a channel.
+// Pull a presenter from a channel.
 graph.route("/api/v1/channels/:id/presenters").delete((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL"};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$pull: {
-			presenters: req.body.user
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.user
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$pull: {
+				presenters: {$in: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		}
  }
  catch (e){console.log(e)}
 });
@@ -652,19 +718,27 @@ graph.route("/api/v1/channels/:id/presenters").delete((req, res) => {
 graph.route("/api/v1/channels/:id/presenters").delete((req, res) => {
 try { 
  let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL"};
- let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$pull: {
-			attendees: req.body.user
-		},
-		$set: {
-			lastModifiedBy: 0
+ let db_content = req.body.user
+ if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$pull: {
+				attendees: {$in: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });
@@ -673,19 +747,27 @@ try {
 graph.route("/api/v1/media/:id/disciplines").delete((req, res) => {
  try {
 	let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA"};
-	let db_update = {
-		$currentDate: {
-			lastModified: true
-		},
-		$pull: {
-			disciplines: req.body.discipline,
-		},
-		$set: {
-			lastModifiedBy: 0
+	let db_content = req.body.media
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
 		}
-	};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$pull: {
+				disciplines: {$in: db_content}
+			},
+			$set: {
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
  }
  catch (e){console.log(e)}
 });

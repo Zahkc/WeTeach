@@ -1572,13 +1572,13 @@ nav-item a
     }
 }
 /* Extra large devices (large desktops, 1200px and up) */
- @media (min-width: 1200px) {
+ @media screen and (min-width: 1200px) {
     .sidebar-toggled .sidebar .channel-sidebar-list {
         display: none;
     }
- }	
 	
- @media (max-width:445px) {
+	
+ @media screen and (max-width:445px) {
 	 
 	 
 }
