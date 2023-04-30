@@ -23,7 +23,7 @@ graph.route("/api/v1/records/:id").get(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").findOne(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));;
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Hard Delete Record
@@ -71,7 +71,7 @@ graph.route("/api/v1/users").post(async function (req,res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").insertOne(db_insert).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Link user with WeMaster ID
@@ -91,7 +91,7 @@ graph.route("/api/v1/users/:id/link").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Make attendee
@@ -112,7 +112,7 @@ graph.route("/api/v1/users/:id/grant/attendee").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Make presenter
@@ -133,7 +133,7 @@ graph.route("/api/v1/users/:id/grant/presenter").post(async function (req, res) 
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Disable User. Can be reversed by granting Presenter or Attendee role
@@ -155,7 +155,7 @@ graph.route("/api/v1/users/:id").delete(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));    
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 
@@ -174,7 +174,7 @@ graph.route("/api/v1/channels/search").get(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").find({type: "CHANNEL", purged:0, $text: {$search: db_query} }).toArray().then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Get Default Channel
@@ -190,7 +190,7 @@ graph.route("/api/v1/channels/:id").get(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").findOne(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // New channel
@@ -230,7 +230,7 @@ graph.route("/api/v1/channels/:id").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
  db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Soft Delete channel. This can only reversed by mongosh
@@ -268,9 +268,12 @@ graph.route("/api/v1/media/search").get(async function (req, res) {
 
 // Get Single Media Item
 graph.route("/api/v1/media/:id").get(async function (req, res) {
-	let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA"};
-	let db_connect = dbo.getDatabase();
-	db_connect.collection("records").findOne(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	try {		
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA"};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").findOne(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
+ }
+ catch (e){console.log(e); res.end(e);}
 });
 
 // New media, for creating live stream object
@@ -294,6 +297,8 @@ graph.route("/api/v1/media").post(async function (req,res) {
 	}
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").insertOne(db_insert).then((data) => {res.json(data)}).catch((e) => console.log(e));
+
+
 });
 
 // New media, second endpoint for video upload
@@ -311,6 +316,7 @@ graph.route("/api/v1/media/upload").post(async function (req,res) {
 		videoConferenceId: 0,
 		allowMeetingChat: 0,
 		startDateTime: start,
+		uploadSignature: req.body.href,
 		livestatus: 2,
 		purged: 0,
 		locked: 0,
@@ -347,7 +353,7 @@ graph.route("/api/v1/media/:id").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Soft Delete media. This can only reversed by mongosh
@@ -369,7 +375,7 @@ graph.route("/api/v1/media/:id").delete(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // 5. STREAMS
@@ -393,7 +399,7 @@ try {
 			transcript: req.body.videoConferenceId + '_transcript.txt',
 			lastModifiedBy: 0,
 		},
-		$push: {
+		$addToSet: {
 			src: {
 				$each: [ { 
 					trackName: "audio", 
@@ -411,7 +417,7 @@ try {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Special Endpoint for END STREAM. This is required to unlock the stream details for editing and to set the live stream as finished
@@ -434,7 +440,7 @@ graph.route("/api/v1/media/:id/stream/end").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Update transcript to a custom file
@@ -453,7 +459,7 @@ graph.route("/api/v1/media/:id/transcript").post(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Remove transcript
@@ -472,7 +478,7 @@ graph.route("/api/v1/media/:id/transcript").delete(async function (req, res) {
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 
@@ -493,8 +499,8 @@ graph.route("/api/v1/channels/:id/disciplines").post((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
-			disciplines: {$each: db_content},
+			$addToSet: {
+				disciplines: {$each: db_content},
 			},
 			$set: {
 				lastModifiedBy: 0
@@ -504,7 +510,7 @@ graph.route("/api/v1/channels/:id/disciplines").post((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 
 });
 
@@ -523,7 +529,7 @@ graph.route("/api/v1/channels/:id/media").post((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
+			$addToSet: {
 				media: {$each: db_content}
 			},
 			$set: {
@@ -534,7 +540,7 @@ graph.route("/api/v1/channels/:id/media").post((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Push a presenter onto a channel.
@@ -552,7 +558,7 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
+			$addToSet: {
 				presenters: {$each: db_content}
 			},
 			$set: {
@@ -563,7 +569,7 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Push an attendee onto a channel.
@@ -581,7 +587,7 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
+			$addToSet: {
 				attendees: {$each: db_content}
 			},
 			$set: {
@@ -592,7 +598,7 @@ graph.route("/api/v1/channels/:id/presenters").post((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Push an discipline onto a media object
@@ -610,18 +616,45 @@ graph.route("/api/v1/media/:id/disciplines").post((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
+			$addToSet: {
 				disciplines: {$each: db_content}
 			},
 			$set: {
-				lastModifiedBy: 0
+				lastModifiedBy: req.body.user
 			}
 		};
 		let db_connect = dbo.getDatabase();
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
+});
+
+// Override disciplines array
+graph.route("/api/v1/media/:id/disciplines/replace").post((req, res) => {
+ try {	
+	let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", locked: 0, purged: 0};
+	let db_content = req.body.discipline
+	if(!(typeof db_content === "undefined"))
+	{
+		if (!(db_content instanceof Array))
+		{
+			db_content = Array(db_content);
+		}
+		let db_update = {
+			$currentDate: {
+				lastModified: true
+			},
+			$set: {
+				lastModifiedBy: req.body.user,
+				disciplines: db_content
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
+ }
+ catch (e){console.log(e); res.end(e);}
 });
 
 // 7. PULL Functions
@@ -642,7 +675,7 @@ graph.route("/api/v1/channels/:id/disciplines").delete((req, res) => {
 			$currentDate: {
 				lastModified: true
 			},
-			$push: {
+			$addToSet: {
 				disciplines: {$in: db_content}
 			},
 			$set: {
@@ -653,7 +686,7 @@ graph.route("/api/v1/channels/:id/disciplines").delete((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Pull a media onto a channel. This is required for searching content
@@ -682,7 +715,7 @@ graph.route("/api/v1/channels/:id/media").delete((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Pull a presenter from a channel.
@@ -711,7 +744,7 @@ graph.route("/api/v1/channels/:id/presenters").delete((req, res) => {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 		}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Pull an attendee from a channel.
@@ -740,7 +773,7 @@ try {
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // Pull an discipline from a media object
@@ -762,14 +795,14 @@ graph.route("/api/v1/media/:id/disciplines").delete((req, res) => {
 				disciplines: {$in: db_content}
 			},
 			$set: {
-				lastModifiedBy: 0
+				lastModifiedBy: req.body.user
 			}
 		};
 		let db_connect = dbo.getDatabase();
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
  }
- catch (e){console.log(e)}
+ catch (e){console.log(e); res.end(e);}
 });
 
 // This should be the last line as it exports all API functions for the server application
