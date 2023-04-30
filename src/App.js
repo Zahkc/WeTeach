@@ -5,7 +5,7 @@ import EditStream from './pages/editStream';
 
 import GoLive from './pages/golive';
 import WatchStream from './pages/viewStream';
-import Upload from './pages/newStream';
+import Upload from './pages/upload';
 import NotFound from './404';
 import { Route, Routes} from 'react-router-dom';
 

@@ -57,13 +57,13 @@ class NewStream extends React.Component{
 				axios.post(`http://localhost:5000/api/v1/channels/${channelID}/disciplines`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{	
 					//console.log(r.data);
-				}).catch((e) => console.log(e));;			
+				}).catch((e) => console.log(e));			
 
 				/* Update disciplines object on media object */
 				axios.post(`http://localhost:5000/api/v1/media/${mediaID}/disciplines`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{					
 					//console.log(r.data);
-				}).catch((e) => console.log(e));;			
+				}).catch((e) => console.log(e));		
 							
 
 				document.getElementById("output-success").style.display='inline-block';
@@ -76,7 +76,7 @@ class NewStream extends React.Component{
 			document.getElementById("output-success").style.display='none';
 			document.getElementById("output-failure").style.display='inline-block';
 			document.getElementById("submit-buttons").style.display='none';
-			});;
+			});
 			
 			
 	

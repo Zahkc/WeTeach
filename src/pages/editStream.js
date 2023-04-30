@@ -76,13 +76,13 @@ class EditStream extends React.Component{
 				axios.post(`http://localhost:5000/api/v1/channels/${channelID}/disciplines`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{	
 					//console.log(r.data);
-				}).catch((e) => console.log(e));;			
+				}).catch((e) => console.log(e));			
 
 				/* Update disciplines object on media object */
 				axios.post(`http://localhost:5000/api/v1/media/${mediaID}/disciplines/replace`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{					
 					//console.log(r.data);
-				}).catch((e) => console.log(e));;			
+				}).catch((e) => console.log(e));			
 							
 
 				document.getElementById("output-success").style.display='inline-block';

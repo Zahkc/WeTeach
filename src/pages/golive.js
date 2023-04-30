@@ -3,7 +3,7 @@ import {useState, useEffect, useRef} from 'react';
 
 import '../css/weteach-main.css';
 import '../css/weteach-golive.css';
-import Header from './header'
+
 import axios from 'axios';
 
 import Janus from '../components/janus/janus'

@@ -1,11 +1,14 @@
 import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
-import Janus from '../components/janus/janus'
+
+import '../css/weteach-main.css';
 import '../css/weteach-golive.css';
+
+import axios from 'axios';
+
+import Janus from '../components/janus/janus'
 import {Spinner} from 'spin.js';
 import {server, iceServers} from '../components/janus/settings'
-
-
 
 let stream = new MediaStream([])
 let screenStream = new MediaStream([])
@@ -41,63 +44,82 @@ function WatchLive() {
       document.getElementById("chatSubmit").click();
     }
   };
-
+	document.title = "WeTeach - View Stream";
   return (
+ 
     <Fragment>
-      <div>
-          
-          <div id = "wrapper">
-            
-              <div id="content-wrapper">
-                <div className="container-fluid pb-0">
-                  <div className="video-block section-padding">
-                    <div className="row">
-                      <div className="goLive">
-                        <header className="Live-header">
-                          <p>
-                            Watch Live Interface
-                          </p>
-                          <table><tbody>
-                            <tr>
-                              <td style = {{verticalAlign:"unset"}}>
-                              <video className="App-video" id="local_vid" autoPlay></video>
-                              </td>
-                              <td>
-                              <table><tbody>
-                              <tr><td>
-                              <video className="App-camera" id="local_cam" autoPlay></video></td>
-                              </tr>
-                              <tr><td>
-                              <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea></td>
-                              </tr>
-                              <tr>
-                              <td>
-                              <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
-                              </td><td>
-                              <button onClick={sendData} className="btn btn-primary" id="chatSubmit">Send</button>
-                              
-                              </td>
-                              </tr></tbody>
-                              </table>
-                              </td>
-                            </tr>
+      <div id="content-all">		    
+			<div className="col-md-3">
+									<div className="main-title">
+									<h3><span className="title">View Stream</span></h3>
+									</div>
+									
+			</div><br />
+			
+           <div id="content-wrapper">
+              <div className="container-fluid pb-0">
+                <div className="video-block section-padding">
+                  <div className="row">
+                      <div className="col-md-5">
+						<div className="single-video-left">
+						<div className="single-video" style = {{verticalAlign:"unset"}}>
+                        
+						<video 
+							width="80%"
+							frameBorder="0"							
+							volume="0"
+							className="App-video"
+							id="local_vid"
+							allowFullScreen="1"														
+							autoPlay></video>
+							<table><tbody>
                             <tr>
                               <td>
-                              <p>Enter Session ID</p>
                               <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-                              <button onClick={handleClick} id="connect">connect</button>
-                              <button onClick={leaveStream} id="disconnect">disconnect</button>
+                              <button className="btn btn-primary" onClick={handleClick} id="connect">connect</button>
+                              <button className="btn btn-primary" onClick={leaveStream} id="disconnect">disconnect</button>
                               </td>
                             </tr></tbody>
                           </table>
-                        </header>
+						</div>
+						
+						
+						</div></div>
+						<div className="col-md-5 reducible">
+						<div className="single-video-right">
+                            <div className="single-video2">
+                            <video className="App-camera" id="local_cam" width="80%" autoPlay></video>
+							</div>
+                            <div className = "containerChat"><div>
+							<textarea disabled className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
+						
+                            <input
+							placeholder="Enter chat message here"
+							className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
+                           
+                            <button onClick={sendData} className="btn btn-primary" id = "chatSubmit">Send</button>                           
+							</div>
+  
+						 </div></div>
+                                       
+						 
+						 <div className="single-video-info-content box mb-3">					
+                                          <p>{/*Stream Date & Time*/}</p>  						
+                                          <h6>About:</h6>
+                                          <p>Test your input devices before streaming 
+                                          </p>
+                                          <h6>Disciplines:</h6>
+                                          <p className="tags mb-0">
+                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;                                             
+                                             <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
+                                          </p><br />
+						 </div>
+                      
                       </div>
                     </div>
-                  </div>    
+                  </div>
                 </div>
-              </div> 
-          </div>
-      </div>
+              </div>          
     </Fragment>
   );
 }
