@@ -51,6 +51,29 @@ graph.route("/api/v1/users/:id").get(async function (req, res) {
 	db_connect.collection("records").findOne(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
 });
 
+// Get Admin User
+graph.route("/api/v1/users/.wtapp").get(async function (req, res) {
+	let db_query = { ssid: "wtapp"};
+	let db_connect = dbo.getDatabase();
+	db_connect.collection("records").find(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
+});
+
+// Get Anonymous Login User
+graph.route("/api/v1/users/.public").get(async function (req, res) {
+	let db_query = { ssid: "public"};
+	let db_connect = dbo.getDatabase();
+	db_connect.collection("records").find(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
+});
+
+
+// Get User by WMID
+graph.route("/api/v1/users/.wmid/:wmid").get(async function (req, res) {
+	let db_query = { wmid: req.body.wmid, type: "USER" };
+	let db_connect = dbo.getDatabase();
+	db_connect.collection("records").find(db_query).then((data) => {res.json(data)}).catch((e) => console.log(e));
+});
+
+
 // New user
 graph.route("/api/v1/users").post(async function (req,res) {
  try {
