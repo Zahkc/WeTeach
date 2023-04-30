@@ -44,6 +44,10 @@ class EditStream extends React.Component{
 		{
 			this.setState({formEnabled: false})
 		}
+		if(mdataset.liveStatus == 2)
+		{
+			document.title = "WeTeach - Edit Video";
+		}
 		document.getElementById("output-success").style.display='none';
 		document.getElementById("output-failure").style.display='none';
 		}).catch((e) => console.log(e));				
@@ -55,6 +59,32 @@ class EditStream extends React.Component{
 		const onChange = (e) => {	
 			this.setState({[e.target.name]: e.target.value });			
 		};
+
+		const onDelete = (e) => {
+			e.preventDefault();
+			let mediaID = this.state.thisMedia;
+			axios.delete(`http://localhost:5000/api/v1/media/${mediaID}`,this.state).then((res)=>
+			{	
+				
+				this.setState({thisMedia: mediaID});
+				let channelID = this.state.thisChannel;								
+				let disciplines = this.state.disciplines;
+				
+				/* Un-Index this object in the current channel */
+				axios.delete(`http://localhost:5000/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
+				{									
+					//console.log(r.data);
+				}).catch((e) => console.log(e));
+			
+				document.getElementById("output-success").style.display='inline-block';
+				document.getElementById("output-failure").style.display='none';					
+				
+			}).catch((e) => {console.log(e)
+			document.getElementById("output-success").style.display='none';
+			document.getElementById("output-failure").style.display='inline-block';			
+			});
+	
+		}
 
 		const onSubmit = (e) => {
 			e.preventDefault();
@@ -84,23 +114,15 @@ class EditStream extends React.Component{
 					//console.log(r.data);
 				}).catch((e) => console.log(e));			
 							
-
 				document.getElementById("output-success").style.display='inline-block';
 				document.getElementById("output-failure").style.display='none';
-
-				
-								
 				
 			}).catch((e) => {console.log(e)
 			document.getElementById("output-success").style.display='none';
 			document.getElementById("output-failure").style.display='inline-block';			
-			});;
-			
-			
-	
+			});
 			
 		};	
-		
 		
         return(
          <Fragment>
@@ -108,7 +130,14 @@ class EditStream extends React.Component{
 			<div id="content-all">		    
 			<div className="col-md-12">
 									<div className="main-title">
+									{
+									(this.state.liveStatus == 2) ? 
+									<Fragment>
+									<h3><span className="title" id="editabletitle">Edit Video</span></h3>
+									</Fragment> :<Fragment>
 									<h3><span className="title" id="editabletitle">Edit Stream</span></h3>
+									</Fragment>
+									}
 									</div>
 									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className={`live${this.state.liveStatus}`}></div>
 			</div><br />			
@@ -244,7 +273,20 @@ class EditStream extends React.Component{
 								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
 								<div className="osahan-area mt-3">
-								<button type="submit" className="btn btn-primary" formTarget="_self">Update Stream</button>&nbsp;&nbsp;													
+								{
+									(this.state.liveStatus == 2) ? 
+									<Fragment>
+								<button type="submit" className="btn btn-primary" formTarget="_self">Update Video</button>&nbsp;&nbsp;
+								
+								<button type="button" className="btn btn-primary" onClick={onDelete}>Delete Video</button>&nbsp;&nbsp;
+								</Fragment> :
+								<Fragment>
+								<button type="submit" className="btn btn-primary" formTarget="_self">Update Stream</button>&nbsp;&nbsp;
+								
+								<button type="button" className="btn btn-primary" onClick={onDelete}>Cancel Stream</button>&nbsp;&nbsp;
+								</Fragment>
+								}
+								
 								<button type="reset" className="btn btn-secondary">Reset</button>													
 								</div>
 								</div>

@@ -365,7 +365,7 @@ graph.route("/api/v1/media/:id").delete(async function (req, res) {
 			lastModifiedDateTime: true
 		},
 		$set: {
-			livestatus: 4,
+			liveStatus: 4,
 			allowMeetingChat: 0,
 			purged: 1,
 			locked: 1,
@@ -392,7 +392,7 @@ try {
 			lastModifiedDateTime: true
 		},
 		$set: {
-			livestatus: 1,
+			liveStatus: 1,
 			videoConferenceId: req.body.videoConferenceId,
 			purged: 0,
 			locked: 1,
@@ -430,7 +430,7 @@ graph.route("/api/v1/media/:id/stream/end").post(async function (req, res) {
 			lastModifiedDateTime: true
 		},
 		$set: {
-			livestatus: 3,
+			liveStatus: 3,
 			videoConferenceId: req.body.videoConferenceId,
 			purged: 0,
 			locked: 1,

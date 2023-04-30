@@ -22,7 +22,7 @@ class VideoUpload extends React.Component{
 		
 	}
 	componentDidMount() {
-		document.title = "WeTeach - Upload Files";
+		document.title = "WeTeach - Upload Video";
 		axios.get(`http://localhost:5000/api/v1/channels/.default`).then(res => {
 		const dataset = res.data;
 		this.setState({thisChannel: dataset[0]._id});
@@ -110,6 +110,7 @@ class VideoUpload extends React.Component{
 									<div className="main-title">
 									<h3><span className="title">Upload Video</span></h3>
 									</div>
+									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live2"></div>
 			</div><br />			
                   <div id="content-wrapper">
                     <div className="container-fluid upload-details">  
