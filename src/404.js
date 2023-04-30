@@ -1,10 +1,12 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment } from 'react';
 
-export default class Home extends React.Component {
-	render()
-	{
+export default function NotFound() {
+	
 			return (
-			<Fragment><b>404 Not Found</b></Fragment>
+			<Fragment><div id="content-all">
+				<h3>404 Not Found</h3>
+				Whoops, this page doesn't exist!
+				</div></Fragment>
 			);
-	}
+	
 }

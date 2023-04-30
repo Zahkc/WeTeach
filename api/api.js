@@ -291,7 +291,7 @@ graph.route("/api/v1/media").post(async function (req,res) {
 		videoConferenceId: 0,
 		allowMeetingChat: 1,
 		startDateTime: start,
-		livestatus: 0,
+		liveStatus: 0,
 		purged: 0,
 		locked: 0
 	}
@@ -317,7 +317,7 @@ graph.route("/api/v1/media/upload").post(async function (req,res) {
 		allowMeetingChat: 0,
 		startDateTime: start,
 		uploadSignature: req.body.href,
-		livestatus: 2,
+		liveStatus: 2,
 		purged: 0,
 		locked: 0,
 		src: 
@@ -635,8 +635,7 @@ graph.route("/api/v1/media/:id/disciplines/replace").post((req, res) => {
  try {	
 	let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", locked: 0, purged: 0};
 	let db_content = req.body.discipline
-	if(!(typeof db_content === "undefined"))
-	{
+	
 		if (!(db_content instanceof Array))
 		{
 			db_content = Array(db_content);
@@ -652,7 +651,7 @@ graph.route("/api/v1/media/:id/disciplines/replace").post((req, res) => {
 		};
 		let db_connect = dbo.getDatabase();
 		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
-	}
+	
  }
  catch (e){console.log(e); res.end(e);}
 });

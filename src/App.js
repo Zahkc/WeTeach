@@ -6,7 +6,7 @@ import EditStream from './pages/editStream';
 import GoLive from './pages/golive';
 import WatchStream from './pages/watchStream';
 import Upload from './pages/newStream';
-import NoMatch from './404';
+import NotFound from './404';
 import { Route, Routes} from 'react-router-dom';
 
 import './components/vendor/bootstrap/css/bootstrap.min.css';
@@ -32,7 +32,7 @@ function UI() {
 		  <Route exact path='/media/:id/edit' element={<EditStream/>}/>
 		  <Route exact path='/upload' element={<Upload/>}/>
 		  
-		  <Route element ={<NoMatch />}/>
+		  <Route path="*" element ={<NotFound />}/>
         </Routes>
       </div>
   );

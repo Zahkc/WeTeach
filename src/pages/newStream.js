@@ -16,7 +16,8 @@ class NewStream extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
-		disciplines: []
+		disciplines: [],
+		
 
 	}
 	componentDidMount() {
@@ -102,7 +103,7 @@ class NewStream extends React.Component{
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
                                     <label htmlFor="name">Stream Title</label>
-                                    <input
+                                    <input name="name"									
                                     type="text"
                                     placeholder="Enter title for stream here"
                                     id="e1"
@@ -116,7 +117,7 @@ class NewStream extends React.Component{
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
                                     <label htmlFor="description">Description</label>
-                                    <input
+                                    <input name="description"
                                     type="text"
                                     placeholder="Enter description for stream here"
                                     id="e2"								
@@ -147,7 +148,7 @@ class NewStream extends React.Component{
 								<DateTimePicker 
 									ampm={false}
 									disablePast
-									defaultValue={moment(this.startDateTime)}
+									defaultValue={moment(this.startDateTime).add(1, "minute")}
 									minDateTime={moment().add(-1, "seconds")} 									
 									name="startDateTime"
 									onChange={(v) => {this.setState({startDateTime: moment(v._d).utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")})}}

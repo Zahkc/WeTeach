@@ -14,11 +14,11 @@ class EditStream extends React.Component{
 		thisMedia: '',		
 		availableDisciplines: [],
 		name: '',
-		description: '',
-		startDateTime: '',
-		defaultDisciplines: [],
+		description: '',		
+		startDateTime: '',		
 		disciplines: [],
-
+		liveStatus: 0,
+		formEnabled: true,
 	}
 	componentDidMount() {
 		document.title = "WeTeach - Edit Stream";
@@ -35,9 +35,17 @@ class EditStream extends React.Component{
 		const mdataset = res.data;		
 		this.setState({name: mdataset.name});		
 		this.setState({description: mdataset.description});
-		this.setState({startDateTime: mdataset.startDateTime});
-		this.setState({defaultDisciplines: mdataset.disciplines});
 		
+		this.setState({startDateTime: mdataset.startDateTime});
+		this.setState({disciplines: mdataset.disciplines});
+		this.setState({liveStatus: mdataset.liveStatus});
+		
+		if(mdataset.locked == 1 || mdataset.purged == 1 || mdataset.liveStatus == 1 || mdataset.liveStatus == 4)
+		{
+			this.setState({formEnabled: false})
+		}
+		document.getElementById("output-success").style.display='none';
+		document.getElementById("output-failure").style.display='none';
 		}).catch((e) => console.log(e));				
 	}
 	
@@ -50,9 +58,10 @@ class EditStream extends React.Component{
 
 		const onSubmit = (e) => {
 			e.preventDefault();
-			axios.post(`http://localhost:5000/api/v1/media`,this.state).then((res)=>
+			let mediaID = this.state.thisMedia;
+			axios.post(`http://localhost:5000/api/v1/media/${mediaID}`,this.state).then((res)=>
 			{	
-				let mediaID = res.data.insertedId;
+				
 				this.setState({thisMedia: mediaID});
 				let channelID = this.state.thisChannel;								
 				let disciplines = this.state.disciplines;
@@ -70,7 +79,7 @@ class EditStream extends React.Component{
 				}).catch((e) => console.log(e));;			
 
 				/* Update disciplines object on media object */
-				axios.post(`http://localhost:5000/api/v1/media/${mediaID}/disciplines`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
+				axios.post(`http://localhost:5000/api/v1/media/${mediaID}/disciplines/replace`,JSON.stringify({"discipline": disciplines}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{					
 					//console.log(r.data);
 				}).catch((e) => console.log(e));;			
@@ -78,14 +87,13 @@ class EditStream extends React.Component{
 
 				document.getElementById("output-success").style.display='inline-block';
 				document.getElementById("output-failure").style.display='none';
-				document.getElementById("submit-buttons").style.display='none';
+
 				
 								
 				
 			}).catch((e) => {console.log(e)
 			document.getElementById("output-success").style.display='none';
-			document.getElementById("output-failure").style.display='inline-block';
-			document.getElementById("submit-buttons").style.display='none';
+			document.getElementById("output-failure").style.display='inline-block';			
 			});;
 			
 			
@@ -102,6 +110,7 @@ class EditStream extends React.Component{
 									<div className="main-title">
 									<h3><span className="title" id="editabletitle">Edit Stream</span></h3>
 									</div>
+									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className={`live${this.state.liveStatus}`}></div>
 			</div><br />			
                   <div id="content-wrapper">
                     <div className="container-fluid upload-details">  
@@ -113,42 +122,88 @@ class EditStream extends React.Component{
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
                                     <label htmlFor="name">Stream Title</label>
-                                    <input
-                                    type="text"
-									value={this.state.name}
-                                    placeholder="Enter title for stream here"
+								{
+									this.state.formEnabled ? 
+								<Fragment>   
+									<input
+                                    type="text" name="name"
+									defaultValue={this.state.name}
+                                    placeholder={this.state.name}
                                     id="e1"
                                     className="form-control" required="1"
 									autoComplete="off"
-									onChange={onChange}
+									onChange={onChange}									
                                     />
+								</Fragment> : 
+								<Fragment>   
+									<input
+                                    type="text"
+									value={this.state.name}
+                                    id="e1"
+                                    className="form-control" required="1"
+									autoComplete="off"
+									onChange={onChange}	
+									disabled
+                                    />
+								</Fragment>
+								}
                                 </div>
                                 </div>
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
-                                    <label htmlFor="description">Description</label>
-                                    <input
+								                                
+								<label htmlFor="description">Description</label>
+								{
+									this.state.formEnabled ? 
+								<Fragment>                                
+								<input
+                                    type="text" name="description"
+                                    defaultValue={this.state.description}
+									placeholder={this.state.description}
+									
+                                    id="e2"								
+                                    className="form-control" required="1"
+									autoComplete="off"
+									onChange={onChange}
+                                    />
+								</Fragment> : 
+								<Fragment>
+								<input
                                     type="text"
                                     value={this.state.description}
                                     id="e2"								
                                     className="form-control" required="1"
 									autoComplete="off"
 									onChange={onChange}
+									disabled
                                     />
+								</Fragment>
+								}
                                 </div>
                                 </div>   
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
-								<label htmlFor="e3">Disciplines</label>
-								<CreatableSelect 
+								<label htmlFor="e3">Disciplines</label>	
+								{
+									this.state.formEnabled ? 
+								<Fragment><CreatableSelect 
 									isMulti
 									closeMenuOnSelect={false}									
-									defaultValue={this.state.defaultDisciplines.map(function(value) {var o = {"value": value, "label": value}; return o;})}
+									value={this.state.disciplines.map(function(value) {var o = {"value": value, "label": value}; return o;})}
 									options={this.state.availableDisciplines.map(function(value) {var option = {"value": value, "label": value}; return option;})}								
-									onChange={(v) => this.setState({disciplines: v.map((t,k)=>t.value)})} 
-								/>								
+									onChange={(v) => this.setState({disciplines: v.map((t,k)=>t.value)})} />									
+								</Fragment> : 
+								<Fragment><CreatableSelect 
+									isMulti
+									closeMenuOnSelect={false}									
+									value={this.state.disciplines.map(function(value) {var o = {"value": value, "label": value}; return o;})}
+									options={this.state.availableDisciplines.map(function(value) {var option = {"value": value, "label": value}; return option;})}								
+									onChange={(v) => this.setState({disciplines: v.map((t,k)=>t.value)})} isDisabled />									
+								</Fragment> 
+									
+								}							
                                 </div>
                                 </div>
 								</div><div className="row">
@@ -157,6 +212,9 @@ class EditStream extends React.Component{
 								
 								
 								<label htmlFor="e3">Stream Start Date (optional)</label><br />
+								{
+									this.state.formEnabled ? 
+								<Fragment>
 								<DateTimePicker 
 									ampm={false}									
 									value={moment(this.state.startDateTime).tz("Australia/Sydney")}
@@ -164,9 +222,25 @@ class EditStream extends React.Component{
 									name="startDateTime"
 									onChange={(v) => {this.setState({startDateTime: moment(v._d).utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")})}}
 									/>
+								</Fragment> :
+								<Fragment>
+								<DateTimePicker 
+									ampm={false}									
+									value={moment(this.state.startDateTime).tz("Australia/Sydney")}
+									minDateTime={moment(this.state.startDateTime).add(-1, "seconds")} 									
+									name="startDateTime"
+									onChange={(v) => {this.setState({startDateTime: moment(v._d).utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")})}}
+									disabled
+									/>
+								</Fragment> 
+								}
 								</div>
                                 </div>
-								</div><div className="row" id="submit-buttons">
+								</div>
+								{
+									this.state.formEnabled ? 
+								<Fragment>
+								<div className="row" id="submit-buttons">
 								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
 								<div className="osahan-area mt-3">
@@ -174,14 +248,27 @@ class EditStream extends React.Component{
 								<button type="reset" className="btn btn-secondary">Reset</button>													
 								</div>
 								</div>
-								</div>
-								
-                            </div>
+								</div></div>
+								</Fragment> : null
+								}
+                            
                             </div>
                         </div>
                         </div>
+						
 							</form>
-					
+					<div className="row">
+								<div className="col-xl-3 col-sm-6 mb-3">
+                                <div className="form-group">
+						<div id="output-failure" style={{display:"none"}}>
+								<div className="bg-failure">Stream failed to updated</div><br />								
+						</div>
+						<div id="output-success" style={{display:"none"}}>
+								<div className="bg-success">Stream successfully updated!</div><br />								
+						</div>
+						</div>
+								</div>
+								</div>
                     </div>
                     </div>
                 
