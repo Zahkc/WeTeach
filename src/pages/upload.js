@@ -1,8 +1,7 @@
-import React, { Fragment,Component} from 'react';
+import React, { Fragment} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment-timezone';
 import '../css/weteach-main.css';
 

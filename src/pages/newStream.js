@@ -1,4 +1,4 @@
-import React, { Fragment,Component} from 'react';
+import React, { Fragment} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
