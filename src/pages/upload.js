@@ -175,7 +175,7 @@ class VideoUpload extends React.Component{
 								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
 								<div className="restyled-area mt-3">
-								<button type="submit" className="btn btn-primary" formTarget="_self">Create Stream</button>&nbsp;&nbsp;													
+								<button type="submit" className="btn btn-primary" formTarget="_self">Upload Video</button>&nbsp;&nbsp;													
 								<button type="reset" className="btn btn-secondary">Reset</button>													
 								</div>
 								</div>
