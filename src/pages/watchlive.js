@@ -13,7 +13,7 @@ let stream = new MediaStream([])
 let screenStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var screentest, room, role, myid, source, spinner, roomid;
+var remoteFeed, screentest, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
@@ -116,19 +116,9 @@ function initJanus(){
         janus = new Janus(
     {
 			server: server,
-      // No "iceServers" is provided, meaning janus.js will use a default STUN server
-      // Here are some examples of how an iceServers field may look like to support TURN
-      // 		iceServers: [{urls: "turn:yourturnserver.com:3478", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turn:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // 		iceServers: [{urls: "turns:yourturnserver.com:443?transport=tcp", username: "janususer", credential: "januspwd"}],
-      // Should the Janus API require authentication, you can specify either the API secret or user token here too
-      //		token: "mytoken",
-      //	or
-      //		apisecret: "serversecret",
+
       success: function() {
         console.log("Janus loaded");
-        // setJanusInstance(janus);
-        // Attach to echo test plugin
         janus.attach({
           plugin: "janus.plugin.videoroom",
           opaqueId: opaqueId,
@@ -148,6 +138,21 @@ function initJanus(){
 
                 myid = msg["id"];
                 Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
+
+								screentest.createOffer({
+									tracks: [	{ type: 'data'} ],
+									success: function(jsep){
+										Janus.debug("Got publisher SDP!", jsep);
+										Janus.log("Got publisher SDP!", jsep);
+										var publish = { request: "configure", audio: false, video: false, data: true };
+										screentest.send({ message: publish, jsep: jsep });
+									},
+									error: function(error) {
+										Janus.error("WebRTC error:", error);
+										console.error("WebRTC error... " + error.message);
+									}
+								});
+
                 if(msg["publishers"]) {
                   var list = msg["publishers"];
                   Janus.debug("Got a list of available publishers/feeds:", list);
@@ -189,6 +194,52 @@ function initJanus(){
           }
         });
 
+				janus.attach({
+					plugin: "janus.plugin.textroom",
+					opaqueId: opaqueId,
+					success: function(chatHandle) {
+						textroom = chatHandle;
+						console.log("-- Chatroom Plugin Loaded --");
+						let body = { request: "setup" };
+						Janus.debug("Sending message:", body);
+						textroom.send({ message: body });
+					},
+					error: function(error){console.error(error)},
+					onmessage: function(msg, jsep) {
+						if(jsep) {
+							// Answer
+							textroom.createAnswer(
+								{
+									jsep: jsep,
+									// We only use datachannels
+									tracks: [
+										{ type: 'data' }
+									],
+									success: function(jsep) {
+										Janus.debug("Got SDP!", jsep);
+										let body = { request: "ack" };
+										textroom.send({ message: body, jsep: jsep });
+									},
+									error: function(error) {
+										Janus.error("WebRTC error:", error);
+									}
+								});
+						}
+					},
+					ondataopen: function(label, protocol){
+						console.log("Datachannel Open");
+					},
+					ondata: function(data) {
+						console.log("Data Recived: " + data);
+						if(JSON.parse(data)["textroom"] == "message"){
+							chatbox = document.getElementById("chatbox");
+							chatbox.value += (formatChatMsg(data)+"\n");
+							chatbox.scrollTop = chatbox.scrollHeight;
+						}
+					}
+				});
+
+
       },
       error: function(error) {
         Janus.error(error);
@@ -213,8 +264,20 @@ function attemptConnect(){
 		ptype: "publisher",
 		display: myusername
 	};
-  screentest.send({ message: register });
-  console.log(room);
+  screentest.send({ message: register, success: function(){
+		console.log(" --- Joined VideoRoom ---");
+		var register = {
+			textroom: "join",
+			room: room,
+			username: myusername,
+			display: myusername,
+			transaction: randomString(12),
+		};
+		textroom.data({text: JSON.stringify(register), success: function(){
+			console.log(" --- Joined Chatroom ---");
+		}});
+	}});
+
 }
 
 function newRemoteFeed(id, display) {
@@ -284,6 +347,7 @@ function newRemoteFeed(id, display) {
     },
     ondata: function(data) {
       // Chat message recieved
+			console.log(" -- Connected to chatroom --");
       chatbox = document.getElementById("chatbox");
       chatbox.value += (formatChatMsg(data)+"\n");
       chatbox.scrollTop = chatbox.scrollHeight;
@@ -340,7 +404,7 @@ function randomString(len, charSet) {
 
 function formatChatMsg(data){
   var msg = JSON.parse(data);
-  return "["+msg.time + "] Streamer: "+msg.text;
+	return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
 }
 // Helper to format times
 function getDateString(jsonDate) {
@@ -355,6 +419,8 @@ function getDateString(jsonDate) {
 	return dateString;
 }
 // Sends chat message
+
+
 function sendData() {
 	var messageText = document.getElementById("msg_box").value;
 	if(messageText === "") {
@@ -368,12 +434,8 @@ function sendData() {
  		text: messageText,
     time: getDateString(false)
 	};
-	// Note: messages are always acknowledged by default. This means that you'll
-	// always receive a confirmation back that the message has been received by the
-	// server and forwarded to the recipients. If you do not want this to happen,
-	// just add an ack:false property to the message above, and server won't send
-	// you a response (meaning you just have to hope it succeeded).
-	screentest.data({
+
+	textroom.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
 		success: function(message) {}

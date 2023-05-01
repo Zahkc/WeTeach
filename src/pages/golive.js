@@ -19,7 +19,7 @@ import screenshareOffSwap from './assets/Screenshare-Swap.png';
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var capture, screentest, room, role, myid, source, spinner, roomid;
+var capture, livestream, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 let vidStream = null;
@@ -40,19 +40,15 @@ const chatStyle = {
 
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
-  
-  // // Set mutemic button
-  // var micMuteButton = document.getElementById("mic-mute-button");
-  window.onload = function() {
-    document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
-    document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
-    document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
-    document.getElementById("swapButton").style.backgroundImage = `url(${screenshareOffSwap})`;
-  }
-  
+
+
   useEffect(() => {
     getMedia();
     initJanus();
+		document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
+		document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
+		document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
+		document.getElementById("swapButton").style.backgroundImage = `url(${screenshareOffSwap})`;
 		document.getElementById("swapButton").disabled = true;
 		document.getElementById("stopButton").disabled = true;
   });
@@ -104,22 +100,22 @@ function GoLive() {
                             </td>
                           </tr>
                         </table>
-  
+
                         <table className="button-table">
                         <tr>
 
                           <td>
                           <button id="mic-mute-button" onClick={muteMic} className="mic-mute-button"></button>
                           </td>
-                                                              
+
                           <td>
                             <button id="cam-mute-button" onClick={muteCam} className="mic-mute-button"></button>
                           </td>
-                          
+
                           <td>
                             <button id="screen-mute-button" onClick={toggleScreenShare} className="mic-mute-button"></button>
                           </td>
-                                
+
                           <td>
                             <button id="swapButton" onClick={swapScreen} className="mic-mute-button"></button>
                           </td>
@@ -133,12 +129,12 @@ function GoLive() {
                           </td>
 
                           <td className="buffer">
-                             
+
                           </td>
 
                         </tr>
                         </table>
-    
+
                         </header>
                       </div>
                       </div>
@@ -149,10 +145,6 @@ function GoLive() {
           </div>
     </Fragment>
   );
-}
-
-function getInfo(){
-  console.log();
 }
 
 async function getMedia(){
@@ -177,8 +169,8 @@ async function startStream(){
 
 async function stopStream(){
 	sendData("Stream has concluded, thank you for attending!");
-	screentest.send({ message: { request: "stop" } });
-	screentest.hangup();
+	livestream.send({ message: { request: "stop" } });
+	livestream.hangup();
 	janus.destroy();
 	document.getElementById("startButton").disabled = false;
 	document.getElementById("stopButton").disabled = true;
@@ -205,7 +197,7 @@ async function swapScreen(){
 				capture: screenStream.getVideoTracks()[0]
 			});
 
-			screentest.replaceTracks({tracks: tracks});
+			livestream.replaceTracks({tracks: tracks});
 
 		}
 	} catch (e) {
@@ -250,14 +242,14 @@ async function toggleScreenShare(){
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
     screenStream.getVideoTracks()[0].enabled = false;
 		startStream();
-		screentest.send({ message: { stage : stage } });
+		livestream.send({ message: { stage : stage } });
   }
   else{
     stage = 1;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
     screenStream.getVideoTracks()[0].enabled = true;
 		startStream();
-		screentest.send({ message: { stage : stage } });
+		livestream.send({ message: { stage : stage } });
   }
 }
 
@@ -276,31 +268,13 @@ function initJanus(){
           plugin: "janus.plugin.videoroom",
           opaqueId: opaqueId,
           success: function(pluginHandle) {
-              screentest = pluginHandle;
-							textroom = pluginHandle;
-							Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
+              livestream = pluginHandle;
+							Janus.log("Plugin attached! (" + livestream.getPlugin() + ", id=" + livestream.getId() + ")");
 							var body = { request: "setup" };
 							Janus.debug("Sending message:", body);
-							screentest.send({ message: body });
+							livestream.send({ message: body });
           },
-          error: function(error) {},
-					iceState: function(state) {
-						Janus.log("ICE state changed to " + state);
-					},
-					mediaState: function(medium, on, mid) {
-						Janus.log("Janus " + (on ? "started" : "stopped") + " receiving our " + medium + " (mid=" + mid + ")");
-					},
-					webrtcState: function(on) {
-						Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
-						if(on) {
-							console.log("Your screen sharing session just started: pass the <b>" + room + "</b> session identifier to those who want to attend.");
-						} else {
-							console.log("Your screen sharing session just stopped.", function() {
-								janus.destroy();
-								window.location.reload();
-							});
-						}
-					},
+          error: function(error) {console.error(error)},
           onmessage: function(msg, jsep) {
             Janus.debug(" ::: Got a message (publisher) :::", msg);
             var event = msg["videoroom"];
@@ -317,18 +291,17 @@ function initJanus(){
                   console.log("Rip Apple users");
                 } else {
 									if (camStream.getVideoTracks().length == 1) {
-										screentest.createOffer({
+										livestream.createOffer({
 											tracks: [
 												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
 												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-												{ type: 'screen',  mid:'2', capture: null, recv: false },
-												{ type: 'data'}
+												{ type: 'screen',  mid:'2', capture: null, recv: false }
 											],
 											success: function(jsep) {
 												Janus.debug("Got publisher SDP!", jsep);
 												Janus.log("Got publisher SDP!", jsep);
 												var publish = { request: "configure", audio: true, video: true, data: true };
-												screentest.send({ message: publish, jsep: jsep });
+												livestream.send({ message: publish, jsep: jsep });
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
@@ -336,18 +309,17 @@ function initJanus(){
 											}
 										});
 									} else {
-										screentest.createOffer({
+										livestream.createOffer({
 											tracks: [
 												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
 												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-												{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false },
-												{ type: 'data'}
+												{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false }
 											],
 											success: function(jsep) {
 												Janus.debug("Got publisher SDP!", jsep);
 												Janus.log("Got publisher SDP!", jsep);
 												var publish = { request: "configure", audio: true, video: true, data: true };
-												screentest.send({ message: publish, jsep: jsep });
+												livestream.send({ message: publish, jsep: jsep });
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
@@ -355,7 +327,6 @@ function initJanus(){
 											}
 										});
 									}
-
 
                 }
 
@@ -366,18 +337,62 @@ function initJanus(){
 
 						if(jsep) {
 							Janus.debug("Handling SDP as well...", jsep);
-							screentest.handleRemoteJsep({ jsep: jsep });
+							livestream.handleRemoteJsep({ jsep: jsep });
 						}
           },
           ondataopen: function(data) {
             Janus.log("The DataChannel is available!");
-						con2Chat();
           },
           oncleanup: function() {
             Janus.log(" ::: Got a cleanup notification :::");
             //$('#datasend').attr('disabled', true);
           }
         });
+
+				janus.attach({
+					plugin: "janus.plugin.textroom",
+          opaqueId: opaqueId,
+					success: function(chatHandle) {
+						textroom = chatHandle;
+						console.log("-- Chatroom Plugin Loaded --");
+						let body = { request: "setup" };
+						Janus.debug("Sending message:", body);
+						textroom.send({ message: body });
+					},
+					error: function(error){console.error(error)},
+					onmessage: function(msg, jsep) {
+						if(jsep) {
+							// Answer
+							textroom.createAnswer(
+								{
+									jsep: jsep,
+									// We only use datachannels
+									tracks: [
+										{ type: 'data' }
+									],
+									success: function(jsep) {
+										Janus.debug("Got SDP!", jsep);
+										let body = { request: "ack" };
+										textroom.send({ message: body, jsep: jsep });
+									},
+									error: function(error) {
+										Janus.error("WebRTC error:", error);
+									}
+								});
+						}
+					},
+					ondataopen: function(label, protocol){
+						console.log("Datachannel Open");
+					},
+					ondata: function(data) {
+						console.log("Data Recived: " + data);
+						if(JSON.parse(data)["textroom"] == "message"){
+							chatbox = document.getElementById("chatbox");
+							chatbox.value += (formatChatMsg(data)+"\n");
+							chatbox.scrollTop = chatbox.scrollHeight;
+						}
+					}
+				});
 
       },
       error: function(error) {
@@ -392,79 +407,6 @@ function initJanus(){
     }});
 }
 
-function con2Chat(){
-	source = screentest.getId();
-	janus.attach({
-		plugin: "janus.plugin.videoroom",
-		opaqueId: opaqueId,
-		success: function(pluginHandle) {
-			textroom = pluginHandle;
-			Janus.log("Plugin attached! (" + textroom.getPlugin() + ", id=" + textroom.getId() + ")");
-			Janus.log("  -- This is a subscriber");
-			var listen = {
-				request: "join",
-				room: room,
-				ptype: "subscriber",
-				feed: myid
-			};
-			textroom.send({ message: listen });
-		},
-		error: function(error) {
-			Janus.error("  -- Error attaching plugin...", error);
-			console.log("Error attaching plugin... " + error);
-		},
-		onmessage: function(msg, jsep) {
-
-			Janus.debug(" ::: Got a message (listener) :::", msg);
-			var event = msg["videoroom"];
-			Janus.debug("Event: " + event);
-
-			if(event){
-        if(event === "attached"){
-          Janus.log("Successfully attached to feed " + myid + " in room " + msg["room"]);
-        }
-      }
-      if(jsep){
-        Janus.debug("Handling SDP as well...", jsep);
-
-        textroom.createAnswer(
-          {
-            jsep: jsep,
-
-            tracks: [
-              { type: 'data' }
-            ],
-            success: function(jsep) {
-              Janus.debug("Got SDP!", jsep);
-              var body = { request: "start", room: room };
-              textroom.send({ message: body, jsep: jsep });
-            },
-            error: function(error) {
-              Janus.error("WebRTC error:", error);
-              console.error("WebRTC error... " + error.message);
-            }
-          });
-
-      }
-
-		},
-		ondataopen: function(data) {
-			console.log("SUB CONNECTED TO CHAT");
-		},
-		ondata: function(data) {
-      // Chat message recieved
-      chatbox = document.getElementById("chatbox");
-      chatbox.value += (formatChatMsg(data)+"\n");
-      chatbox.scrollTop = chatbox.scrollHeight;
-		}
-	});
-}
-
-function formatChatMsg(data){
-  var msg = JSON.parse(data);
-  return "["+msg.time + "] Streamer: "+msg.text;
-}
-
 function startLiveStream() {
 	// Create a new room
   capture = "screen";
@@ -476,9 +418,9 @@ function startLiveStream() {
 		bitrate: 500000,
 		publishers: 1
 	};
-	screentest.send({ message: create, success: function(result) {
+	livestream.send({ message: create, success: function(result) {
 		var event = result["videoroom"];
-		Janus.debug("Event: " + event);
+		Janus.debug("VR Event: " + event);
 		if(event) {
 			// Our own screen sharing session has been created, join it
 			room = result["room"];
@@ -491,11 +433,42 @@ function startLiveStream() {
 				ptype: "publisher",
 				display: myusername
 			};
-			screentest.send({ message: register });
+			livestream.send({ message: register, success: function(){
+
+				console.log("Creating textroom with room id: " + room);
+				var create = {
+					request: "create",
+					textroom: "create",
+					room: room,
+					description: desc,
+					transaction: randomString(12)
+				}
+				textroom.send({message: create, success: function(result) {
+					var event = result["textroom"];
+					Janus.debug("TR Event: " + event);
+					var register = {
+						textroom: "join",
+						room: room,
+						username: myusername,
+						display: myusername,
+						transaction: randomString(12),
+					};
+					textroom.data({text: JSON.stringify(register)});
+				}});
+
+			}});
 		}
 	}});
+
+
+
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("stopButton").disabled = false;
+}
+
+function formatChatMsg(data){
+	var msg = JSON.parse(data);
+	return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
 }
 
 function escapeXmlTags(value) {
@@ -549,7 +522,7 @@ function sendData(override) {
  		text: messageText,
     time: getDateString(false)
 	};
-	screentest.data({
+	textroom.data({
 		text: JSON.stringify(message),
 		error: function(reason) { Janus.log(reason); },
 		success: function(message) {}

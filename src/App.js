@@ -8,6 +8,7 @@ import WatchStream from './pages/watchStream';
 import WatchLive from './pages/watchlive';
 import GoLive from './pages/golive';
 import PreLive from './pages/prelive';
+import Temp from './temp'
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -29,6 +30,7 @@ function UI() {
           <Route path='/GoLive' element={<GoLive/>}/>
           <Route path='/WatchLive' element={<WatchLive/>}/>
           <Route path='/PreLive' element={<PreLive/>}/>
+          <Route path='/temp' element={<Temp/>}/>
         </Routes>
       </Router>
     </div>
