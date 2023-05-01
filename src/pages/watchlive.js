@@ -10,7 +10,7 @@ import SideBar from './sidebar(Teacher)'
 
 
 let stream = new MediaStream([])
-let screenStream = new MediaStream([])
+let camStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
 var remoteFeed, screentest, room, role, myid, source, spinner, roomid;
@@ -18,6 +18,9 @@ var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
 let textroom;
+let stage = 0;
+let localVid;
+let localCam;
 let chatbox = document.getElementById("chatbox");
 
 const chatStyle = {
@@ -36,6 +39,8 @@ function WatchLive() {
 
   const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
+		localVid = document.getElementById('local_vid');
+		localCam = document.getElementById('local_cam');
     initJanus();
   });
   const handleKeyDown = (event) => {
@@ -355,39 +360,39 @@ function newRemoteFeed(id, display) {
     onremotetrack: function(track, mid, on) {
       Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
 
-      if(spinner !== undefined && spinner !== null) {
-        spinner.stop();
-        spinner = null;
-      }
-
       if(track.kind === "audio") {
         // New audio track: create a stream out of it, and use a hidden <audio> element
-        stream.addTrack(track);
+        camStream.addTrack(track);
         remoteTracks[mid] = stream;
         Janus.log("Created remote audio stream:", stream);
-
       } else {
         // New video track: create a stream out of it
-        remoteVideos++;
-				if (remoteVideos > 1) {
-					stream.addTrack(track);
-					remoteFeed.remoteTracks[mid] = stream;
+
+				if (mid == 1 && stage == 0) {
+					camStream.addTrack(track);
+					Janus.log("Created remote video stream:", camStream);
 					Janus.log("Created remote video stream:", stream);
-					let localVid = document.getElementById('local_vid');
+					localVid = document.getElementById('local_vid');
+					localVid.srcObject = camStream;
+					localCam = document.getElementById('local_cam');
+					localCam.srcObject = null;
+					stage = 0;
+				}
+
+				if (mid == 2) {
+					stream.addTrack(track);
+					Janus.log("Created remote video stream:", camStream);
+					Janus.log("Created remote video stream:", stream);
+					localVid = document.getElementById('local_vid');
 					localVid.srcObject = stream;
-					let localCam = document.getElementById('local_cam');
-					localCam.srcObject = screenStream;
-				} else {
-					screenStream.addTrack(track);
-					remoteFeed.remoteTracks[mid] = screenStream;
-					Janus.log("Created remote video stream:", screenStream);
-					let localVid = document.getElementById('local_vid');
-					localVid.srcObject = screenStream;
+					localCam = document.getElementById('local_cam');
+					localCam.srcObject = camStream;
+					stage = 1;
 				}
 
       }
     }
-  })
+  });
 
 }
 
@@ -402,11 +407,6 @@ function randomString(len, charSet) {
   return randomString;
 }
 
-function formatChatMsg(data){
-  var msg = JSON.parse(data);
-	return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
-}
-// Helper to format times
 function getDateString(jsonDate) {
 	var when = new Date();
 	if(jsonDate) {
@@ -419,7 +419,42 @@ function getDateString(jsonDate) {
 	return dateString;
 }
 // Sends chat message
+function formatChatMsg(data){
+	var msg = JSON.parse(data);
 
+	if (msg.text[0] == '/' && msg["from"] == myusername) {
+		parseCommand(msg.text.substring(1,msg.text.length))
+		return "["+msg.time + "] Command: " + msg.text;
+	} else if(msg.text[0] == '/') {
+		parseCommand(msg.text.substring(1,msg.text.length))
+	} else {
+		return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
+	}
+}
+
+function parseCommand(command){
+	 //runs commands
+	 if (command == "swap") {
+		 console.log("Swapping Screens");
+		 swapScreen();
+
+	 }
+
+	 return;
+
+}
+
+function swapScreen(){
+	if (stage == 0) {
+		stage = 1;
+		localCam.srcObject = camStream;
+		localVid.srcObject = stream;
+	} else if (stage == 1) {
+		stage = 0;
+		localVid.srcObject = camStream;
+		localCam.srcObject = null;
+	}
+}
 
 function sendData() {
 	var messageText = document.getElementById("msg_box").value;

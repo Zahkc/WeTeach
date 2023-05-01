@@ -32,6 +32,7 @@ var participants = {};
 var transactions = {};
 let textroom;
 let stage = 0;
+let live = 0;
 let chatbox = document.getElementById("chatbox");
 
 const chatStyle = {
@@ -179,27 +180,36 @@ async function stopStream(){
 }
 
 async function swapScreen(){
-	screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 	stage = 1;
-
-	console.log(camStream.getVideoTracks().length);
 	try {
-		if (camStream.getVideoTracks().length == 1) {
+
+		if (screenStream == null && live == 0) {
+			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
+		} else if(screenStream == null && live == 1){
+			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 			console.log("Adding track vid 2");
-			camStream.addTrack(screenStream.getVideoTracks()[0]);
+
+			livestream.createOffer({
+				tracks:[{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false, add: true}],
+				success: function(jsep){
+					livestream.send({ message: { video: true }, jsep: jsep });
+					var publish = { request: "configure", audio: true, video: true, data: true };
+					livestream.send({ message: publish, jsep: jsep });
+					console.log("ADDED SECOND SCREEN");
+				}
+		});
 		} else {
+			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 			console.log("Replacing track vid 2");
 
-			let tracks = [];
-			tracks.push({
-				type:'screen',
-				mid: '2',
-				capture: screenStream.getVideoTracks()[0]
-			});
-
-			livestream.replaceTracks({tracks: tracks});
-
+			livestream.replaceTracks({
+				tracks:[
+					{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false, replace: true}],
+					success: function(jsep) {
+            livestream.send({ message: { video: true }, jsep: jsep });
+        }});
 		}
+
 	} catch (e) {
 		console.log(e);
 		console.log("no track, continuing");
@@ -233,23 +243,21 @@ async function muteCam(){
 }
 
 async function toggleScreenShare(){
+
   if (screenStream == null) {
     swapScreen();
 		document.getElementById("swapButton").disabled = false;
-  }
-  if(stage == 1){
+		document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
+  } else if(stage == 1){
     stage = 0;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
-    screenStream.getVideoTracks()[0].enabled = false;
 		startStream();
-		livestream.send({ message: { stage : stage } });
-  }
-  else{
+		sendData("/swap");
+  } else{
     stage = 1;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
-    screenStream.getVideoTracks()[0].enabled = true;
 		startStream();
-		livestream.send({ message: { stage : stage } });
+		sendData("/swap");
   }
 }
 
@@ -290,12 +298,11 @@ function initJanus(){
                 if(Janus.webRTCAdapter.browserDetails.browser === "safari") {
                   console.log("Rip Apple users");
                 } else {
-									if (camStream.getVideoTracks().length == 1) {
+									if (screenStream == null) {
 										livestream.createOffer({
 											tracks: [
-												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
-												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-												{ type: 'screen',  mid:'2', capture: null, recv: false }
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true }
 											],
 											success: function(jsep) {
 												Janus.debug("Got publisher SDP!", jsep);
@@ -311,9 +318,9 @@ function initJanus(){
 									} else {
 										livestream.createOffer({
 											tracks: [
-												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: false },
-												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: false },
-												{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false }
+												{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
+												{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true },
+												{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: true}
 											],
 											success: function(jsep) {
 												Janus.debug("Got publisher SDP!", jsep);
@@ -459,8 +466,7 @@ function startLiveStream() {
 			}});
 		}
 	}});
-
-
+	live = 1;
 
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("stopButton").disabled = false;
@@ -468,7 +474,25 @@ function startLiveStream() {
 
 function formatChatMsg(data){
 	var msg = JSON.parse(data);
-	return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
+
+	if (msg.text[0] == '/' && msg["from"] == myusername) {
+		parseCommand(msg.text.substring(1,msg.text.length))
+		return "["+msg.time + "] Command: " + msg.text;
+	} else if(msg.text[0] == '/') {
+		parseCommand(msg.text.substring(1,msg.text.length))
+	} else {
+		return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
+	}
+}
+
+function parseCommand(command){
+	 //runs commands
+	 if (command == "swap") {
+		 console.log("Swapping Screens");
+	 }
+
+	 return;
+
 }
 
 function escapeXmlTags(value) {
@@ -530,4 +554,5 @@ function sendData(override) {
   var msgBox = document.getElementById("msg_box");
   msgBox.value = "";
 }
+
 export default GoLive;
