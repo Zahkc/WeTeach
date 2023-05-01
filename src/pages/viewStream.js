@@ -20,6 +20,7 @@ var localTracks = {}, localVideos = 0,
 var myusername = Janus.randomString(12);
 let textroom;
 let chatbox = document.getElementById("chatbox");
+var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 
 const chatStyle = {
   fontSize: '16px',
@@ -65,13 +66,16 @@ function WatchLive() {
 						<div className="single-video" style = {{verticalAlign:"unset"}}>
                         
 						<video 
-							width="80%"
+							width="100%"
 							frameBorder="0"							
 							volume="0"
 							className="App-video"
 							id="local_vid"
 							allowFullScreen="1"														
-							autoPlay></video>
+							autoPlay 
+              controls
+              poster={thumbnail}
+              ></video>
 							<table><tbody>
                             <tr>
                               <td>

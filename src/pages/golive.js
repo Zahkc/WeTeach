@@ -38,7 +38,16 @@ let chatbox = document.getElementById("chatbox");
 const chatStyle = {
   fontSize: '16px',
 };
-
+// This is for the spinner. It needs to be in watchStream and watchVideo too. I don't know where to put it here for now
+// const video = document.getElementById('local_vid');
+// const spinnerObj = document.querySelector('.spinner');
+// video.addEventListener('loadstart', () => {
+// 	spinnerObj.style.display = 'block';
+//   });
+  
+//   video.addEventListener('canplaythrough', () => {
+// 	spinnerObj.style.display = 'none';
+//   });
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
 
@@ -47,14 +56,12 @@ function GoLive() {
     getMedia();
     initJanus();
   });
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       document.getElementById("chatSubmit").click();
     }
   };
-    document.getElementById("mic-mute-button")
-	
+
   return (
     <Fragment>    
 			<div id="content-all">		    
@@ -101,7 +108,8 @@ function GoLive() {
 							<button id="stopButton" onClick={stopStream} className='btn btn-stop' style={{display:"none"}}>Stop Stream</button>
                           </td>
 
-                        </tr></tbody>
+                        </tr>
+						</tbody>
                         </table>
 						</div>
 						
@@ -188,6 +196,7 @@ async function stopStream(){
 	document.getElementById("stopButton").style.display='none'
 	localVid.srcObject = null;
 	localCam.srcObject = null;
+	document.getElementById("local_vid").style.borderStyle = "hidden";
 }
 
 async function swapScreen(){
@@ -496,6 +505,7 @@ function startLiveStream() {
 				display: myusername
 			};
 			screentest.send({ message: register });
+			document.getElementById("local_vid").style.borderStyle = "solid";
 		}
 	}});
 	document.getElementById("startButton").disabled = true;

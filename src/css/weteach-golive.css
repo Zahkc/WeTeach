@@ -70,7 +70,10 @@
 }
 .App-video {
   max-width: 720px;
-  max-height: 480px;  
+  max-height: 480px; 
+  border-style: hidden;
+  border-color: #f44336;
+  border-radius: 5px;
 }
 
 .App-logo {
@@ -119,4 +122,23 @@ textarea {
 .new_message {
 	width:100% !important;
 	box-sizing: border-box !important;
+}
+
+spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #f44336;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
