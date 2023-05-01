@@ -62,7 +62,7 @@ function WatchLive() {
                           <table>
                             <tr>
                               <td style = {{verticalAlign:"unset"}}>
-                              <video className="App-video" id="local_vid" autoPlay></video>
+                              <video className="App-video" id="local_vid" autoPlay frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></video>
                               </td>
                               <td>
                               <table>

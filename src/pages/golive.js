@@ -82,7 +82,7 @@ function GoLive() {
                         <table>
                           <tr>
                             <td style = {{verticalAlign:"unset"}}>
-                            <video className="App-video" id="local_vid" autoPlay></video>
+                            <video className="App-video" id="local_vid" autoPlay ></video>
                             </td>
                             <td>
                             <table>
@@ -187,8 +187,6 @@ async function stopStream(){
 }
 
 async function swapScreen(){
-
-
 	screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 	stage = 1;
 
