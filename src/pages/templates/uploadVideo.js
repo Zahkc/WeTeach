@@ -22,11 +22,11 @@ class UploadVideo extends React.Component{
                             <div className="imgplace" />
                         </div>
                         <div className="col-lg-10">
-                            <div className="osahan-title">
+                            <div className="restyled-title">
                             Early Computing: Crash Course Computer Science #1
                             </div>
-                            <div className="osahan-size">102.6 MB . 2:13 MIN Remaining</div>
-                            <div className="osahan-progress">
+                            <div className="restyled-size">102.6 MB . 2:13 MIN Remaining</div>
+                            <div className="restyled-progress">
                             <div className="progress">
                                 <div
                                 className="progress-bar progress-bar-striped progress-bar-animated"
@@ -37,13 +37,13 @@ class UploadVideo extends React.Component{
                                 style={{ width: "75%" }}
                                 />
                             </div>
-                            <div className="osahan-close">
+                            <div className="restyled-close">
                                 <a href="#">
                                 <i className="fas fa-times-circle" />
                                 </a>
                             </div>
                             </div>
-                            <div className="osahan-desc">
+                            <div className="restyled-desc">
                             Your Video is still uploading, please keep this page open until it's
                             done.
                             </div>
@@ -52,7 +52,7 @@ class UploadVideo extends React.Component{
                         <hr />
                         <div className="row">
                         <div className="col-lg-12">
-                            <div className="osahan-form">
+                            <div className="restyled-form">
                             <div className="row">
                                 <div className="col-lg-12">
                                 <div className="form-group">
@@ -186,7 +186,7 @@ class UploadVideo extends React.Component{
                                 </option>
                                 <option />
                             </select>
-                            <div className="osahan-area text-center mt-3">
+                            <div className="restyled-area text-center mt-3">
                                 <button className="btn btn-outline-primary">Save Changes</button>
                             </div>
                             <hr />

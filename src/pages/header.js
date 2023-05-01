@@ -14,7 +14,7 @@ function Header() {
 				<script src={process.env.PUBLIC_URL+"/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"}></script>
 			</Helmet>
 			<div id="header-wrapper" className="fixed-top">
-			<div id="header" className="navbar navbar-expand navbar-light bg-white osahan-nav">
+			<div id="header" className="navbar navbar-expand navbar-light bg-white restyled-nav">
 			&nbsp;&nbsp;
                         <button className="smallscreen btn btn-link btn-sm text-secondary order-1 order-sm-0" id="sidebarToggle"
 						onClick = {(e) => {e.preventDefault();
@@ -25,7 +25,7 @@ function Header() {
                         </button> &nbsp;&nbsp;
 			<NavLink className="navbar-brand mr-1" to = "/"><img className="img-fluid" alt="" src={Logo} /></NavLink>
 			{/*<!-- Navbar Search -->*/}
-			<form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 osahan-navbar-search">
+			<form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 restyled-navbar-search">
                             <div className="input-group">
                             <input type="text" className="form-control" placeholder="Search for..." />
                             <div className="input-group-append">
@@ -35,8 +35,8 @@ function Header() {
                             </div>
                             </div>
                         </form>
-			<ul className="navbar-nav ml-auto ml-md-0 osahan-right-navbar">                            
-                            <li className="nav-item dropdown no-arrow osahan-right-navbar-user">
+			<ul className="navbar-nav ml-auto ml-md-0 restyled-right-navbar">                            
+                            <li className="nav-item dropdown no-arrow restyled-right-navbar-user">
                             <a className="nav-link dropdown-toggle user-dropdown-link" href="#v" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i className="fas fa-user-alt"></i>
                             </a>
@@ -48,7 +48,7 @@ function Header() {
                             </div>
                             </li>
                         </ul>				
-			</div><div id="navigation" className="navbar navbar-expand navbar-light bg-white sticky-top osahan-nav">
+			</div><div id="navigation" className="navbar navbar-expand navbar-light bg-white sticky-top restyled-nav">
 			<ul className="navbar-nav">
 			<li className="element">
 			<NavLink to = "/">

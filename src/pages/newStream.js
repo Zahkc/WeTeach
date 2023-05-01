@@ -98,7 +98,7 @@ class NewStream extends React.Component{
 						<form onSubmit={onSubmit} id="editor">
                         <div className="row">
                         <div className="col-lg-12">
-                            <div className="osahan-form">
+                            <div className="restyled-form">
                             <div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
@@ -158,7 +158,7 @@ class NewStream extends React.Component{
 								</div><div className="row" id="submit-buttons">
 								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
-								<div className="osahan-area mt-3">
+								<div className="restyled-area mt-3">
 								<button type="submit" className="btn btn-primary" formTarget="_self">Create Stream</button>&nbsp;&nbsp;													
 								<button type="reset" className="btn btn-secondary">Reset</button>													
 								</div>
