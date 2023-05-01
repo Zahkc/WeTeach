@@ -34,6 +34,7 @@ var transactions = {};
 let textroom;
 let stage = 0;
 let chatbox = document.getElementById("chatbox");
+var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 
 const chatStyle = {
   fontSize: '16px',
@@ -121,7 +122,7 @@ function GoLive() {
                             <video className="App-camera" id="local_cam" width="80%" autoPlay></video>
 							</div>
                             <div className = "containerChat"><div>
-							<textarea disabled className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
+							<textarea disabled poster={thumbnail} className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
 						
                             <input
 							placeholder="Enter chat message here"

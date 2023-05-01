@@ -27,6 +27,7 @@ const chatStyle = {
   resize: "none",
   overflowY: 'scroll'
 };
+const localCam = document.getElementById("local_cam");
 
 function WatchLive() {
   const inputRef = useRef(null);
@@ -46,6 +47,7 @@ function WatchLive() {
     }
   };
 	document.title = "WeTeach - View Stream";
+  
   return (
  
     <Fragment>
@@ -75,6 +77,8 @@ function WatchLive() {
 							autoPlay 
               controls
               poster={thumbnail}
+              onPause={handlePause}
+              onPlay={handlePlay}
               ></video>
 							<table><tbody>
                             <tr>
@@ -361,6 +365,12 @@ function randomString(len, charSet) {
   }
   return randomString;
 }
+function handlePause(){
+    localCam.pause();
+}
+function handlePlay(){
+  localCam.play();
+}
 function formatChatMsg(data){
   var msg = JSON.parse(data);
   return "["+msg.time + "] Streamer: "+msg.text;
@@ -404,5 +414,6 @@ function sendData() {
   var msgBox = document.getElementById("msg_box");
   msgBox.value = "";
 }
+
 
 export default WatchLive;
