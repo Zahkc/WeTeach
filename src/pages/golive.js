@@ -253,14 +253,7 @@ async function swapScreen(){
 		console.log(e);
 		console.log("no track, continuing");
 	}
-<<<<<<< HEAD
-
-=======
-
-
-
 	startStream();
->>>>>>> Back
 }
 
 async function muteMic(){
@@ -514,6 +507,8 @@ function startLiveStream() {
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("stopButton").disabled = false;
 }
+
+function startRecording(){}
 
 function formatChatMsg(data){
 	var msg = JSON.parse(data);
