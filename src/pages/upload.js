@@ -5,8 +5,8 @@ import CreatableSelect from 'react-select/creatable';
 import moment from 'moment-timezone';
 import '../css/weteach-main.css';
 
-import {dbdaemon} from '../components/janus/settings'
-import {uploaddaemon} from '../components/janus/settings'
+import {dbdaemon} from '../components/janus/settings';
+import {uploaddaemon} from '../components/janus/settings';
 
 class VideoUpload extends React.Component{
 

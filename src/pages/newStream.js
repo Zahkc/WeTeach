@@ -5,7 +5,7 @@ import CreatableSelect from 'react-select/creatable';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment-timezone';
 import '../css/weteach-main.css';
-import {dbdaemon} from '../components/janus/settings'
+import {dbdaemon} from '../components/janus/settings';
 
 class NewStream extends React.Component{
 

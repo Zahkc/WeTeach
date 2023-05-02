@@ -6,7 +6,8 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment-timezone';
 import '../css/weteach-main.css';
 import { useParams } from "react-router-dom";
-import {dbdaemon} from '../components/janus/settings'
+import {dbdaemon} from '../components/janus/settings';
+
 class EditStream extends React.Component{
 
 	state = {
