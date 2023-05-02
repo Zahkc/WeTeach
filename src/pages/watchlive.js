@@ -1,13 +1,22 @@
 import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
-import Janus from './janus'
-import './golive.css';
+
+import '../css/weteach-main.css';
+import '../css/weteach-golive.css';
+
+import axios from 'axios';
+
+import Janus from '../components/janus/janus'
 import {Spinner} from 'spin.js';
+<<<<<<<< HEAD:src/pages/viewStream.js
+import {server, iceServers} from '../components/janus/settings'
+========
 import {server, iceServers} from '../settings'
 
 import NavBar from './navBar'
 import SideBar from './sidebar(Teacher)'
 
+>>>>>>>> Back:src/pages/watchlive.js
 
 let stream = new MediaStream([])
 let camStream = new MediaStream([])
@@ -22,12 +31,14 @@ let stage = 0;
 let localVid;
 let localCam;
 let chatbox = document.getElementById("chatbox");
+var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 
 const chatStyle = {
   fontSize: '16px',
   resize: "none",
   overflowY: 'scroll'
 };
+const localCam = document.getElementById("local_cam");
 
 function WatchLive() {
   const inputRef = useRef(null);
@@ -48,9 +59,43 @@ function WatchLive() {
       document.getElementById("chatSubmit").click();
     }
   };
-
+	document.title = "WeTeach - View Stream";
+  
   return (
+ 
     <Fragment>
+<<<<<<<< HEAD:src/pages/viewStream.js
+      <div id="content-all">		    
+			<div className="col-md-3">
+									<div className="main-title">
+									<h3><span className="title">View Stream</span></h3>
+									</div>
+									
+			</div><br />
+			
+           <div id="content-wrapper">
+              <div className="container-fluid pb-0">
+                <div className="video-block section-padding">
+                  <div className="row">
+                      <div className="col-md-5">
+						<div className="single-video-left">
+						<div className="single-video" style = {{verticalAlign:"unset"}}>
+                        
+						<video 
+							width="100%"
+							frameBorder="0"							
+							volume="0"
+							className="App-video"
+							id="local_vid"
+							allowFullScreen="1"														
+							autoPlay 
+              controls
+              poster={thumbnail}
+              onPause={handlePause}
+              onPlay={handlePlay}
+              ></video>
+							<table><tbody>
+========
       <div>
           <NavBar/>
           <div id = "wrapper">
@@ -88,23 +133,60 @@ function WatchLive() {
                               </table>
                               </td>
                             </tr>
+>>>>>>>> Back:src/pages/watchlive.js
                             <tr>
                               <td>
-                              <p>Enter Session ID</p>
                               <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-                              <button onClick={handleClick} id="connect">connect</button>
-                              <button onClick={leaveStream} id="disconnect">disconnect</button>
+                              <button className="btn btn-primary" onClick={handleClick} id="connect">connect</button>
+                              <button className="btn btn-primary" onClick={leaveStream} id="disconnect">disconnect</button>
                               </td>
-                            </tr>
+                            </tr></tbody>
                           </table>
-                        </header>
+						</div>
+						
+						
+						</div></div>
+						<div className="col-md-5 reducible">
+						<div className="single-video-right">
+                            <div className="single-video2">
+                            <video className="App-camera" id="local_cam" width="80%" autoPlay></video>
+							</div>
+                            <div className = "containerChat"><div>
+							<textarea disabled className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
+						
+                            <input
+							placeholder="Enter chat message here"
+							className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
+                           
+                            <button onClick={sendData} className="btn btn-primary" id = "chatSubmit">Send</button>                           
+							</div>
+  
+						 </div></div>
+                                       
+						 
+						 <div className="single-video-info-content box mb-3">					
+                                          <p>{/*Stream Date & Time*/}</p>  						
+                                          <h6>About:</h6>
+                                          <p>Test your input devices before streaming 
+                                          </p>
+                                          <h6>Disciplines:</h6>
+                                          <p className="tags mb-0">
+                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;                                             
+                                             <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
+                                          </p><br />
+						 </div>
+                      
                       </div>
                     </div>
                   </div>
                 </div>
+<<<<<<<< HEAD:src/pages/viewStream.js
+              </div>          
+========
               </div>
           </div>
       </div>
+>>>>>>>> Back:src/pages/watchlive.js
     </Fragment>
   );
 }
@@ -406,7 +488,21 @@ function randomString(len, charSet) {
   }
   return randomString;
 }
+<<<<<<<< HEAD:src/pages/viewStream.js
+function handlePause(){
+    localCam.pause();
+}
+function handlePlay(){
+  localCam.play();
+}
+function formatChatMsg(data){
+  var msg = JSON.parse(data);
+  return "["+msg.time + "] Streamer: "+msg.text;
+}
+// Helper to format times
+========
 
+>>>>>>>> Back:src/pages/watchlive.js
 function getDateString(jsonDate) {
 	var when = new Date();
 	if(jsonDate) {
@@ -478,5 +574,6 @@ function sendData() {
   var msgBox = document.getElementById("msg_box");
   msgBox.value = "";
 }
+
 
 export default WatchLive;

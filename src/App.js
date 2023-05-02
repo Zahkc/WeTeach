@@ -1,39 +1,40 @@
-import Home from './pages/home(Teacher)';
-import Search from './pages/search';
-import VideoPage from './pages/videoPage(Teacher)';
-import Upload from './pages/upload';
-import UploadVideo from './pages/uploadVideo';
-import StartStream from './pages/startStream';
-import WatchStream from './pages/watchStream';
-import WatchLive from './pages/watchlive';
-import GoLive from './pages/golive';
-import PreLive from './pages/prelive';
-import Temp from './temp'
+/* Pages */
+import Home from './pages/home';
+import NewStream from './pages/newStream';
+import EditStream from './pages/editStream';
 
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
+import GoLive from './pages/golive';
+import WatchStream from './pages/viewStream';
+import Upload from './pages/upload';
+import NotFound from './404';
+import { Route, Routes} from 'react-router-dom';
+
 import './components/vendor/bootstrap/css/bootstrap.min.css';
+
+/* Custom fonts for this template*/
 import './components/vendor/fontawesome-free/css/all.min.css';
+
+/* Custom styles for this template */
+import './css/weteach-main.css';
+
+import Header from './pages/header'
 
 function UI() {
   return (
-    <div>
-      <Router>
+	<div id="page-wrapper">
+		<Header/>
         <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/search' element={<Search/>}/>
-          <Route path='/videoPage' element={<VideoPage/>}/>
-          <Route path='/upload' element={<Upload/>}/>
-          <Route path='/uploadVideo' element={<UploadVideo/>}/>
-          <Route path='/startStream' element={<StartStream/>}/>
-          <Route path='/watchStream' element={<WatchStream/>}/>
-          <Route path='/GoLive' element={<GoLive/>}/>
-          <Route path='/WatchLive' element={<WatchLive/>}/>
-          <Route path='/PreLive' element={<PreLive/>}/>
-          <Route path='/temp' element={<Temp/>}/>
+          <Route exact path='/' element={<Home/>}/>
+		  <Route exact path='/media/new' element={<NewStream/>}/>
+		  <Route exact path='/media/:id/present' element={<GoLive/>}/>
+		  <Route exact path='/media/:id/' element={<WatchStream/>}/>
+
+		  <Route exact path='/media/:id/edit' element={<EditStream/>}/>
+		  <Route exact path='/upload' element={<Upload/>}/>
+
+		  <Route path="*" element ={<NotFound />}/>
         </Routes>
-      </Router>
-    </div>
+      </div>
   );
 }
 
