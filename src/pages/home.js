@@ -3,6 +3,7 @@ import React, { Fragment } from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import moment from 'moment-timezone';
+import {db_api_ip} from '../components/janus/settings'
 
 export default class Home extends React.Component {
 	state = {
@@ -10,18 +11,18 @@ export default class Home extends React.Component {
 	}
 	componentDidMount() {
 		document.title = "WeTeach - All Streams"
-		axios.get(`http://localhost:5000/api/v1/media`).then(res => {
+		axios.get(db_api_ip+`/api/v1/media`).then(res => {
 		const media = res.data;
 		this.setState({media: media});
 		});
 	}
-	
+
 	render()
 	{
-		
+
 		return(
-			<Fragment>	
-			<div id="content-all">		
+			<Fragment>
+			<div id="content-all">
 			<div className="col-md-12">
 									<div className="main-title">
 									<h3><span className="title">All Streams</span></h3>
@@ -30,7 +31,7 @@ export default class Home extends React.Component {
 			<div id="web-list">
 			<div className="video-block section-padding">
 							<div className="row">
-							{							
+							{
 								this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3" key={k}>
 											<div className="video-card">
 											<div className="video-card-image">
@@ -48,14 +49,14 @@ export default class Home extends React.Component {
 												</div>
 											</div>
 											</div>
-										</div> 
+										</div>
 								)
 							}
-							
-							
+
+
 							</div>
 						</div>
-			</div></div>		
+			</div></div>
 			</Fragment>
 	);
 
