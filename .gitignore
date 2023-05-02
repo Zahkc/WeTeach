@@ -12,6 +12,7 @@
 
 # misc
 .bak
+.pem
 .DS_Store
 .env.local
 .env.development.local
