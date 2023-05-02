@@ -447,29 +447,29 @@ function initJanus(){
 					}
 				});
 
-				janus.attach({
-					plugin:"janus.plugin.recordplay",
-					opaqueId: opaqueId,
-					success: function(pluginHandle) {
-						recstream = pluginHandle;
-						console.log("Connected to Record Daemon");
-					},
-					error: function(error){
-						console.log("failed to connect to Record Daemon");
-						console.error(error);
-					},
-					onmessage: function(msg, jsep) {
-						Janus.debug(" ::: Got a message :::", msg);
-						let result = msg["result"];
-						if (result){
-							if(result["status"] === 'recording'){
-								if (jsep){
-									recstream.handleRemoteJsep({ jsep: jsep});
-								}
-							}
-						}
-					}
-				});
+				// janus.attach({
+				// 	plugin:"janus.plugin.recordplay",
+				// 	opaqueId: opaqueId,
+				// 	success: function(pluginHandle) {
+				// 		recstream = pluginHandle;
+				// 		console.log("Connected to Record Daemon");
+				// 	},
+				// 	error: function(error){
+				// 		console.log("failed to connect to Record Daemon");
+				// 		console.error(error);
+				// 	},
+				// 	onmessage: function(msg, jsep) {
+				// 		Janus.debug(" ::: Got a message :::", msg);
+				// 		let result = msg["result"];
+				// 		if (result){
+				// 			if(result["status"] === 'recording'){
+				// 				if (jsep){
+				// 					recstream.handleRemoteJsep({ jsep: jsep});
+				// 				}
+				// 			}
+				// 		}
+				// 	}
+				// });
 
       },
       error: function(error) {
@@ -493,7 +493,8 @@ function startLiveStream() {
 		request: "create",
 		description: desc,
 		bitrate: 500000,
-		publishers: 1
+		publishers: 1,
+		rec_dir: "/weteach/data/"
 	};
 	livestream.send({ message: create, success: function(result) {
 		var event = result["videoroom"];
@@ -548,70 +549,38 @@ function startLiveStream() {
 function startRecording(){
 
 	if (recording == 1) {
-		recstream.createOffer({message: {request: "stop"}});
-		console.log("Stopping Recording");
-		recording = 0;
-	} else if (recording == 0) {
-		recstream.send({
+		livestream.send({
 			message: {
-				request: 'configure',
-				'video-bitrate-max': 500000,		// a quarter megabit
-				'video-keyframe-interval': 15000	// 15 seconds
+				request : "configure",
+				room: room,
+				record: false,
+				filename: room.toString(),
+				display: myusername
+
+			},
+			success: function(){
+				console.log("Sent end record publish request")
+				recording = 0;
+			}
+		});
+	} else {
+		livestream.send({
+			message: {
+				request : "configure",
+				room: room,
+				record: true,
+				filename: room.toString(),
+				display: myusername
+
+			},
+			success: function(){
+				console.log("Sent record publish request")
+				recording = 1;
 			}
 		});
 
-		if (screenStream == null) {
-
-			recstream.createOffer({
-				tracks: [
-					{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
-					{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true }
-				],
-				success: function(jsep){
-					Janus.debug("Got SDP!", jsep);
-					console.log("Starting Recording");
-					recstream.send({
-						message: {
-							request: "record",
-							id: room,
-							name: (myusername + room),
-
-						},
-						jsep: jsep
-					});
-					recording = 1;
-				},
-				error: function(error){
-					console.error(error);
-				}
-			});
-		} else {
-			recstream.createOffer({
-				tracks: [
-					{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
-					{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true },
-					{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: true}
-				],
-				success: function(jsep){
-					console.log("Multi screen Recording");
-					Janus.debug("Got SDP!", jsep);
-					console.log("Starting Recording");
-					recstream.send({
-						message: {
-							request: "record",
-							id: room,
-							name: (myusername + room),
-						},
-						jsep: jsep
-					});
-					recording = 1;
-				},
-				error: function(error){
-					console.error(error);
-				}
-			});
-		}
 	}
+
 }
 
 function formatChatMsg(data){

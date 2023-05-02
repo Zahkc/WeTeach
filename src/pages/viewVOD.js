@@ -15,11 +15,11 @@ let stream = new MediaStream([])
 let camStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var remoteFeed, screentest, room, role, myid, source, spinner, roomid;
+var remoteFeed, screentest, room, role, myid, source, spinner, roomid, vids;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
-let playback;
+let pb1, pb2;
 let stage = 0;
 let localVid;
 let localCam;
@@ -145,7 +145,7 @@ function initJanus(){
 						plugin:"janus.plugin.recordplay",
 						opaqueId: opaqueId,
 						success: function(pluginHandle){
-							playback = pluginHandle;
+							pb1 = pluginHandle;
 							console.log("Connected to Record Daemon");
 						},
 						error: function(error) {console.error(error)},
@@ -156,7 +156,7 @@ function initJanus(){
 								if (result["status"]) {
 									if (result["status"] === 'preparing' || result["status"] === 'refreshing') {
 										Janus.log("Preparing the recording playout");
-										playback.createAnswer(
+										pb1.createAnswer(
 											{
 												jsep: jsep,
 												tracks: [
@@ -165,7 +165,8 @@ function initJanus(){
 												success: function(jsep) {
 													Janus.debug("Got SDP!", jsep);
 													let body = { request: "start" };
-													playback.send({ message: body, jsep: jsep });
+													pb1.send({ message: body, jsep: jsep });
+
 												},
 												error: function(error) {
 													Janus.error("WebRTC error:", error);
@@ -179,54 +180,122 @@ function initJanus(){
 				      Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
 
 				      if(track.kind === "audio") {
+								vids = 0;
 				        // New audio track: create a stream out of it, and use a hidden <audio> element
 				        camStream.addTrack(track);
 				        Janus.log("Created remote audio stream:", camStream);
 				      } else {
-				        // New video track: create a stream out of it
+								camStream.addTrack(track);
+								Janus.log("Created remote video stream:", camStream);
+								localVid = document.getElementById('local_vid');
+								localVid.srcObject = camStream;
+								stage = 0;
+				      }
+				    }
+					});
 
-								if (mid == 1 && stage == 0) {
-									camStream.addTrack(track);
-									Janus.log("Created remote video stream:", camStream);
-									Janus.log("Created remote video stream:", stream);
-									localVid = document.getElementById('local_vid');
-									localVid.srcObject = camStream;
-									localCam = document.getElementById('local_cam');
-									localCam.srcObject = null;
-									stage = 0;
+					janus.attach({
+						plugin:"janus.plugin.recordplay",
+						opaqueId: opaqueId,
+						success: function(pluginHandle){
+							pb2 = pluginHandle;
+							console.log("Connected to Record Daemon");
+						},
+						error: function(error) {console.error(error)},
+						onmessage: function(msg, jsep){
+							Janus.debug(" ::: Got a message :::", msg);
+							let result = msg["result"];
+							if(result) {
+								if (result["status"]) {
+									if (result["status"] === 'preparing' || result["status"] === 'refreshing') {
+										Janus.log("Preparing the recording playout");
+										pb2.createAnswer(
+											{
+												jsep: jsep,
+												tracks: [
+													{ type: 'data' }
+												],
+												success: function(jsep) {
+													Janus.debug("Got SDP!", jsep);
+													let body = { request: "start" };
+													pb2.send({ message: body, jsep: jsep });
+
+												},
+												error: function(error) {
+													Janus.error("WebRTC error:", error);
+												}
+											});
+									}
 								}
+							}
+						},
+						onremotetrack: function(track, mid, on) {
+				      Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
 
-								if (mid == 2) {
 									stream.addTrack(track);
-									Janus.log("Created remote video stream:", camStream);
-									Janus.log("Created remote video stream:", stream);
+									Janus.log("Created remote Camera stream:", stream);
 									localVid = document.getElementById('local_vid');
 									localVid.srcObject = stream;
 									localCam = document.getElementById('local_cam');
 									localCam.srcObject = camStream;
 									stage = 1;
-								}
-
-				      }
 				    }
 					});
+
 				}
 			}
 		)
+
 
 	}});
 
 }
 
 function startVOD(){
-	playback.send({
+	updateVODS();
+	console.log("Starting vod: " + room);
+	pb1.send({
 		message: {
 			request: "play",
 			id: room
 		}
 	});
+	pb2.send({
+		message: {
+			request: "play",
+			id: room+1
+		}
+	});
 }
 
+function updateVODS(){
+	pb1.send({
+		message: {
+			request: "update"
+		}
+	});
+	pb2.send({
+		message: {
+			request: "update"
+		}
+	});
+}
+
+function listVOD(){
+	updateVODS();
+	pb1.send({
+		message: {
+			request: "list"
+		},
+		success: function(result){
+			console.log("LIST:");
+			let list = result["list"];
+			for(let mp in list) {
+				Janus.debug(list[mp]);
+			}
+		}
+	});
+}
 
 function leaveStream(){
 	janus.destroy();
@@ -246,11 +315,13 @@ function randomString(len, charSet) {
 
 function handlePause(){
     localCam.pause();
-		playback.send({message: {request: 'pause'}});
+		pb1.send({message: {request: 'pause'}});
+		pb2.send({message: {request: 'pause'}});
 }
 function handlePlay(){
   localCam.play();
-	playback.send({message: {request: 'resume'}});
+	pb1.send({message: {request: 'resume'}});
+	pb2.send({message: {request: 'resume'}});
 }
 
 function getDateString(jsonDate) {
