@@ -46,7 +46,7 @@ export default class Home extends React.Component {
 												<div className="video-description">{media.description}</div>
 												<div className="video-view">
 													<i className="fas fa-calendar-alt"></i>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}<br />
-												<Link to={`/media/${media._id}`} className="btn btn-primary">Edit Stream</a> 
+												<Link to={`/media/${media._id}`} className="btn btn-primary">Edit Stream</Link>
 												</div>
 											</div>
 											</div>
