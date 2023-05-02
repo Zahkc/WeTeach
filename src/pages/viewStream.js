@@ -8,15 +8,8 @@ import axios from 'axios';
 
 import Janus from '../components/janus/janus'
 import {Spinner} from 'spin.js';
-<<<<<<<< HEAD:src/pages/viewStream.js
 import {server, iceServers} from '../components/janus/settings'
-========
-import {server, iceServers} from '../settings'
 
-import NavBar from './navBar'
-import SideBar from './sidebar(Teacher)'
-
->>>>>>>> Back:src/pages/watchlive.js
 
 let stream = new MediaStream([])
 let camStream = new MediaStream([])
@@ -38,7 +31,7 @@ const chatStyle = {
   resize: "none",
   overflowY: 'scroll'
 };
-const localCam = document.getElementById("local_cam");
+localCam = document.getElementById("local_cam");
 
 function WatchLive() {
   const inputRef = useRef(null);
@@ -60,19 +53,18 @@ function WatchLive() {
     }
   };
 	document.title = "WeTeach - View Stream";
-  
+
   return (
- 
+
     <Fragment>
-<<<<<<<< HEAD:src/pages/viewStream.js
-      <div id="content-all">		    
+      <div id="content-all">
 			<div className="col-md-3">
 									<div className="main-title">
 									<h3><span className="title">View Stream</span></h3>
 									</div>
-									
+
 			</div><br />
-			
+
            <div id="content-wrapper">
               <div className="container-fluid pb-0">
                 <div className="video-block section-padding">
@@ -80,60 +72,21 @@ function WatchLive() {
                       <div className="col-md-5">
 						<div className="single-video-left">
 						<div className="single-video" style = {{verticalAlign:"unset"}}>
-                        
-						<video 
+
+						<video
 							width="100%"
-							frameBorder="0"							
+							frameBorder="0"
 							volume="0"
 							className="App-video"
 							id="local_vid"
-							allowFullScreen="1"														
-							autoPlay 
+							allowFullScreen="1"
+							autoPlay
               controls
               poster={thumbnail}
               onPause={handlePause}
               onPlay={handlePlay}
               ></video>
 							<table><tbody>
-========
-      <div>
-          <NavBar/>
-          <div id = "wrapper">
-            <SideBar/>
-              <div id="content-wrapper">
-                <div className="container-fluid pb-0">
-                  <div className="video-block section-padding">
-                    <div className="row">
-                      <div className="goLive">
-                        <header className="Live-header">
-                          <p>
-                            Watch Live Interface
-                          </p>
-                          <table>
-                            <tr>
-                              <td style = {{verticalAlign:"unset"}}>
-                              <video className="App-video" id="local_vid" autoPlay frameborder="1" allow="autoplay; encrypted-media" allowfullscreen></video>
-                              </td>
-                              <td>
-                              <table>
-                              <tr>
-                              <video className="App-camera" id="local_cam" autoPlay></video>
-                              </tr>
-                              <tr>
-                              <textarea disabled className="chat_window" id ="chatbox" cols="35" style={chatStyle}></textarea>
-                              </tr>
-                              <tr>
-                              <td>
-                              <input className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
-                              </td>
-                              <button onClick={sendData} id = "chatSubmit">Send</button>
-                              <td>
-                              </td>
-                              </tr>
-                              </table>
-                              </td>
-                            </tr>
->>>>>>>> Back:src/pages/watchlive.js
                             <tr>
                               <td>
                               <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
@@ -143,8 +96,8 @@ function WatchLive() {
                             </tr></tbody>
                           </table>
 						</div>
-						
-						
+
+
 						</div></div>
 						<div className="col-md-5 reducible">
 						<div className="single-video-right">
@@ -153,40 +106,34 @@ function WatchLive() {
 							</div>
                             <div className = "containerChat"><div>
 							<textarea disabled className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
-						
+
                             <input
 							placeholder="Enter chat message here"
 							className="new_message" id = "msg_box" size="25" onKeyDown={handleKeyDown}></input>
-                           
-                            <button onClick={sendData} className="btn btn-primary" id = "chatSubmit">Send</button>                           
+
+                            <button onClick={sendData} className="btn btn-primary" id = "chatSubmit">Send</button>
 							</div>
-  
+
 						 </div></div>
-                                       
-						 
-						 <div className="single-video-info-content box mb-3">					
-                                          <p>{/*Stream Date & Time*/}</p>  						
+
+
+						 <div className="single-video-info-content box mb-3">
+                                          <p>{/*Stream Date & Time*/}</p>
                                           <h6>About:</h6>
-                                          <p>Test your input devices before streaming 
+                                          <p>Test your input devices before streaming
                                           </p>
                                           <h6>Disciplines:</h6>
                                           <p className="tags mb-0">
-                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;                                             
+                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;
                                              <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
                                           </p><br />
 						 </div>
-                      
+
                       </div>
                     </div>
                   </div>
                 </div>
-<<<<<<<< HEAD:src/pages/viewStream.js
-              </div>          
-========
               </div>
-          </div>
-      </div>
->>>>>>>> Back:src/pages/watchlive.js
     </Fragment>
   );
 }
@@ -488,21 +435,14 @@ function randomString(len, charSet) {
   }
   return randomString;
 }
-<<<<<<<< HEAD:src/pages/viewStream.js
+
 function handlePause(){
     localCam.pause();
 }
 function handlePlay(){
   localCam.play();
 }
-function formatChatMsg(data){
-  var msg = JSON.parse(data);
-  return "["+msg.time + "] Streamer: "+msg.text;
-}
-// Helper to format times
-========
 
->>>>>>>> Back:src/pages/watchlive.js
 function getDateString(jsonDate) {
 	var when = new Date();
 	if(jsonDate) {
