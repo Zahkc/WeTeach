@@ -8,9 +8,9 @@ function Header() {
 
     return(
         <Fragment>
-		{/* Desktop navigation bar */}					
+		{/* Desktop navigation bar */}
 			<Helmet>
-				<link rel="icon" type="assets/image/png" href={process.env.PUBLIC_URL+"/assets/img/tabIcon.png"} />							
+				<link rel="icon" type="assets/image/png" href={process.env.PUBLIC_URL+"/assets/img/tabIcon.png"} />
 				<script src={process.env.PUBLIC_URL+"/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"}></script>
 			</Helmet>
 			<div id="header-wrapper" className="fixed-top">
@@ -35,7 +35,7 @@ function Header() {
                             </div>
                             </div>
                         </form>
-			<ul className="navbar-nav ml-auto ml-md-0 restyled-right-navbar">                            
+			<ul className="navbar-nav ml-auto ml-md-0 restyled-right-navbar">
                             <li className="nav-item dropdown no-arrow restyled-right-navbar-user">
                             <a className="nav-link dropdown-toggle user-dropdown-link" href="#v" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i className="fas fa-user-alt"></i>
@@ -47,7 +47,7 @@ function Header() {
 								<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
                             </div>
                             </li>
-                        </ul>				
+                        </ul>
 			</div><div id="navigation" className="navbar navbar-expand navbar-light bg-white sticky-top restyled-nav">
 			<ul className="navbar-nav">
 			<li className="element">
@@ -63,14 +63,14 @@ function Header() {
                 <i className="fas fa-fw fas fas fa-play-circle"></i>
                 &nbsp;&nbsp;<span>Go Live Test</span>
                 </NavLink></li>
-							
+
 			<li className="element reducible"><NavLink to = "/upload">
                 <i className="fas fa-fw fas fas fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
                 </NavLink></li>
 			</ul>
-			
-                    
+
+
 			</div></div><br /><br /><br />
 			<div id="sidebar" className="smallscreen">
 			{/*<!-- Sidebar -->*/}
@@ -107,8 +107,8 @@ function Header() {
             </ul>
 			</div>
 			*/
-			
-			
+
+
 		</Fragment>
     )
 }
