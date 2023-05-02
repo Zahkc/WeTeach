@@ -418,13 +418,13 @@ try {
 			src: {
 				$each: [ { 
 					trackName: "audio", 
-					href: req.body.videoConferenceId + "_track0.mp4",
-					contentType: "video/mp4"
+					href: "rec"+req.body.videoConferenceId + "_audio.mjr",
+					contentType: "application/mjr"
 				},
 				{ 
 					trackName: "video", 
-					href: req.body.videoConferenceId + "_track1.mp4",
-					contentType: "video/mp4"
+					href: "rec"+req.body.videoConferenceId + "_video.mjr",
+					contentType: "application/mjr"
 				}]
 			}
 		}
