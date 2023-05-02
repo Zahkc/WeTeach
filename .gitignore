@@ -2,10 +2,12 @@
 
 # dependencies
 /node_modules
+/old-recources
 /api/node_modules
 /upload/node_modules
 /.pnp
 .pnp.js
+/.Backup
 
 # testing
 /coverage
