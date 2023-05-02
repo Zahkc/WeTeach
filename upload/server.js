@@ -4,17 +4,8 @@ var randomstring = require("randomstring");
 
 const https = require('https');
 const fs = require('fs');
-const privateKey = fs.readFileSync(__dirname +'/privkey.pem', 'utf8');
-const certificate = fs.readFileSync(__dirname +'/cert.pem', 'utf8');
-const ca = fs.readFileSync(__dirname +'/chain.pem', 'utf8');
-const options = {
-	key: privateKey,
-	cert: certificate,
-	ca: ca
-};
 
 var filename = "";
-
 
 var app = express();
 const cors = require("cors");
@@ -39,7 +30,7 @@ app.get('/',function(req,res){
 });
 
 
-	app.post('/upload',function(req,res){
+app.post('/upload',function(req,res){
     upload(req,res,function(err) {
         if(err) {
             return res.json({ success: 0, message: "Error"});
@@ -48,6 +39,6 @@ app.get('/',function(req,res){
     });
 });
 
-https.createServer(options,app).listen(5002,function(){
+app.listen(5002,function(){
     console.log("HTTPS Upload handler is running on port 5002");
 });
