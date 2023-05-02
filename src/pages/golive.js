@@ -224,6 +224,7 @@ async function stopStream(){
 	document.getElementById("swapButton").disabled = true;
 
 	document.getElementById("streamConcludedText").style.visibility = " visible";
+	document.getElementById("local_vid").style.borderStyle = "hidden";
 }
 
 async function swapScreen(){
@@ -516,6 +517,7 @@ function startLiveStream() {
 	document.getElementById("stopButton").disabled = false;
 	document.getElementById("stopButton").style.display='inline-block';
 	document.getElementById("recordButton").style.display='inline-block';
+	document.getElementById("local_vid").style.borderStyle = "solid";
 }
 
 function startRecording(){}
