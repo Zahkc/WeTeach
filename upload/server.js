@@ -4,11 +4,9 @@ var randomstring = require("randomstring");
 
 const https = require('https');
 const fs = require('fs');
-const virtualhost = fs.readFileSync(__dirname + "/servername.txt");
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/chain.pem', 'utf8');
-
+const privateKey = fs.readFileSync(__dirname +'/privkey.pem', 'utf8');
+const certificate = fs.readFileSync(__dirname +'/cert.pem', 'utf8');
+const ca = fs.readFileSync(__dirname +'/chain.pem', 'utf8');
 const options = {
 	key: privateKey,
 	cert: certificate,
