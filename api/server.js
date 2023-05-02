@@ -6,9 +6,9 @@ const cors = require("cors");
 
 const port = 5000;
 const virtualhost = fs.readFileSync(__dirname + "/servername.txt");
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/${virtualhost}/chain.pem', 'utf8');
 
 const options = {
 	key: privateKey,
