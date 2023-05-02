@@ -43,6 +43,9 @@ Now you should log into the server and simply run:
 To check the API is running simply run (under Dev login): 
 ### `pm2 list`
 
+If not running type
+### `pm2 resurrect`
+
 To restart the API, the API auto restarts in dev if changes are made to the source code:
 ### `pm2 kill`
 ### `pm2 resurrect`
