@@ -3,7 +3,9 @@
 // Server running janus for routing traffic to.
 export const server = "https://weteach.ddns.net:8089/janus";
 
-export const db_api_ip = "http://weteach.ddns.net:5000";
+export const dbdaemon = "https://weteach.ddns.net:5000";
+
+export const uploaddaemon = "https://weteach.ddns.net:5002";
 
 // For future load scaling
 var iceServers = null;

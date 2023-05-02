@@ -21,7 +21,7 @@ import { func } from 'prop-types';
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var capture, livestream, room, role, myid, source, spinner, roomid;
+var capture, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 let vidStream = null;
@@ -32,9 +32,10 @@ let localVid = null;
 var myusername = Janus.randomString(12);
 var participants = {};
 var transactions = {};
-let textroom;
+let livestream, textroom, recstream;
 let stage = 0;
 let live = 0;
+let recording = 0;
 let chatbox = document.getElementById("chatbox");
 var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 
@@ -180,7 +181,17 @@ async function getMedia(){
          video: { mediaSource: "camera" },
          audio: true
        });
-  startStream()
+	 displayMedia()
+}
+
+function displayMedia(){
+	if (stage == 0) {
+		localCam.srcObject = null;
+		localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+	} else {
+		localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
+		localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+	}
 }
 
 function confirmStartStream(){
@@ -189,6 +200,7 @@ function confirmStartStream(){
 		startLiveStream();
 	}
 }
+
 function confirmStopStream(){
 	const response = window.confirm("Are you sure you want to stop livestream?");
 	if(response){
@@ -196,26 +208,24 @@ function confirmStopStream(){
 	}
 }
 
-async function startStream(){
-  if (stage == 0) {
-    localCam.srcObject = null;
-    localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-  } else {
-    localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
-    localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-
-  }
-}
-
 async function stopStream(){
 	sendData("Stream has concluded, thank you for attending!");
 	livestream.send({ message: { request: "stop" } });
 	livestream.hangup();
 	janus.destroy();
-	document.getElementById("startButton").disabled = false;
-	document.getElementById("stopButton").disabled = true;
+	document.getElementById("stopButton").style.display='none';
+	document.getElementById("recordButton").style.display='none';
 	localVid.srcObject = null;
 	localCam.srcObject = null;
+	document.getElementById("local_vid").style.borderStyle = "hidden";
+
+	document.getElementById("mic-mute-button").disabled = true;
+	document.getElementById("cam-mute-button").disabled = true;
+	document.getElementById("screen-mute-button").disabled = true;
+	document.getElementById("swapButton").disabled = true;
+
+	document.getElementById("streamConcludedText").style.visibility = " visible";
+	document.getElementById("local_vid").style.borderStyle = "hidden";
 }
 
 async function swapScreen(){
@@ -253,14 +263,7 @@ async function swapScreen(){
 		console.log(e);
 		console.log("no track, continuing");
 	}
-<<<<<<< HEAD
-
-=======
-
-
-
-	startStream();
->>>>>>> Back
+	displayMedia();
 }
 
 async function muteMic(){
@@ -294,12 +297,12 @@ async function toggleScreenShare(){
   } else if(stage == 1){
     stage = 0;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
-		startStream();
+		displayMedia();
 		sendData("/swap");
   } else{
     stage = 1;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
-		startStream();
+		displayMedia();
 		sendData("/swap");
   }
 }
@@ -444,6 +447,30 @@ function initJanus(){
 					}
 				});
 
+				janus.attach({
+					plugin:"janus.plugin.recordplay",
+					opaqueId: opaqueId,
+					success: function(pluginHandle) {
+						recstream = pluginHandle;
+						console.log("Connected to Record Daemon");
+					},
+					error: function(error){
+						console.log("failed to connect to Record Daemon");
+						console.error(error);
+					},
+					onmessage: function(msg, jsep) {
+						Janus.debug(" ::: Got a message :::", msg);
+						let result = msg["result"];
+						if (result){
+							if(result["status"] === 'recording'){
+								if (jsep){
+									recstream.handleRemoteJsep({ jsep: jsep});
+								}
+							}
+						}
+					}
+				});
+
       },
       error: function(error) {
         Janus.error(error);
@@ -510,9 +537,81 @@ function startLiveStream() {
 		}
 	}});
 	live = 1;
-
 	document.getElementById("startButton").disabled = true;
+	document.getElementById("startButton").style.display='none'
 	document.getElementById("stopButton").disabled = false;
+	document.getElementById("stopButton").style.display='inline-block';
+	document.getElementById("recordButton").style.display='inline-block';
+	document.getElementById("local_vid").style.borderStyle = "solid";
+}
+
+function startRecording(){
+
+	if (recording == 1) {
+		recstream.createOffer({message: {request: "stop"}});
+		console.log("Stopping Recording");
+		recording = 0;
+	} else if (recording == 0) {
+		recstream.send({
+			message: {
+				request: 'configure',
+				'video-bitrate-max': 500000,		// a quarter megabit
+				'video-keyframe-interval': 15000	// 15 seconds
+			}
+		});
+
+		if (screenStream == null) {
+
+			recstream.createOffer({
+				tracks: [
+					{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
+					{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true }
+				],
+				success: function(jsep){
+					Janus.debug("Got SDP!", jsep);
+					console.log("Starting Recording");
+					recstream.send({
+						message: {
+							request: "record",
+							id: room,
+							name: (myusername + room),
+
+						},
+						jsep: jsep
+					});
+					recording = 1;
+				},
+				error: function(error){
+					console.error(error);
+				}
+			});
+		} else {
+			recstream.createOffer({
+				tracks: [
+					{ type: 'audio',  mid:'0', capture: camStream.getAudioTracks()[0], recv: true },
+					{ type: 'video',  mid:'1', capture: camStream.getVideoTracks()[0], recv: true },
+					{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: true}
+				],
+				success: function(jsep){
+					console.log("Multi screen Recording");
+					Janus.debug("Got SDP!", jsep);
+					console.log("Starting Recording");
+					recstream.send({
+						message: {
+							request: "record",
+							id: room,
+							name: (myusername + room),
+						},
+						jsep: jsep
+					});
+					recording = 1;
+				},
+				error: function(error){
+					console.error(error);
+				}
+			});
+		}
+	}
 }
 
 function formatChatMsg(data){

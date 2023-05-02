@@ -1,8 +1,18 @@
-const express = require("express")
+const express = require("express");
+const https = require('https');
+const fs = require('fs');
 const app = express();
 const cors = require("cors");
 
 const port = 5000;
+
+var key = fs.readFileSync(__dirname + '/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+
+var options = {
+  key: key,
+  cert: cert
+};
 
 app.use(cors()); // require cors
 app.use(express.json());
@@ -17,7 +27,7 @@ dbo.connectDatabase(function (log){ console.log(log)});
 app.use(cors({ origin: true, credentials: false }));
 
 app.use(express.json({ extended: false }));
-app.listen(port, async  () => {
+https.createServer(options,app).listen(port, async  () => {
 	await dbo.connectDatabase(function(err) {
 if (err) console.log(err)
 });

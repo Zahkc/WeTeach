@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.741b981b.css",
-    "main.js": "/static/js/main.935b0464.js",
+    "main.css": "/static/css/main.ab18c879.css",
+    "main.js": "/static/js/main.9d4779aa.js",
     "static/js/787.6fe1877a.chunk.js": "/static/js/787.6fe1877a.chunk.js",
     "static/media/fa-brands-400.svg": "/static/media/fa-brands-400.4009e71782c2fd408c47.svg",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.ab820b7de48566829c5e.svg",
@@ -9,25 +9,32 @@
     "static/media/fa-solid-900d41d.eot": "/static/media/fa-solid-900d41d.d2c8b126d305ba3ef560.eot",
     "static/media/fa-solid-900.ttf": "/static/media/fa-solid-900.2aae7c212ce9c344ede6.ttf",
     "static/media/fa-regular-400.svg": "/static/media/fa-regular-400.d3d070c219ac57dafb23.svg",
+    "static/media/Camera-Off.png": "/static/media/Camera-Off.5e4332d6882b98fe3eab.png",
     "static/media/fa-brands-400.eot": "/static/media/fa-brands-400.4163c5ce45679952d5cb.eot",
     "static/media/fa-brands-400d41d.eot": "/static/media/fa-brands-400d41d.4163c5ce45679952d5cb.eot",
     "static/media/fa-brands-400.ttf": "/static/media/fa-brands-400.70257b1d0ff04d70da6c.ttf",
+    "static/media/Mic-Off.png": "/static/media/Mic-Off.1fb868d252782bf98780.png",
+    "static/media/Mic-On.png": "/static/media/Mic-On.f5ba32f0b36710f74051.png",
     "static/media/fa-solid-900.woff": "/static/media/fa-solid-900.3a5706fab1c11ad6dfdc.woff",
+    "static/media/Screenshare-Swap.png": "/static/media/Screenshare-Swap.6f1761bac5e226608d49.png",
     "static/media/fa-brands-400.woff": "/static/media/fa-brands-400.b97ac5f935e23fc1816f.woff",
+    "static/media/Screenshare-On.png": "/static/media/Screenshare-On.4daef9b60d8eb3c7b22c.png",
     "static/media/fa-brands-400.html": "/static/media/fa-brands-400.b9df8fe0faf79eb4f60b.html",
     "static/media/fa-solid-900.woff2": "/static/media/fa-solid-900.9ef50a04ef2ee9703d69.woff2",
+    "static/media/Screenshare-Off.png": "/static/media/Screenshare-Off.d30f173a28e0d161ee88.png",
+    "static/media/Camera-On.png": "/static/media/Camera-On.3f10b37195dd7fec7c13.png",
     "static/media/fa-regular-400.eot": "/static/media/fa-regular-400.0f9d1f74777600d15191.eot",
     "static/media/fa-regular-400d41d.eot": "/static/media/fa-regular-400d41d.0f9d1f74777600d15191.eot",
     "static/media/fa-regular-400.ttf": "/static/media/fa-regular-400.6086b966f7072932f094.ttf",
     "static/media/fa-regular-400.woff": "/static/media/fa-regular-400.0e6b58ac5d805dfcd66f.woff",
     "static/media/fa-regular-400.html": "/static/media/fa-regular-400.0fe9428559f3518bb8d4.html",
     "index.html": "/index.html",
-    "main.741b981b.css.map": "/static/css/main.741b981b.css.map",
-    "main.935b0464.js.map": "/static/js/main.935b0464.js.map",
+    "main.ab18c879.css.map": "/static/css/main.ab18c879.css.map",
+    "main.9d4779aa.js.map": "/static/js/main.9d4779aa.js.map",
     "787.6fe1877a.chunk.js.map": "/static/js/787.6fe1877a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.741b981b.css",
-    "static/js/main.935b0464.js"
+    "static/css/main.ab18c879.css",
+    "static/js/main.9d4779aa.js"
   ]
 }
