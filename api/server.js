@@ -5,13 +5,15 @@ const app = express();
 const cors = require("cors");
 
 const port = 5000;
+const virtualhost = fs.readFileSync(__dirname + "/servername.txt");
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
 
-var key = fs.readFileSync(__dirname + '/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
-
-var options = {
-  key: key,
-  cert: cert
+const options = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
 };
 
 app.use(cors()); // require cors

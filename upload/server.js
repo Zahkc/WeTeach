@@ -5,11 +5,14 @@ var randomstring = require("randomstring");
 const https = require('https');
 const fs = require('fs');
 
-var key = fs.readFileSync(__dirname + '/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
-var options = {
-  key: key,
-  cert: cert
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
+
+const options = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
 };
 
 var filename = "";
