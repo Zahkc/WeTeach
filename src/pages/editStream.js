@@ -19,7 +19,7 @@ class EditStream extends React.Component{
 		startDateTime: '',
 		disciplines: [],
 		liveStatus: 0,
-		formEnabled: true,
+		formEnabled: true
 	}
 	componentDidMount() {
 		document.title = "WeTeach - Edit Stream";

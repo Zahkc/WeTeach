@@ -16,9 +16,7 @@ class NewStream extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
-		disciplines: [],
-
-
+		disciplines: []
 	}
 	componentDidMount() {
 		document.title = "WeTeach - New Stream";
@@ -108,9 +106,9 @@ class NewStream extends React.Component{
                                     placeholder="Enter title for stream here"
                                     id="e1"
                                     className="form-control" required="1"
-									autoComplete="off"
-									onChange={onChange}
-                                    />
+				autoComplete="off"
+				onChange={onChange}
+	                            />
                                 </div>
                                 </div>
 								</div><div className="row">
@@ -197,3 +195,4 @@ class NewStream extends React.Component{
 }
 
 export default NewStream;
+
