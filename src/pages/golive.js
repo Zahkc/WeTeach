@@ -17,6 +17,7 @@ import cameraOffIcon from '../assets/img/Camera-Off.png';
 import screenshareOnIcon from '../assets/img/Screenshare-On.png';
 import screenshareOffIcon from '../assets/img/Screenshare-Off.png';
 import screenshareOffSwap from '../assets/img/Screenshare-Swap.png';
+import { func } from 'prop-types';
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
@@ -103,11 +104,17 @@ function GoLive() {
                             <button id="swapButton" onClick={swapScreen} className="mic-mute-button" style={{backgroundImage: `url(${screenshareOffSwap})`}}></button>
                           </td>
                           <td>
-                            <button id="startButton" onClick={startLiveStream} className='btn btn-go-live'>Start Stream</button>
+                            <button id="startButton" onClick={confirmStartStream} className='btn btn-go-live'>Start Stream</button>
                           </td>
                           <td>
-							<button id="stopButton" onClick={stopStream} className='btn btn-stop' style={{display:"none"}}>Stop Stream</button>
+							<button id="stopButton" onClick={confirmStopStream} className='btn btn-stop' style={{display:"none"}}>Stop Stream</button>
                           </td>
+						  <td>
+						  	<button id="recordButton" onClick={startRecording} className='btn btn-record' style={{display:"none"}}>Start Recording</button>
+						  </td>
+						  <td id="streamConcludedText" class="streamConcludedText" >
+							Stream has concluded! <a href="/media/new">Click here</a> to start a new stream!
+						  </td>
 
                         </tr>
 						</tbody>
@@ -172,8 +179,20 @@ async function getMedia(){
   startStream()
 }
 
+function confirmStartStream(){
+	const response = window.confirm("Are you sure you want to go live?");
+	if(response){
+		startLiveStream();
+	}
+}
+function confirmStopStream(){
+	const response = window.confirm("Are you sure you want to stop livestream?");
+	if(response){
+		stopStream();
+	}
+}
+
 async function startStream(){
-	
   if (stage == 0) {
     localCam.srcObject = null;
     localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
@@ -190,16 +209,26 @@ async function stopStream(){
 	screentest.send({ message: { request: "stop" } });
 	screentest.hangup();
 	janus.destroy();
-	document.getElementById("startButton").disabled = false;
+	document.getElementById("startButton").disabled = true;
 	document.getElementById("startButton").style.display='inline-block'
 	
 	document.getElementById("stopButton").disabled = true;
-	document.getElementById("stopButton").style.display='none'
+	document.getElementById("stopButton").style.display='none';
+	document.getElementById("recordButton").style.display='none';
 	localVid.srcObject = null;
 	localCam.srcObject = null;
 	document.getElementById("local_vid").style.borderStyle = "hidden";
-}
 
+	document.getElementById("mic-mute-button").disabled = true;
+	document.getElementById("cam-mute-button").disabled = true;
+	document.getElementById("screen-mute-button").disabled = true;
+	document.getElementById("swapButton").disabled = true;
+	
+	document.getElementById("streamConcludedText").style.visibility = " visible"; 
+}
+function startRecording(){
+
+}
 async function swapScreen(){
 
 
@@ -512,7 +541,8 @@ function startLiveStream() {
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("startButton").style.display='none'
 	document.getElementById("stopButton").disabled = false;
-	document.getElementById("stopButton").style.display='inline-block'
+	document.getElementById("stopButton").style.display='inline-block';
+	document.getElementById("recordButton").style.display='inline-block';
 }
 
 function escapeXmlTags(value) {

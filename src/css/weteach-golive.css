@@ -24,7 +24,10 @@
 .mic-mute-button:hover{
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
+.mic-mute-button:disabled {
+  opacity: 0.6;
+  box-shadow: 0 ;
+}
 .button-table{
   border-collapse: separate;
   border-spacing: 6px;
@@ -42,6 +45,11 @@
 }
 .go-live:hover:enabled{
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.go-live:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: 0 ;
 }
 .go-stream:disabled {
   opacity: 0.6;
@@ -123,8 +131,11 @@ textarea {
 	width:100% !important;
 	box-sizing: border-box !important;
 }
+.streamConcludedText{
+  visibility: hidden;
+}
 
-spinner {
+.spinner {
   border: 16px solid #f3f3f3;
   border-top: 16px solid #f44336;
   border-radius: 50%;
