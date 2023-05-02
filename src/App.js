@@ -21,17 +21,17 @@ import Header from './pages/header'
 
 function UI() {
   return (
-	<div id="page-wrapper">			
-		<Header/>  
+	<div id="page-wrapper">
+		<Header/>
         <Routes>
           <Route exact path='/' element={<Home/>}/>
 		  <Route exact path='/media/new' element={<NewStream/>}/>
 		  <Route exact path='/media/:id/present' element={<GoLive/>}/>
 		  <Route exact path='/media/:id/' element={<WatchStream/>}/>
-		  
+
 		  <Route exact path='/media/:id/edit' element={<EditStream/>}/>
 		  <Route exact path='/upload' element={<Upload/>}/>
-		  
+
 		  <Route path="*" element ={<NotFound />}/>
         </Routes>
       </div>
