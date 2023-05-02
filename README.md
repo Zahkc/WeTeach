@@ -39,3 +39,10 @@ These commands will merge your branch with main.
 Now you should log into the server and simply run:
 ### `cd ~`
 ### `./import`
+
+To check the API is running simply run (under Dev login): 
+### `pm2 list
+
+To restart the API, the API auto restarts in dev if changes are made to the source code:
+### `pm2 kill
+### `pm2 resurrect
