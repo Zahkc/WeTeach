@@ -180,7 +180,17 @@ async function getMedia(){
          video: { mediaSource: "camera" },
          audio: true
        });
-  startStream()
+	 displayMedia()
+}
+
+function displayMedia(){
+	if (stage == 0) {
+		localCam.srcObject = null;
+		localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+	} else {
+		localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
+		localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+	}
 }
 
 function confirmStartStream(){
@@ -196,26 +206,24 @@ function confirmStopStream(){
 	}
 }
 
-async function startStream(){
-  if (stage == 0) {
-    localCam.srcObject = null;
-    localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-  } else {
-    localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
-    localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-
-  }
-}
 
 async function stopStream(){
 	sendData("Stream has concluded, thank you for attending!");
 	livestream.send({ message: { request: "stop" } });
 	livestream.hangup();
 	janus.destroy();
-	document.getElementById("startButton").disabled = false;
-	document.getElementById("stopButton").disabled = true;
+	document.getElementById("stopButton").style.display='none';
+	document.getElementById("recordButton").style.display='none';
 	localVid.srcObject = null;
 	localCam.srcObject = null;
+	document.getElementById("local_vid").style.borderStyle = "hidden";
+
+	document.getElementById("mic-mute-button").disabled = true;
+	document.getElementById("cam-mute-button").disabled = true;
+	document.getElementById("screen-mute-button").disabled = true;
+	document.getElementById("swapButton").disabled = true;
+
+	document.getElementById("streamConcludedText").style.visibility = " visible";
 }
 
 async function swapScreen(){
@@ -253,7 +261,7 @@ async function swapScreen(){
 		console.log(e);
 		console.log("no track, continuing");
 	}
-	startStream();
+	displayMedia();
 }
 
 async function muteMic(){
@@ -287,12 +295,12 @@ async function toggleScreenShare(){
   } else if(stage == 1){
     stage = 0;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
-		startStream();
+		displayMedia();
 		sendData("/swap");
   } else{
     stage = 1;
     document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOffIcon})`;
-		startStream();
+		displayMedia();
 		sendData("/swap");
   }
 }
@@ -503,9 +511,11 @@ function startLiveStream() {
 		}
 	}});
 	live = 1;
-
 	document.getElementById("startButton").disabled = true;
+	document.getElementById("startButton").style.display='none'
 	document.getElementById("stopButton").disabled = false;
+	document.getElementById("stopButton").style.display='inline-block';
+	document.getElementById("recordButton").style.display='inline-block';
 }
 
 function startRecording(){}
