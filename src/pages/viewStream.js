@@ -37,6 +37,7 @@ const chatStyle = {
 localCam = document.getElementById("local_cam");
 
 function WatchLive() {
+ document.title = "WeTeach - Watch Live";
   const inputRef = useRef(null);
 
  function handleClick() {

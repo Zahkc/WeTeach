@@ -56,6 +56,7 @@ const chatStyle = {
 // 	spinnerObj.style.display = 'none';
 //   });
 function GoLive() {
+  document.title = "WeTeach - Go Live";
   const [janusInstance, setJanusInstance] = useState(null);
 
      const [media, setMedia] = useState({

@@ -14,6 +14,7 @@ import {dbdaemon} from '../components/janus/settings'
 import moment from 'moment-timezone';
 
 function Viewer(props) {
+ document.title = "WeTeach - Video Player";
 	  const [media, setMedia] = useState({
 		id: "",
 		name: "",

@@ -35,6 +35,7 @@ const chatStyle = {
 };
 
 function WatchVOD() {
+ document.title = "WeTeach - Watch Stream Playback";
   const inputRef = useRef(null);
 
  function handleClick() {
