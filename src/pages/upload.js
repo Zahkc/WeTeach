@@ -193,7 +193,7 @@ class VideoUpload extends React.Component{
                                 <div className="form-group">
 						<div id="output-failure" style={{display:"none"}}>
 								<div className="bg-failure">Video failed to upload</div><br />
-								<Link to="/upload/new" className="btn btn-primary">Retry</Link>&nbsp;&nbsp;
+								<Link to="/upload" className="btn btn-primary">Retry</Link>&nbsp;&nbsp;
 								<Link to="/" className="btn btn-primary">Retry Later</Link>
 						</div>
 						<div id="output-success" style={{display:"none"}}>

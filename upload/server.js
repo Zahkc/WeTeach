@@ -32,6 +32,7 @@ app.get('/',function(req,res){
 app.post('/upload',function(req,res){
     upload(req,res,function(err) {
         if(err) {
+		console.log(err);
             return res.json({ success: 0, message: "Error"});
         }
         res.json({ success: 1, message: "Success", href: newfile, contentType: "application/mp4"});
