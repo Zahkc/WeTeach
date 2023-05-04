@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+
+import moment from 'moment-timezone';
 import { Link } from 'react-router-dom';
 import '../css/weteach-main.css';
 
-
-
-const MediaItem = (props) =>
+const MediaItem = (props) => {
+const media = props.media;
 return (
 
 	<div className="video-card">
@@ -21,10 +22,10 @@ return (
 			<div className="video-view">
 				<i className="fas fa-calendar-alt"></i>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}&nbsp;&nbsp;
 			{
-			  (media.locked === 0 && media.purged === 0 && (media.liveStatus === 0 || media.liveStatus === 3) {
+			  (media.locked === 0 && media.purged === 0 && (media.liveStatus === 0 || media.liveStatus === 3)) ?
 				<Fragment>
 				<Link to={`/media/${media._id}/edit`} >Edit Stream</Link>&nbsp;&nbsp;
-				</Fragment>
+				</Fragment> : null
 			}
 			{ (media.locked === 0 && media.purged === 0 && media.liveStatus === 2) ?
 				<Fragment>

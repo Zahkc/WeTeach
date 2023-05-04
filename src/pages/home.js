@@ -30,14 +30,12 @@ export default class Home extends React.Component {
 			</div><br />
 			<div id="web-list">
 			<div className="video-block section-padding">
-							<div className="row">
-							{
-								media.length === 0 ? "<br>No streams or videos have been created.</br>" : this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3"><MediaItem media={media} key={k} /></div>);
-							}
-
-
-							</div>
-						</div>
+			<div className="row">
+			{
+				this.state.media.length === 0 ? "<br>No streams or videos have been created.</br>" : this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3"><MediaItem media={media} key={k} /></div>)
+			}
+			</div>
+			</div>
 			</div></div>
 			</Fragment>
 	);
