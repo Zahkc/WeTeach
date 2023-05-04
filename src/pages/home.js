@@ -46,7 +46,18 @@ export default class Home extends React.Component {
 												<div className="video-description">{media.description}</div>
 												<div className="video-view">
 													<i className="fas fa-calendar-alt"></i>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}&nbsp;&nbsp;
-												<Link to={`/media/${media._id}/edit`} >Edit Stream</Link>
+												{
+												(media.locked == 0 && media.purged == 0 && media.liveStatus != 1) ? {
+													<Fragment>
+													<Link to={`/media/${media._id}/edit`} >Edit Stream</Link>&nbsp;&nbsp;
+													</Fragment> : null
+												}
+												{
+												(media.locked == 0 && media.purged == 0 && media.liveStatus == 0) ? {
+													<Fragment>
+													<Link to={`/media/${media._id}/present`} >Go-Live</Link>&nbsp;&nbsp;
+													</Fragment> : null
+												}
 												</div>
 											</div>
 											</div>
