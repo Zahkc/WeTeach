@@ -1,0 +1,8 @@
+#!/bin/bash
+
+domain=weteach.ddns.net # using your example name
+node_dir=/weteach
+node_user=nodeuser
+
+cp /etc/letsencrypt/live/$domain/{fullchain,privkey}.pem "$node_dir"/
+chown $node_user "$node_dir"/*.pem
