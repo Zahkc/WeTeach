@@ -56,7 +56,7 @@ class VideoUpload extends React.Component{
 				jsonData.contentType = fileSubmission.contentType;
 
 
-			axios.post(`${dbdaemon}/api/v1/media/upload`,this.state).then((res)=>
+			axios.post(`${dbdaemon}/api/v1/media/upload`,jsonData).then((res)=>
 			{
 
 			let mediaID = res.data.insertedId;
