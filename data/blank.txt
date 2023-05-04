@@ -1,2 +1,0 @@
-By default files need to write to /weteach/data 
-

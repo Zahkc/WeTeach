@@ -1,0 +1,21 @@
+echo "This will replace the current contents of /var/www/html/"
+echo "Do you wish to continue? (y/n)"
+read input
+if [ $input == "y" ]
+then
+	cd ~/weteach/CSIT321/build/
+	git pull
+	cd /var/www/html/
+	sudo rm -rf /var/www/html/*
+	sudo cp -R ~/weteach/CSIT321/build/* /var/www/html/ 
+	cd ~
+	sudo chown root /var/www/html/*
+	sudo chmod 755 /var/www/html/*
+	sudo ln -ls ~/weteach/CSIT321/data/public /var/www/html/media_content
+	sudo systemctl restart httpd
+	echo "The contents of /var/www/html now match the git build folder."
+	echo "Please check this at https://weteach.ddns.net/"
+else
+	echo "Aborting."
+fi
+	
