@@ -11,7 +11,7 @@ then
 	cd ~
 	sudo chown root /var/www/html/*
 	sudo chmod 755 /var/www/html/*
-	sudo ln -ls ~/weteach/CSIT321/data/public /var/www/html/media_content
+	sudo ln -s /weteach/data/public /var/www/html/media_content
 	sudo systemctl restart httpd
 	echo "The contents of /var/www/html now match the git build folder."
 	echo "Please check this at https://weteach.ddns.net/"

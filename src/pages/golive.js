@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
+import { useParams } from "react-router-dom";
 
 import '../css/weteach-main.css';
 import '../css/weteach-golive.css';
 
 import axios from 'axios';
+import moment from 'moment-timezone';
 
 import Janus from '../components/janus/janus'
 import {Spinner} from 'spin.js';
@@ -17,6 +19,8 @@ import cameraOffIcon from '../assets/img/Camera-Off.png';
 import screenshareOnIcon from '../assets/img/Screenshare-On.png';
 import screenshareOffIcon from '../assets/img/Screenshare-Off.png';
 import screenshareOffSwap from '../assets/img/Screenshare-Swap.png';
+
+import {dbdaemon} from '../components/janus/settings'
 import { func } from 'prop-types';
 let camStream = null;
 let janusInstance, setJanusInstance, janus, chanus;
@@ -37,7 +41,6 @@ let stage = 0;
 let live = 0;
 let recording = 0;
 let chatbox = document.getElementById("chatbox");
-var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 
 const chatStyle = {
   fontSize: '16px',
@@ -55,9 +58,40 @@ const chatStyle = {
 function GoLive() {
   const [janusInstance, setJanusInstance] = useState(null);
 
+     const [media, setMedia] = useState({
+	        id: "",
+                name: "",
+                description: "",
+                liveStatus: -1,
+                disciplines: [],
+               	videoConferenceId: 0
+
+          });
+          const { id } = useParams();
+	  var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
+
+          useEffect(() => {
+                axios
+                  .get(`${dbdaemon}/api/v1/media/${id}`)
+                  .then((res) => {
+                        setMedia({
+                        id: res.data._id,
+                        name: res.data.name,
+                        description: res.data.description,
+                        liveStatus: res.data.liveStatus,
+                        disciplines: res.data.disciplines,
+                        videoConferenceId: res.data.videoConferenceId
+                        });
+                  })
+                  .catch((e) => {
+                        console.log(e);
+                  });
+          }, [id]);
+
 
   useEffect(() => {
 	/* Insert GET request axios.get or fetch.get to DB */
+
     getMedia();
     initJanus();
 		document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
@@ -74,13 +108,16 @@ function GoLive() {
   };
 
   return (
-    <Fragment>
+    			<Fragment>
 			<div id="content-all">
 			<div className="col-md-12">
 									<div className="main-title">
-									<h3><span className="title">Go Live</span></h3>
+									{id === "test" ? <Fragment><h3><span className="title">Go Live Test</span></h3></Fragment> : <Fragment><h3><span className="title">{media.name}</span></h3>
+									<h6>Go Live Test</h6>
+									</Fragment>}
 									</div>
 
+									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live1"></div>
 			</div><br />
            <div id="content-wrapper">
               <div className="container-fluid pb-0">
@@ -153,13 +190,17 @@ function GoLive() {
 						 <div className="single-video-info-content box mb-3">
                                           <p>{/*Stream Date & Time*/}</p>
                                           <h6>About:</h6>
-                                          <p>Test your input devices before streaming
-                                          </p>
+                                          <p>{id === "test" ? "Test your camera for live streaming here" : media.description}  </p>
                                           <h6>Disciplines:</h6>
+					{(id === "test") ? <Fragment>
                                           <p className="tags mb-0">
                                              <span><a href="#v">IT</a></span>&nbsp;&nbsp;
                                              <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
-                                          </p><br />
+                                          </p><br /></Fragment> : <Fragment>
+					 <p className="tags mb-0">
+	                                        {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
+                                          </p><br /></Fragment>
+					}
 										  <h6>Video Conference ID:</h6>
 
 										  <input type="text" disabled="1" id="codeDisp" defaultValue="Room Code"/>

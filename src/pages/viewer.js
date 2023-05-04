@@ -11,6 +11,7 @@ import axios from 'axios';
 import {Spinner} from 'spin.js';
 import {mediaserver} from '../components/janus/settings'
 import {dbdaemon} from '../components/janus/settings'
+import moment from 'moment-timezone';
 
 function Viewer(props) {
 	  const [media, setMedia] = useState({
@@ -22,9 +23,8 @@ function Viewer(props) {
 		src: [],
 
 	  });
-	  var thumbnail = "https://i.imgur.com/MEAv9zb.png";
+	  var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
 	  const { id } = useParams();
-	  const navigate = useNavigate();
 
 	  useEffect(() => {
 		axios
@@ -45,6 +45,7 @@ function Viewer(props) {
 	  }, [id]);
 
   return (
+
    media.liveStatus === 2 ?
    <Fragment>
       <div id="content-all">
@@ -80,7 +81,7 @@ function Viewer(props) {
 						</div></div>
 
 						 <div className="single-video-info-content box mb-3">
-                                          <p>{/*Stream Date & Time*/}</p>
+                                          <p>{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}</p>
                                           <h6>About:</h6>
                                           <p>{media.description}
                                           </p>
@@ -96,6 +97,7 @@ function Viewer(props) {
                 </div>
               </div>
     </Fragment> : <Fragment><b>This content is not supported</b></Fragment>
+
   );
 }
 
