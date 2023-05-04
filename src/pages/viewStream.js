@@ -457,7 +457,7 @@ async function getMediaReccord(id){
 	axios.get(`https://weteach.ddns.net/api/v1/media/${id}`).then(res => {
 	const mdata = res.data;
 	room = mdata.videoConferenceId;
-	// alert(room);
+	console.log("Found room id: " + room);
 	//fill out other dataspots
 	}).catch((e) => console.log(e));
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 /* Custom fonts for this template*/
 import './components/vendor/fontawesome-free/css/all.min.css';
@@ -22,13 +22,13 @@ import 'moment/locale/en-gb';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
  <React.StrictMode>
-	<LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb"> 
-    <BrowserRouter>	
+	<LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
 	</LocalizationProvider>
   </React.StrictMode>,
-  
+
 );
 
 // If you want to start measuring performance in your app, pass a function
