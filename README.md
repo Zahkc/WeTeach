@@ -38,7 +38,8 @@ These commands will merge your branch with main.
 
 Now you should log into the server and simply run:
 ### `bash publish`
-or ### `bash ~/import`
+or 
+### `bash ~/import`
 
 To publish the videos run this:
 ### `sudo ln -s /weteach/data/public /var/www/html/media_content`
