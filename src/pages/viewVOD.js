@@ -26,7 +26,6 @@ let localVid;
 let localCam;
 let chatbox = document.getElementById("chatbox");
 var thumbnail = "https://i.imgur.com/MEAv9zb.png";
-let params
 
 const chatStyle = {
   fontSize: '16px',
