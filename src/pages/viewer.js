@@ -9,11 +9,12 @@ import '../css/weteach-golive.css';
 import axios from 'axios';
 
 import {Spinner} from 'spin.js';
+import {mediaserver} from '../components/janus/settings'
 import {dbdaemon} from '../components/janus/settings'
 
 function Viewer(props) {
 	  const [media, setMedia] = useState({});
-
+	  var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 	  const { id } = useParams();
 	  const navigate = useNavigate();
 
@@ -54,18 +55,15 @@ function Viewer(props) {
 							id="local_vid"
 							allowFullScreen="1"
 							autoPlay
-							src={require("/weteach/data/${media.src[0].href}")}}
+							src={"${mediaserver}/media/{media._id}/content/${media.src[0].href}"}
               controls
               poster={thumbnail}
-              onPause={handlePause}
-              onPlay={handlePlay}
               ></video>
-							
 						</div>
 
 
 						</div></div>
-					
+
 						 <div className="single-video-info-content box mb-3">
                                           <p>{/*Stream Date & Time*/}</p>
                                           <h6>About:</h6>
