@@ -16,7 +16,7 @@ app.use(cors()); // require cors
 
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, '../data');
+    callback(null, '../data/public');
   },
   filename: function (req, file, callback) {
 	newfile = file.originalname + randomstring.generate(5)+".mp4"
