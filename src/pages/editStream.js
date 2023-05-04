@@ -41,11 +41,11 @@ class EditStream extends React.Component{
 		this.setState({disciplines: mdataset.disciplines});
 		this.setState({liveStatus: mdataset.liveStatus});
 
-		if(mdataset.locked == 1 || mdataset.purged == 1 || mdataset.liveStatus == 1 || mdataset.liveStatus == 4)
+		if(mdataset.locked === 1 || mdataset.purged === 1 || mdataset.liveStatus === 1 || mdataset.liveStatus === 4)
 		{
 			this.setState({formEnabled: false})
 		}
-		if(mdataset.liveStatus == 2)
+		if(mdataset.liveStatus === 2)
 		{
 			document.title = "WeTeach - Edit Video";
 		}
