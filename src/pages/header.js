@@ -23,7 +23,7 @@ function Header() {
 						}}>
                         <i className="fas fa-bars"></i>
                         </button> &nbsp;&nbsp;
-			<NavLink className="navbar-brand mr-1" to = "/"><img className="img-fluid" alt="" src={Logo} /></NavLink>
+			<NavLink className="navbar-brand mr-1" to = "/" rel="nofollow"><img className="img-fluid" alt="" src={Logo} /></NavLink>
 			{/*<!-- Navbar Search -->*/}
 			<form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 restyled-navbar-search">
                             <div className="input-group">
@@ -51,20 +51,20 @@ function Header() {
 			</div><div id="navigation" className="navbar navbar-expand navbar-light bg-white sticky-top restyled-nav">
 			<ul className="navbar-nav">
 			<li className="element">
-			<NavLink to = "/">
+			<NavLink to = "/" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-film"></i>
                 &nbsp;&nbsp;<span>All Streams</span>
                 </NavLink></li>
-			<li className="element reducible"><NavLink to = "/media/new">
+			<li className="element reducible"><NavLink to = "/media/new" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-podcast"></i>
                 &nbsp;&nbsp;<span>New Stream</span>
                 </NavLink></li>
-			<li className="element reducible"><NavLink to = "/media/test/present">
+			<li className="element reducible"><NavLink to = "/media/test/present" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-play-circle"></i>
                 &nbsp;&nbsp;<span>Go Live Test</span>
                 </NavLink></li>
 
-			<li className="element reducible"><NavLink to = "/upload">
+			<li className="element reducible"><NavLink to = "/upload" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
                 </NavLink></li>
@@ -76,21 +76,21 @@ function Header() {
 			{/*<!-- Sidebar -->*/}
 			<ul className="sidebar navbar-nav" id="sidebar-list">
                 <li className="nav-item active">
-                <NavLink to = "/">
+                <NavLink to = "/" rel="nofollow">
                 <i className="fas fa-fw fa-film"></i>
                 &nbsp;&nbsp;<span>All Streams</span>
                 </NavLink>
                 </li>
 
                 <li className="nav-item">
-                <NavLink to = "/media/new">
+                <NavLink to = "/media/new" rel="nofollow">
                 <i className="fas fa-fw fa-podcast"></i>
                 &nbsp;&nbsp;<span>New Stream</span>
                 </NavLink>
                 </li>
 
                 <li className="nav-item">
-                <NavLink to = "/media/test/present">
+                <NavLink to = "/media/test/present" rel="nofollow">
                 <i className="fas fa-fw fa-play-circle"></i>
                 &nbsp;&nbsp;<span>Go Live Test</span>
                 </NavLink>
@@ -98,7 +98,7 @@ function Header() {
 
 
                 <li className="nav-item">
-                <NavLink to = "/upload">
+                <NavLink to = "/upload" rel="nofollow">
                 <i className="fas fa-fw fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
                 </NavLink>
