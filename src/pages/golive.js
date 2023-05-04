@@ -76,7 +76,7 @@ function GoLive() {
   return (
     <Fragment>
 			<div id="content-all">
-			<div className="col-md-3">
+			<div className="col-md-12">
 									<div className="main-title">
 									<h3><span className="title">Go Live</span></h3>
 									</div>

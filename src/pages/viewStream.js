@@ -61,7 +61,7 @@ function WatchLive() {
 
     <Fragment>
       <div id="content-all">
-			<div className="col-md-3">
+			<div className="col-md-12">
 									<div className="main-title">
 									<h3><span className="title">Test Stream</span></h3>
 									</div>
