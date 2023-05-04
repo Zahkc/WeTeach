@@ -2099,8 +2099,7 @@ td {
 #web-list > div > div > div
 {
 	display: table-row;
-	width:435px !important;
-
+	width:405px !important;
 	float:left;
 	overflow:ellipsis;
 	white-space: nowrap;
