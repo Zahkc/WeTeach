@@ -19,8 +19,6 @@ class VideoUpload extends React.Component{
 		startDateTime: '',
 		disciplines: [],
 		files: undefined,
-		href: undefined,
-		contentType: undefined,
 
 	}
 	componentDidMount() {
@@ -53,8 +51,9 @@ class VideoUpload extends React.Component{
 			axios.post(`${uploaddaemon}/upload`, formData, {headers: { "Content-Type": "multipart/form-data" }}).then((res) =>
 			{
 				let fileSubmission = res.data;
-				this.setState({href: fileSubmission.href});
-				this.setState({contentType: fileSubmission.contentType});
+				let jsonData = this.state;
+				jsonData.href = fileSubmission.href;
+				jsonData.contentType = fileSubmission.contentType;
 
 
 			axios.post(`${dbdaemon}/api/v1/media/upload`,this.state).then((res)=>

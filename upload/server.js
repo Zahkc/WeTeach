@@ -5,7 +5,7 @@ var randomstring = require("randomstring");
 const https = require('https');
 const fs = require('fs');
 
-var filename = "";
+var newfile = "";
 
 var app = express();
 const cors = require("cors");
@@ -19,8 +19,8 @@ var storage =   multer.diskStorage({
     callback(null, '../data');
   },
   filename: function (req, file, callback) {
-	filename = file.originalname + randomstring.generate(5)+".mp4"
-    callback(null, filename);
+	newfile = file.originalname + randomstring.generate(5)+".mp4"
+    callback(null, newfile);
   }
 });
 var upload = multer({ storage : storage}).single("files");
@@ -34,7 +34,7 @@ app.post('/upload',function(req,res){
         if(err) {
             return res.json({ success: 0, message: "Error"});
         }
-        res.json({ success: 1, message: "Success", href: filename, contentType: "application/mp4"});
+        res.json({ success: 1, message: "Success", href: newfile, contentType: "application/mp4"});
     });
 });
 
