@@ -188,9 +188,11 @@ function displayMedia(){
 	if (stage == 0) {
 		localCam.srcObject = null;
 		localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+		screenStream.getVideoTracks()[0].enabled = false;
 	} else {
 		localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
 		localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
+		screenStream.getVideoTracks()[0].enabled = true;
 	}
 }
 

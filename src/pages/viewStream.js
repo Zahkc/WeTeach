@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
+import { useParams } from "react-router-dom";
 
 import '../css/weteach-main.css';
 import '../css/weteach-golive.css';
@@ -25,6 +26,7 @@ let localVid;
 let localCam;
 let chatbox = document.getElementById("chatbox");
 var thumbnail = "https://i.imgur.com/MEAv9zb.png";
+let params, mdata;
 
 const chatStyle = {
   fontSize: '16px',
@@ -41,6 +43,7 @@ function WatchLive() {
    attemptConnect();
  }
 
+  params=useParams();
   const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
 		localVid = document.getElementById('local_vid');
@@ -60,7 +63,7 @@ function WatchLive() {
       <div id="content-all">
 			<div className="col-md-3">
 									<div className="main-title">
-									<h3><span className="title">View Stream</span></h3>
+									<h3><span className="title">Test Stream</span></h3>
 									</div>
 
 			</div><br />
@@ -139,7 +142,11 @@ function WatchLive() {
 }
 
 
-function initJanus(){
+async function initJanus(){
+
+		try{
+			await getMediaReccord(params.id);
+		} catch (error) {console.error(error)};
 
     Janus.init({debug: "all", callback: function() {
         if(!Janus.isWebrtcSupported()) {
@@ -160,6 +167,52 @@ function initJanus(){
               screentest = pluginHandle;
               Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
               // Prepare the username registration
+							janus.attach({
+								plugin: "janus.plugin.textroom",
+								opaqueId: opaqueId,
+								success: function(chatHandle) {
+									textroom = chatHandle;
+									console.log("-- Chatroom Plugin Loaded --");
+									let body = { request: "setup" };
+									Janus.debug("Sending message:", body);
+									textroom.send({ message: body });
+									attemptConnect();
+								},
+								error: function(error){console.error(error)},
+								onmessage: function(msg, jsep) {
+									if(jsep) {
+										// Answer
+										textroom.createAnswer(
+											{
+												jsep: jsep,
+												// We only use datachannels
+												tracks: [
+													{ type: 'data' }
+												],
+												success: function(jsep) {
+													Janus.debug("Got SDP!", jsep);
+													let body = { request: "ack" };
+													textroom.send({ message: body, jsep: jsep });
+												},
+												error: function(error) {
+													Janus.error("WebRTC error:", error);
+												}
+											});
+									}
+								},
+								ondataopen: function(label, protocol){
+									console.log("Datachannel Open");
+								},
+								ondata: function(data) {
+									console.log("Data Recived: " + data);
+									if(JSON.parse(data)["textroom"] == "message"){
+										chatbox = document.getElementById("chatbox");
+										chatbox.value += (formatChatMsg(data)+"\n");
+										chatbox.scrollTop = chatbox.scrollHeight;
+									}
+								}
+							});
+
           },
           error: function(error) {},
           onmessage: function(msg, jsep) {
@@ -228,50 +281,6 @@ function initJanus(){
           }
         });
 
-				janus.attach({
-					plugin: "janus.plugin.textroom",
-					opaqueId: opaqueId,
-					success: function(chatHandle) {
-						textroom = chatHandle;
-						console.log("-- Chatroom Plugin Loaded --");
-						let body = { request: "setup" };
-						Janus.debug("Sending message:", body);
-						textroom.send({ message: body });
-					},
-					error: function(error){console.error(error)},
-					onmessage: function(msg, jsep) {
-						if(jsep) {
-							// Answer
-							textroom.createAnswer(
-								{
-									jsep: jsep,
-									// We only use datachannels
-									tracks: [
-										{ type: 'data' }
-									],
-									success: function(jsep) {
-										Janus.debug("Got SDP!", jsep);
-										let body = { request: "ack" };
-										textroom.send({ message: body, jsep: jsep });
-									},
-									error: function(error) {
-										Janus.error("WebRTC error:", error);
-									}
-								});
-						}
-					},
-					ondataopen: function(label, protocol){
-						console.log("Datachannel Open");
-					},
-					ondata: function(data) {
-						console.log("Data Recived: " + data);
-						if(JSON.parse(data)["textroom"] == "message"){
-							chatbox = document.getElementById("chatbox");
-							chatbox.value += (formatChatMsg(data)+"\n");
-							chatbox.scrollTop = chatbox.scrollHeight;
-						}
-					}
-				});
 
 
       },
@@ -439,8 +448,18 @@ function randomString(len, charSet) {
 function handlePause(){
     localCam.pause();
 }
+
 function handlePlay(){
   localCam.play();
+}
+
+async function getMediaReccord(id){
+	axios.get(`https://weteach.ddns.net/api/v1/media/${id}`).then(res => {
+	const mdata = res.data;
+	room = mdata.videoConferenceId;
+	// alert(room);
+	//fill out other dataspots
+	}).catch((e) => console.log(e));
 }
 
 function getDateString(jsonDate) {

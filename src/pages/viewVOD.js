@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import {useState, useEffect, useRef} from 'react';
+import { useParams } from "react-router-dom";
 
 import '../css/weteach-main.css';
 import '../css/weteach-golive.css';
@@ -25,13 +26,13 @@ let localVid;
 let localCam;
 let chatbox = document.getElementById("chatbox");
 var thumbnail = "https://i.imgur.com/MEAv9zb.png";
+let params
 
 const chatStyle = {
   fontSize: '16px',
   resize: "none",
   overflowY: 'scroll'
 };
-localCam = document.getElementById("local_cam");
 
 function WatchVOD() {
   const inputRef = useRef(null);
@@ -41,6 +42,8 @@ function WatchVOD() {
 	 startVOD();
  }
 
+  params=useParams();
+	room = parseInt(params.id);
   const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
 		localVid = document.getElementById('local_vid');
@@ -55,7 +58,7 @@ function WatchVOD() {
       <div id="content-all">
 			<div className="col-md-3">
 									<div className="main-title">
-									<h3><span className="title">View Stream</span></h3>
+									<h3><span className="title">{room}</span></h3>
 									</div>
 
 			</div><br />
@@ -146,7 +149,57 @@ function initJanus(){
 						opaqueId: opaqueId,
 						success: function(pluginHandle){
 							pb1 = pluginHandle;
-							console.log("Connected to Record Daemon");
+							console.log("PB1 Connected to Record Daemon");
+
+							janus.attach({
+								plugin:"janus.plugin.recordplay",
+								opaqueId: opaqueId,
+								success: function(pluginHandle){
+									pb2 = pluginHandle;
+									console.log("PB2 Connected to Record Daemon");
+									startVOD();
+								},
+								error: function(error) {console.error(error)},
+								onmessage: function(msg, jsep){
+									Janus.debug(" ::: Got a message :::", msg);
+									let result = msg["result"];
+									if(result) {
+										if (result["status"]) {
+											if (result["status"] === 'preparing' || result["status"] === 'refreshing') {
+												Janus.log("Preparing the recording playout");
+												pb2.createAnswer(
+													{
+														jsep: jsep,
+														tracks: [
+															{ type: 'data' }
+														],
+														success: function(jsep) {
+															Janus.debug("Got SDP!", jsep);
+															let body = { request: "start" };
+															pb2.send({ message: body, jsep: jsep });
+
+														},
+														error: function(error) {
+															Janus.error("WebRTC error:", error);
+														}
+													});
+											}
+										}
+									}
+								},
+								onremotetrack: function(track, mid, on) {
+						      Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
+
+											stream.addTrack(track);
+											Janus.log("Created remote Camera stream:", stream);
+											localVid = document.getElementById('local_vid');
+											localVid.srcObject = stream;
+											localCam = document.getElementById('local_cam');
+											localCam.srcObject = camStream;
+											stage = 1;
+						    }
+							});
+
 						},
 						error: function(error) {console.error(error)},
 						onmessage: function(msg, jsep){
@@ -194,53 +247,6 @@ function initJanus(){
 				    }
 					});
 
-					janus.attach({
-						plugin:"janus.plugin.recordplay",
-						opaqueId: opaqueId,
-						success: function(pluginHandle){
-							pb2 = pluginHandle;
-							console.log("Connected to Record Daemon");
-						},
-						error: function(error) {console.error(error)},
-						onmessage: function(msg, jsep){
-							Janus.debug(" ::: Got a message :::", msg);
-							let result = msg["result"];
-							if(result) {
-								if (result["status"]) {
-									if (result["status"] === 'preparing' || result["status"] === 'refreshing') {
-										Janus.log("Preparing the recording playout");
-										pb2.createAnswer(
-											{
-												jsep: jsep,
-												tracks: [
-													{ type: 'data' }
-												],
-												success: function(jsep) {
-													Janus.debug("Got SDP!", jsep);
-													let body = { request: "start" };
-													pb2.send({ message: body, jsep: jsep });
-
-												},
-												error: function(error) {
-													Janus.error("WebRTC error:", error);
-												}
-											});
-									}
-								}
-							}
-						},
-						onremotetrack: function(track, mid, on) {
-				      Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
-
-									stream.addTrack(track);
-									Janus.log("Created remote Camera stream:", stream);
-									localVid = document.getElementById('local_vid');
-									localVid.srcObject = stream;
-									localCam = document.getElementById('local_cam');
-									localCam.srcObject = camStream;
-									stage = 1;
-				    }
-					});
 
 				}
 			}
@@ -258,12 +264,13 @@ function startVOD(){
 		message: {
 			request: "play",
 			id: room
-		}
-	});
-	pb2.send({
-		message: {
-			request: "play",
-			id: room+1
+		}, success: function(){
+			pb2.send({
+				message: {
+					request: "play",
+					id: room+1
+				}
+			});
 		}
 	});
 }
@@ -281,7 +288,7 @@ function updateVODS(){
 	});
 }
 
-function listVOD(){
+function listVODS(){
 	updateVODS();
 	pb1.send({
 		message: {
