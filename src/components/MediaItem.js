@@ -16,7 +16,7 @@ return (
 	</div>
 		<div className="video-card-body">
 			<div className="video-title">
-			<Link to={`/media/${media._id}/${media.liveStatus}`}>{media.name}</Link>
+			<Link to={`/media/${media._id}/view/${media.liveStatus}`}>{media.name}</Link>
 			</div>
 			<div className="video-description">{media.description}</div>
 			<div className="video-view">
