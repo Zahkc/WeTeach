@@ -37,8 +37,11 @@ These commands will push the new build to your branch.
 These commands will merge your branch with main.
 
 Now you should log into the server and simply run:
-### `cd ~`
-### `./import`
+### `bash publish`
+or ### `bash ~/import`
+
+To publish the videos run this:
+### `sudo ln -s /weteach/data/public /var/www/html/media_content`
 
 To start the API:
 ### `pm2 start /weteach/api/server.js -n dbdaemon --attach`
