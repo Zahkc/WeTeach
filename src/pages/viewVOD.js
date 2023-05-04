@@ -16,7 +16,7 @@ let stream = new MediaStream([])
 let camStream = new MediaStream([])
 let janusInstance, setJanusInstance, janus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
-var remoteFeed, screentest, room, role, myid, source, spinner, roomid, vids;
+var remoteFeed, screentest, room, role, myid, source, spinner, roomid, vids, params;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
 var myusername = Janus.randomString(12);
