@@ -32,7 +32,7 @@ export default class Home extends React.Component {
 			<div className="video-block section-padding">
 			<div className="row">
 			{
-				this.state.media.length === 0 ? "<br>No streams or videos have been created.</br>" : this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3"><MediaItem media={media} key={k} /></div>)
+				this.state.media.length === 0 ? <Fragment><b>No streams or videos have been created.</b></Fragment> : this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3"><MediaItem media={media} key={k} /></div>)
 			}
 			</div>
 			</div>

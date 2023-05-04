@@ -13,7 +13,15 @@ import {mediaserver} from '../components/janus/settings'
 import {dbdaemon} from '../components/janus/settings'
 
 function Viewer(props) {
-	  const [media, setMedia] = useState({});
+	  const [media, setMedia] = useState({
+		id: "",
+		name: "",
+		description: "",
+		liveStatus: -1,
+		disciplines: [],
+		src: [],
+
+	  });
 	  var thumbnail = "https://i.imgur.com/MEAv9zb.png";
 	  const { id } = useParams();
 	  const navigate = useNavigate();
@@ -22,7 +30,14 @@ function Viewer(props) {
 		axios
 		  .get(`${dbdaemon}/api/v1/media/${id}`)
 		  .then((res) => {
-			setMedia(res.data);
+			setMedia({
+			id: res.data._id,
+			name: res.data.name,
+			description: res.data.description,
+			liveStatus: res.data.liveStatus,
+			disciplines: res.data.disciplines,
+			src: res.data.src
+			});
 		  })
 		  .catch((e) => {
 			console.log(e);
@@ -30,11 +45,12 @@ function Viewer(props) {
 	  }, [id]);
 
   return (
+   media.liveStatus === 2 ?
    <Fragment>
       <div id="content-all">
 			<div className="col-md-3">
 									<div className="main-title">
-									<h3><span className="title">View Stream</span></h3>
+									<h3><span className="title">{media.name}</span></h3>
 									</div>
 
 			</div><br />
@@ -54,8 +70,7 @@ function Viewer(props) {
 							className="App-video"
 							id="local_vid"
 							allowFullScreen="1"
-							autoPlay
-							src={"${mediaserver}/media/{media._id}/content/${media.src[0].href}"}
+							src={`${mediaserver}/media_content/${media.src[0].href}`}
               controls
               poster={thumbnail}
               ></video>
@@ -67,12 +82,11 @@ function Viewer(props) {
 						 <div className="single-video-info-content box mb-3">
                                           <p>{/*Stream Date & Time*/}</p>
                                           <h6>About:</h6>
-                                          <p>Test your input devices before streaming
+                                          <p>{media.description}
                                           </p>
                                           <h6>Disciplines:</h6>
                                           <p className="tags mb-0">
-                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;
-                                             <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
+						{media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
                                           </p><br />
 						 </div>
 
@@ -81,7 +95,7 @@ function Viewer(props) {
                   </div>
                 </div>
               </div>
-    </Fragment>
+    </Fragment> : <Fragment><b>This content is not supported</b></Fragment>
   );
 }
 
