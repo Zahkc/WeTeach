@@ -39,3 +39,19 @@ These commands will merge your branch with main.
 Now you should log into the server and simply run:
 ### `cd ~`
 ### `./import`
+
+To start the API:
+### `pm2 start /weteach/api/server.js -n dbdaemon --attach`
+
+For the upload component
+### `pm2 start /weteach/upload/server.js -n uploaddaemon --attach`
+
+To check the API is running simply run (under Dev login): 
+### `pm2 list`
+
+If not running type
+### `pm2 resurrect`
+
+To restart the API, the API auto restarts in dev if changes are made to the source code:
+### `pm2 kill`
+### `pm2 resurrect`

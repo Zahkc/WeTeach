@@ -31,7 +31,6 @@
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.7.2",
     "spin.js": "^4.1.1",
     "styled-components": "^5.3.10",
@@ -67,12 +66,19 @@
     "url": "https://github.com/tomhobeika/CSIT321.git"
   },
   "devDependencies": {
+    "@svgr/webpack": "^6.5.1",
     "@types/jquery": "^3.5.16",
     "autoprefixer": "^10.4.14",
     "css-loader": "^6.7.3",
     "postcss-loader": "^7.3.0",
+    "react-scripts": "^5.0.1",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
     "style-loader": "^3.3.2"
+  },
+  "overrides": {
+   "react-scripts": {
+       "@svgr/webpack": "^6.5.1"
+    }
   }
 }

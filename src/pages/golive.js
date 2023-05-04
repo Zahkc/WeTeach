@@ -448,31 +448,6 @@ function initJanus(){
 						}
 					}
 				});
-
-				// janus.attach({
-				// 	plugin:"janus.plugin.recordplay",
-				// 	opaqueId: opaqueId,
-				// 	success: function(pluginHandle) {
-				// 		recstream = pluginHandle;
-				// 		console.log("Connected to Record Daemon");
-				// 	},
-				// 	error: function(error){
-				// 		console.log("failed to connect to Record Daemon");
-				// 		console.error(error);
-				// 	},
-				// 	onmessage: function(msg, jsep) {
-				// 		Janus.debug(" ::: Got a message :::", msg);
-				// 		let result = msg["result"];
-				// 		if (result){
-				// 			if(result["status"] === 'recording'){
-				// 				if (jsep){
-				// 					recstream.handleRemoteJsep({ jsep: jsep});
-				// 				}
-				// 			}
-				// 		}
-				// 	}
-				// });
-
       },
       error: function(error) {
         Janus.error(error);
