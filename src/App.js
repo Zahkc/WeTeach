@@ -6,6 +6,7 @@ import EditStream from './pages/editStream';
 import GoLive from './pages/golive';
 import WatchStream from './pages/viewStream';
 import WatchVideo from './pages/viewVOD';
+import Viewer from './pages/viewStream';
 import Upload from './pages/upload';
 import NotFound from './404';
 import { Route, Routes} from 'react-router-dom';
@@ -28,8 +29,10 @@ function UI() {
           <Route exact path='/' element={<Home/>}/>
 		  <Route exact path='/media/new' element={<NewStream/>}/>
 		  <Route exact path='/media/:id/present' element={<GoLive/>}/>
-		  <Route exact path='/media/:id/' element={<WatchStream/>}/>
-		  <Route exact path='/media/vod/:id/' element={<WatchVideo/>}/>
+		  <Route exact path='/media/:id/0' element={<WatchStream/>}/>
+		  <Route exact path='/media/:id/1' element={<WatchStream/>}/>
+		  <Route exact path='/media/:id/2' element={<Viewer/>}/>
+		  <Route exact path='/media/:id/3' element={<WatchVideo/>}/>
 
 		  <Route exact path='/media/:id/edit' element={<EditStream/>}/>
 		  <Route exact path='/upload' element={<Upload/>}/>
