@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react';
-import NavBar from './navBar'
-import SideBarTeacher from './sidebar(Teacher)'
 import {NavLink, Link} from 'react-router-dom';
-
+import Logo from "../assets/img/logo.png"
 class Login extends React.Component{
     render(){
         return(
@@ -12,8 +10,8 @@ class Login extends React.Component{
                     <div className="col-md-5 p-5 bg-white full-height">
                     <div className="login-main-left">
                         <div className="text-center mb-5 login-main-left-header pt-4">
-                        <img src="assets/img/logo.png" className="img-fluid" alt="LOGO" />
-                        <h5 className="mt-3 mb-3">Welcome to Vidoe</h5>
+                        <img alt="" src={Logo} className="img-fluid" />
+                        <h2 className="mt-3 mb-3">WeTeach</h2>
                         <p>
                             It is a long established fact that a reader <br /> will be
                             distracted by the readable.

@@ -1,10 +1,22 @@
-import React, { Fragment } from "react";
-import {NavLink} from 'react-router-dom';
+import React, { Fragment, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {NavLink,Link} from 'react-router-dom';
 import Helmet from 'react-helmet'
 import Logo from "../assets/img/logo.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Header() {
+	const [searchInput, setSearchInput] = useState("");
+	const handleChange = (e) => {
+	  e.preventDefault();
+	  setSearchInput(e.target.value);
+	};
+	let navigate = useNavigate();
+	const search = (e) => {
+		e.preventDefault();
+		navigate(`/search-results/${searchInput}`);
+		window.location.reload(true); // trigger a hard refresh to display search results
+	}
 
     return(
         <Fragment>
@@ -25,11 +37,11 @@ function Header() {
                         </button> &nbsp;&nbsp;
 			<NavLink className="navbar-brand mr-1" to = "/" rel="nofollow"><img className="img-fluid" alt="" src={Logo} /></NavLink>
 			{/*<!-- Navbar Search -->*/}
-			<form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 restyled-navbar-search">
+			<form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 restyled-navbar-search" onSubmit = {search}>
                             <div className="input-group">
-                            <input type="text" className="form-control" placeholder="Search for..." />
+                            <input id="q" type="search" onChange={handleChange} className="form-control" placeholder="Search for..." />
                             <div className="input-group-append">
-                                <button className="btn btn-light" type="button">
+                                <button type="submit" className="btn btn-light">
                                 <i className="fas fa-search"></i>
                                 </button>
                             </div>
@@ -44,6 +56,7 @@ function Header() {
                                 <a className="dropdown-item" href="account.html"><i className="fas fa-fw fa-user-circle"></i> &nbsp; My Account</a>
                                 <a className="dropdown-item" href="settings.html"><i className="fas fa-fw fa-cog"></i> &nbsp; Settings</a>
                                 <div className="dropdown-divider"></div>
+								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-in-alt"></i> &nbsp; Login</NavLink>
 								<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
                             </div>
                             </li>

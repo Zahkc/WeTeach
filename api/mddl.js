@@ -3,18 +3,18 @@ const { MongoClient } = require("mongodb");
 // Replace the placeholder with your Atlas connection string
 
 // Mac or Linux config
-const uri = "mongodb://localhost?serverSelectionTimeoutMS=25000";
+const {MONGODB_LINUX_URL} = process.env;
 // Windows
-const win32uri = "mongodb://127.0.0.1";
+const {MONGODB_WIN32_URL} = process.env;
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(MONGODB_LINUX_URL, {
 useNewUrlParser: true,
 useUnifiedTopology: true
 });
 
-const win32client = new MongoClient(win32uri, {
+const win32client = new MongoClient(MONGODB_WIN32_URL, {
 useNewUrlParser: true,
 useUnifiedTopology: true
 });
@@ -28,7 +28,7 @@ module.exports = {
 		{
 			try {
 			
-				console.log("Connecting to " + win32uri);
+				console.log("Connecting to " + MONGODB_WIN32_URL);
 				win32client.connect()					
 			}
 			catch (e) {
@@ -40,7 +40,7 @@ module.exports = {
 		{
 			try {
 	
-					console.log("Connecting to " + uri);
+					console.log("Connecting to " + MONGODB_LINUX_URL);
 					client.connect()
 				}
 	
