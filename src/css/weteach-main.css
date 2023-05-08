@@ -2237,3 +2237,120 @@ td {
 		min-width: 440px !important;
 	}
 }
+
+/* Mobile Media /
+/ Extra small devices (portrait phones, less than 576px) */
+ @media (max-width: 575.98px) {
+    .top-mobile-search {
+        display: block;
+    }
+    #wrapper #content-wrapper .container-fluid {
+        padding-bottom: 15px !important;
+        padding-left: 108px;
+        padding-right: 15px !important;
+        padding-top: 1rem !important;
+    }
+    .sidebar .nav-item .nav-link {
+        padding: 8px 14px !important;
+    }
+    .sidebar-toggled #wrapper #content-wrapper .container-fluid {
+        padding-left: 15px;
+    }
+    .single-channel-page {
+         padding: 0 0 0 90px !important;
+    }
+    .sidebar-toggled .single-channel-page {
+        padding: 0 !important;
+    }
+    .single-channel-page .container-fluid {
+        padding: 30px 15px 15px !important;
+    }
+
+    .single-video-author .float-right {
+        float: none !important;
+        margin: 0 0 14px;
+    }
+    .single-video-author {
+        text-align: center;
+    }
+    .single-video-author img {
+        float: none;
+        margin: 0 0 5px;
+    }
+
+    .tags span a {
+        margin: 0 0 3px;
+    }
+
+     .sidebar .nav-item .nav-link span {
+         margin: 0 !important;
+    }
+     .sidebar .channel-sidebar-list h6 {
+         font-size: 11px !important;
+    }
+     .sidebar .channel-sidebar-list {
+         display: none;
+    }
+    .sidebar .nav-item .nav-link span {
+         display: block;
+         font-size: 0.65rem;
+    }
+.video-card-image img {
+         width: 100%;
+    }
+     footer {
+        padding: 15px 0 !important;
+        text-align: center;
+    }
+     footer .text-right {
+         text-align: center !important;
+    }
+     .osahan-right-navbar .nav-link {
+         font-size: 0;
+         padding: 22px 5px !important;
+    }
+     .osahan-right-navbar .nav-link .fas {
+         font-size: 12px;
+    }
+     #sidebarToggle {
+         margin: 0 9px 0 0;
+    }
+     .navbar-brand img {
+         vertical-align: top;
+    }
+     .owl-theme .owl-controls .owl-buttons div {
+         margin: 4px !important;
+    }
+     .single-channel-nav {
+         padding: 15px;
+    }
+     .channel-profile {
+         padding: 10px;
+         position: relative;
+         text-align: center;
+    }
+     .social {
+         display: none;
+    }
+     .navbar-toggler {
+         padding: 1px 3px;
+    }
+     .single-channel-nav .navbar-nav {
+         margin: 0;
+    }
+     .single-channel-nav .nav-link {
+         margin: 0;
+    }
+    .imgplace {
+        margin-bottom: 15px;
+    }
+    .osahan-title {
+        padding: 0 25px 5px 0;
+    }
+    footer.sticky-footer {
+        margin-left: 90px;
+    }
+    .sidebar-toggled footer.sticky-footer {
+        margin: 0;
+    }
+}
