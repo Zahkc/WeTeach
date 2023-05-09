@@ -1084,7 +1084,7 @@ graph.route("/api/v1/media/:id/disciplines").delete((req, res) => {
 
 // 8 AUTH ENDPOINTS
 // Add a username and password
-graph.post("/users/:id/register", async (req, res) => {
+graph.post("/api/v1/users/:id/register", auth, async (req, res) => {
 try {
 	var hex = /[0-9A-Fa-f]{24}/g;
 	if(hex.test(req.params.id))
@@ -1094,7 +1094,7 @@ try {
 		  res.status(400).send("Bad Request");
 		}
 		encryptedPassword = await bcrypt.hash(password, 10);
-		let db_query = { _id: new ObjectId(req.params.id), type: "USER", locked:0, purged: 0, username:{$exists:false}, ssid:{$exists:false}};
+		let db_query = { _id: new ObjectId(req.params.id), type: "USER", locked:0, purged: 0, ssid:{$exists:false}};
 		let db_update = {
 			$currentDate: {
 				lastModifiedDateTime: true
@@ -1121,18 +1121,13 @@ try {
 graph.post("/auth/login/attendee", async (req, res) => {
 
   try {
-
     const { username, password } = req.body;
-
-    if (!(username && password)) {
-      res.send("Bad request");
-    }
 
 	let db_query = { username: req.body.username, type: "USER" };
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").findOne(db_query).then((user) => {
 
-		if ((user.mask === 2) && (bcrypt.compare(password, user.password))) {
+		if (user && (user.mask === 2) && (bcrypt.compare(password, user.password))) {
 
 
 			  const token = jwt.sign(
@@ -1145,10 +1140,14 @@ graph.post("/auth/login/attendee", async (req, res) => {
 
 		  user.token = token;
 		  user.password = "ENCODED_STRING";
+
 		  res.json(user);
 		}
-		res.send("Login failed");
-		}).catch((e) => console.log(e));
+		else
+		{
+			res.status(401).send("Login failed");
+		}
+		}).catch((e) => res.status(401).send("Login failed"));
 
   } catch (err) {
     res.status(400).send("Bad request");
@@ -1162,16 +1161,12 @@ graph.post("/auth/login/presenter", async (req, res) => {
   try {
     // Get user input
     const { username, password } = req.body;
-
-    if (!(username && password)) {
-      res.send("Bad request");
-    }
-
+	
 	let db_query = { username: req.body.username, type: "USER" };
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").findOne(db_query).then((user) => {
 
-		if ((user.mask === 0) && (bcrypt.compare(password, user.password))) {
+		if (user && (user.mask === 0) && (bcrypt.compare(password, user.password))) {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
@@ -1186,8 +1181,11 @@ graph.post("/auth/login/presenter", async (req, res) => {
 
 		  res.json(user);
 		}
-		res.send("Login failed");
-		}).catch((e) => console.log(e));
+		else
+		{
+			res.status(401).send("Login failed");
+		}
+		}).catch((e) => res.status(401).send("Login failed"));
 
   } catch (err) {
     res.status(400).send("Bad request");
@@ -1219,8 +1217,11 @@ graph.post("/auth/login", async (req, res) => {
 
 		  res.json(user);
 		}
-		res.send("Login failed");
-		}).catch((e) => console.log(e));
+		else
+		{
+			res.status(401).send("Login failed");
+		}
+		}).catch((e) => res.status(401).send("Login failed"));
 
   } catch (err) {
     res.status(400).send("Bad request");
@@ -1250,8 +1251,11 @@ graph.post("/auth/login/anonymous", async (req, res) => {
 
 		  res.json(user);
 		}
-		res.send("Login failed");
-		}).catch((e) => console.log(e));
+		else
+		{
+			res.status(401).send("Login failed");
+		}
+		}).catch((e) => res.status(401).send("Login failed"));
 
   } catch (err) {
     res.status(400).send("Bad request");
@@ -1281,8 +1285,11 @@ graph.post("/auth/login-secure/wtapp", async (req, res) => {
 
 		  res.json(user);
 		}
-		res.send("Login failed");
-		}).catch((e) => console.log(e));
+		else
+		{
+			res.status(401).send("Login failed");
+		}
+		}).catch((e) => res.status(401).send("Login failed"));
 
   } catch (err) {
     res.status(400).send("Bad request");

@@ -22,23 +22,42 @@ return (
 			<div className="video-view">
 				<i className="fas fa-calendar-alt"></i>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}&nbsp;&nbsp;
 			{
-			  (media.locked === 0 && media.purged === 0 && (media.liveStatus === 0 || media.liveStatus === 3)) ?
+				(localStorage.getItem("capability") === "PRESENTER" && media.locked === 0) ? <Fragment>
+			{
+			  (media.purged === 0 && (media.liveStatus === 0 || media.liveStatus === 3)) ?
 				<Fragment>
 				<Link to={`/media/${media._id}/edit`} >Edit Stream</Link>&nbsp;&nbsp;
 				</Fragment> : null
 			}
-			{ (media.locked === 0 && media.purged === 0 && media.liveStatus === 2) ?
+			{ (media.purged === 0 && media.liveStatus === 2) ?
 				<Fragment>
 				<Link to={`/media/${media._id}/edit`} >Edit Video</Link>&nbsp;&nbsp;
 				</Fragment> : null
-			}
+			} 
 
 			{
-			(media.locked === 0 && media.purged === 0 && media.liveStatus === 0) ?
+			(media.purged === 0 && media.liveStatus === 0 && localStorage.getItem("user") === media.createdBy) ?
 				<Fragment>
 				<Link to={`/media/${media._id}/present`} >Go-Live</Link>&nbsp;&nbsp;
 				</Fragment> : null
 			}
+			</Fragment> : <Fragment>
+			
+			{
+			  (media.purged === 0 && (media.liveStatus === 0 || media.liveStatus === 3)) ?
+				<Fragment>
+				<Link to={`/media/${media._id}/details`} >View Stream Details</Link>&nbsp;&nbsp;
+				</Fragment> : null
+			}
+			{ (media.purged === 0 && media.liveStatus === 2) ?
+				<Fragment>
+				<Link to={`/media/${media._id}/details`} >View Video Details</Link>&nbsp;&nbsp;
+				</Fragment> : null
+			} 
+			</Fragment>
+			
+			}
+			
 			</div>
 		</div>
 		</div>

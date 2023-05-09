@@ -29,8 +29,11 @@ class VideoUpload extends React.Component{
 		this.setState({availableDisciplines: dataset[0].disciplines});
 		});
 		this.setState({startDateTime: moment().utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")});
-		document.getElementById("output-success").style.display='none';
-		document.getElementById("output-failure").style.display='none';
+		if(localStorage.getItem("capability") === "PRESENTER")
+		{
+			document.getElementById("output-success").style.display='none';
+			document.getElementById("output-failure").style.display='none';
+		}
 	}
 
     render(){
@@ -48,15 +51,25 @@ class VideoUpload extends React.Component{
 			var formData = new FormData();
 			console.log(this.state.files);
 			formData.append("files", this.state.files[0]);
+			
+			if(localStorage.getItem("token") === null)
+			{
+				document.getElementById("output-success").style.display='none';
+				document.getElementById("output-failure").style.display='inline-block';
+				document.getElementById("submit-buttons").style.display='none';
+			}
+			else
+			{
 			axios.post(`${uploaddaemon}/upload`, formData, {headers: { "Content-Type": "multipart/form-data" }}).then((res) =>
 			{
 				let fileSubmission = res.data;
 				let jsonData = this.state;
+				
 				jsonData.href = fileSubmission.href;
 				jsonData.contentType = fileSubmission.contentType;
-
-
-			axios.post(`${dbdaemon}/api/v1/media/upload`,jsonData).then((res)=>
+				let token = localStorage.getItem("token");
+			
+			axios.post(`${dbdaemon}/api/v1/media/upload?token=${token}`,jsonData).then((res)=>
 			{
 
 			let mediaID = res.data.insertedId;
@@ -98,12 +111,13 @@ class VideoUpload extends React.Component{
 			});
 
 
-
+			}
 
 		};
 
 
         return(
+		localStorage.getItem("capability") === "PRESENTER" ?
          <Fragment>
 
 			<div id="content-all">
@@ -209,7 +223,11 @@ class VideoUpload extends React.Component{
 
 
             </div>
-        </Fragment>
+        </Fragment> : <Fragment><div id="content-all">
+			<div className="col-md-12"><h3>403 Access Denied</h3>
+				Whoops! You do not have permissions to perform this action!
+						</div>								
+						</div></Fragment>
         );
     }
 }

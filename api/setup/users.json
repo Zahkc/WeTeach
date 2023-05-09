@@ -1,0 +1,119 @@
+[{
+  "_id": {
+    "$oid": "6449c9e5551a05948a559dea"
+  },
+  "ssid": "wtapp",
+  "type": "USER",
+  "name": "System Administrator",
+  "description": "Root account",
+  "createdBy": 0,
+  "createdDateTime": {
+    "$date": "2023-04-27T01:03:33.493Z"
+  },
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-04-27T01:03:33.493Z"
+  },
+  "storage_location": "/weteach/data",
+  "wmid": 0,
+  "mask": 8,
+  "purged": 0,
+  "locked": 1
+},{
+  "_id": {
+    "$oid": "6449c9e5551a05948a559deb"
+  },
+  "ssid": "public",
+  "type": "USER",
+  "name": "Anonynmous User",
+  "description": "Public account",
+  "createdBy": 0,
+  "createdDateTime": {
+    "$date": "2023-04-27T01:03:33.626Z"
+  },
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-04-27T01:03:33.626Z"
+  },
+  "storage_location": "/weteach/data",
+  "wmid": 1,
+  "mask": 6,
+  "purged": 0,
+  "locked": 1
+},{
+  "_id": {
+    "$oid": "645a397ae6aa51e50e37aba3"
+  },
+  "type": "USER",
+  "name": "Peter",
+  "description": "Presenter Account 1",
+  "createdBy": 0,
+  "createdDateTime": "2023-05-09T00:00:00Z",
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-05-09T12:23:25.584Z"
+  },
+  "purged": 0,
+  "locked": 0,
+  "wmid": 1001,
+  "mask": 0,
+  "password": "$2a$10$Kd2rXYX.D5d1VEtyJ/UgcO0selFquUI1B5iKLDngLtS2IOdf6Y5Fu",
+  "username": "peter"
+},{
+  "_id": {
+    "$oid": "645a397ae6aa51e50e37aba4"
+  },
+  "type": "USER",
+  "name": "Paul",
+  "description": "Presenter Account 2",
+  "createdBy": 0,
+  "createdDateTime": "2023-05-09T00:00:00Z",
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-05-09T12:24:59.317Z"
+  },
+  "purged": 0,
+  "locked": 0,
+  "wmid": 1002,
+  "mask": 0,
+  "password": "$2a$10$4tIIwD3XYuX/oNBLYtbSQ.s1mVFZ51Ciz8.yqi0yfHKCbRgdIiDfC",
+  "username": "paul"
+},{
+  "_id": {
+    "$oid": "645a397ae6aa51e50e37aba5"
+  },
+  "type": "USER",
+  "name": "Alice",
+  "description": "Attendee Account 1",
+  "createdBy": 0,
+  "createdDateTime": "2023-05-09T00:00:00Z",
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-05-09T12:25:32.021Z"
+  },
+  "purged": 0,
+  "locked": 0,
+  "wmid": 2001,
+  "mask": 2,
+  "password": "$2a$10$aDBbS9M.MGWValQ3Ypm4I.8nZcxVQCK1pAtaOkYC3VMeRcrLO3ME.",
+  "username": "alice"
+},{
+  "_id": {
+    "$oid": "645a397ae6aa51e50e37aba6"
+  },
+  "type": "USER",
+  "name": "Ash",
+  "description": "Attendee Account 2",
+  "createdBy": 0,
+  "createdDateTime": "2023-05-09T00:00:00Z",
+  "lastModifiedBy": 0,
+  "lastModifiedDateTime": {
+    "$date": "2023-05-09T12:25:50.787Z"
+  },
+  "purged": 0,
+  "locked": 0,
+  "wmid": 2002,
+  "mask": 2,
+  "password": "$2a$10$3OztKaHDU5mkI.h9o8sA8etwZ/aoUPfOYHcteyS87AtAQyftuctIS",
+  "username": "ash"
+}]

@@ -5,18 +5,21 @@ import Logo from "../assets/img/logo.png"
 
 import Select from 'react-select/creatable';
 import {dbdaemon} from '../components/janus/settings';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
 		document.title = "Login into WeTeach"
+		const navigate = useNavigate();
 		const [lsession, setLSession] = useState({
 			username: '',
 			name: '',
 			password: '',	
-			role: ''
+			role: 0
 		});
 
 		const onChange = (e) => {
 			setLSession({ ...lsession, [e.target.name]: e.target.value });
+			document.getElementById("output-failure").style.display="none"
 		};
 
 		const onSubmit = (e) => {
@@ -27,30 +30,41 @@ function Login() {
 				case 0:
 				axios.post(`${dbdaemon}/auth/login/presenter`,lsession).then((res)=>
 				{
-					console.log(res.data);
-					setLSession({password: ""});
-				}).catch((e) => console.log(e));
+					let session = res.data;
+					setLSession({ ...lsession,password: ""});
+					
+					localStorage.clear();
+					localStorage.setItem("user", session.wmid);
+					localStorage.setItem("name", session.name);
+					localStorage.setItem("token", session.token);					
+					localStorage.setItem("capability", "PRESENTER");
+					navigate("/");
+				}).catch((e) => {document.getElementById("output-failure").style.display="inline-block"; console.log(e)});
 				break;
 				case 2:
 				axios.post(`${dbdaemon}/auth/login/attendee`,lsession).then((res)=>
-				{
-					console.log(res.data);
-					setLSession({password: ""});
-				}).catch((e) => console.log(e));				
+				{					
+					let session = res.data;
+					setLSession({ ...lsession,password: ""});					
+					localStorage.clear();
+					localStorage.setItem("user", session.wmid);
+					localStorage.setItem("name", session.name);					
+					localStorage.setItem("token", session.token);					
+					localStorage.setItem("capability", "ATTENDEE");
+					navigate("/");
+				}).catch((e) => {document.getElementById("output-failure").style.display="inline-block"; console.log(e)});				
 				break;
 				default:
 				axios.post(`${dbdaemon}/auth/login/`,lsession).then((res)=>
 				{
-					console.log(lsession);
-					console.log(res.data);
-					setLSession({password: ""});
-					console.log(lsession);
-				}).catch((e) => console.log(e));					
+					let session = res.data;
+					setLSession({ ...lsession,password: ""});
+					localStorage.clear();				
+					localStorage.setItem("name", lsession.name);
+					navigate("/");
+				}).catch((e) => navigate("/"));					
 				break;
 			}
-			
-			
-
 		};
 	
 		return(
@@ -74,9 +88,11 @@ function Login() {
 						classNamePrefix="select"
 						 options={
 							 [
-							 {value:6, label:"Guest / Anonymous Login"},
+							 
 							 {value:0, label:"Presenter"},
-							 {value:2, label:"Attendee"}]}
+							 {value:2, label:"Attendee"},
+							 {value:6, label:"Guest / Anonymous Login"}]}
+						 defaultValue={{value:0, label:"Presenter"}}
 						 onChange={(v) => setLSession({ ...lsession,role: v.value})}
 						/>
 						</div>
@@ -128,7 +144,12 @@ function Login() {
                                 </button>
                             </div>
                             </div>
-                        </div>
+
+						</div>
+						<div id="output-failure" style={{display:"none",color:"#ff253a"}} className="mt-4">
+								<div className="bg-failure">Login failed for user {lsession.username}</div><br />								
+						</div>
+						
                         </form>
                     </div>
                     </div>

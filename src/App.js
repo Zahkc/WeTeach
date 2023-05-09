@@ -45,6 +45,8 @@ function UI() {
 		  <Route exact path='/media/:id/view/3' element={<><Header/><WatchVideo/></>}/>
 
 		  <Route exact path='/media/:id/edit' element={<><Header/><EditStream/></>}/>
+		  <Route exact path='/media/:id/details' element={<><Header/><EditStream/></>}/>
+		  
 		  <Route exact path='/upload' element={<><Header/><Upload/></>}/>
 
 		  <Route path="*" element ={<><Header/><NotFound /></>}/>

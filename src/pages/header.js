@@ -11,6 +11,12 @@ function Header() {
 	  e.preventDefault();
 	  setSearchInput(e.target.value);
 	};
+	const logout = (e) => {
+		e.preventDefault();
+		localStorage.clear();
+		window.location.reload(true);
+	}
+	
 	let navigate = useNavigate();
 	const search = (e) => {
 		e.preventDefault();
@@ -53,11 +59,25 @@ function Header() {
                             <i className="fas fa-user-alt"></i>
                             </a>
                             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown" id="usermenu">
+							{/*
                                 <a className="dropdown-item" href="account.html"><i className="fas fa-fw fa-user-circle"></i> &nbsp; My Account</a>
                                 <a className="dropdown-item" href="settings.html"><i className="fas fa-fw fa-cog"></i> &nbsp; Settings</a>
-                                <div className="dropdown-divider"></div>
+							<div className="dropdown-divider"></div>*/}
+							{!(localStorage.getItem("name") === null || localStorage.getItem("name") === ""	) ? <Fragment>
+							<div className="dropdown-header" href="#" data-target="#username"><small><i className="fas fa-fw fa-user-circle"></i> &nbsp; {localStorage.getItem("name")}</small></div>
+							<div className="dropdown-divider"></div>
+							</Fragment>: null
+							}
+							
+								{
+								 !(localStorage.getItem("token") === null) ? <Fragment>
+								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-users"></i> &nbsp; Switch User</NavLink>
+								<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onClick={logout}><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a></Fragment>: 
+								
+								<Fragment>
 								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-in-alt"></i> &nbsp; Login</NavLink>
-								<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
+								</Fragment>
+								}
                             </div>
                             </li>
                         </ul>
@@ -68,7 +88,10 @@ function Header() {
                 <i className="fas fa-fw fas fas fa-film"></i>
                 &nbsp;&nbsp;<span>All Streams</span>
                 </NavLink></li>
-			<li className="element reducible"><NavLink to = "/media/new" rel="nofollow">
+			{
+				(localStorage.getItem("capability") === "PRESENTER") ?
+				
+			<Fragment><li className="element reducible"><NavLink to = "/media/new" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-podcast"></i>
                 &nbsp;&nbsp;<span>New Stream</span>
                 </NavLink></li>
@@ -80,7 +103,8 @@ function Header() {
 			<li className="element reducible"><NavLink to = "/upload" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
-                </NavLink></li>
+                </NavLink></li></Fragment>
+				: null }
 			</ul>
 
 
@@ -94,8 +118,9 @@ function Header() {
                 &nbsp;&nbsp;<span>All Streams</span>
                 </NavLink>
                 </li>
-
-                <li className="nav-item">
+				{
+				(localStorage.getItem("capability") === "PRESENTER") ?
+                <Fragment><li className="nav-item">
                 <NavLink to = "/media/new" rel="nofollow">
                 <i className="fas fa-fw fa-podcast"></i>
                 &nbsp;&nbsp;<span>New Stream</span>
@@ -115,7 +140,8 @@ function Header() {
                 <i className="fas fa-fw fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
                 </NavLink>
-                </li>
+                </li></Fragment> : null 
+				}
 
             </ul>
 			</div>

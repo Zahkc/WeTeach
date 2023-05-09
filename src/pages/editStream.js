@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import '../css/weteach-main.css';
 import { useParams } from "react-router-dom";
 import {dbdaemon} from '../components/janus/settings';
+import { useSearchParams } from "react-router-dom";
 
 class EditStream extends React.Component{
 
@@ -41,16 +42,19 @@ class EditStream extends React.Component{
 		this.setState({disciplines: mdataset.disciplines});
 		this.setState({liveStatus: mdataset.liveStatus});
 
-		if(mdataset.locked === 1 || mdataset.purged === 1 || mdataset.liveStatus === 1 || mdataset.liveStatus === 4)
+		if(mdataset.locked == 1 || mdataset.purged == 1 || mdataset.liveStatus == 1 || mdataset.liveStatus == 4 || localStorage.getItem("capability") != "PRESENTER" || (mdataset.liveStatus == 0 && localStorage.getItem("user") != mdataset.createdBy))
 		{
 			this.setState({formEnabled: false})
 		}
-		if(mdataset.liveStatus === 2)
+		if(mdataset.liveStatus == 2)
 		{
 			document.title = "WeTeach - Edit Video";
-		}
-		document.getElementById("output-success").style.display='none';
-		document.getElementById("output-failure").style.display='none';
+		}		
+		if(localStorage.getItem("capability") === "PRESENTER")
+		{
+			document.getElementById("output-success").style.display='none';
+			document.getElementById("output-failure").style.display='none';
+		}	
 		}).catch((e) => console.log(e));
 	}
 
@@ -90,7 +94,8 @@ class EditStream extends React.Component{
 		const onSubmit = (e) => {
 			e.preventDefault();
 			let mediaID = this.state.thisMedia;
-			axios.post(`${dbdaemon}/api/v1/media/${mediaID}`,this.state).then((res)=>
+			let token = localStorage.getItem("token");
+			axios.post(`${dbdaemon}/api/v1/media/${mediaID}?token=${token}`,this.state).then((res)=>
 			{
 
 				this.setState({thisMedia: mediaID});
@@ -126,17 +131,25 @@ class EditStream extends React.Component{
 		};
 
         return(
+		
          <Fragment>
 
 			<div id="content-all">
 			<div className="col-md-12">
 									<div className="main-title">
 									{
+										localStorage.getItem("capability") === "PRESENTER" ?									
+									<Fragment>
+									{
 									(this.state.liveStatus == 2) ?
 									<Fragment>
 									<h3><span className="title" id="editabletitle">Edit Video</span></h3>
 									</Fragment> :<Fragment>
 									<h3><span className="title" id="editabletitle">Edit Stream</span></h3>
+									</Fragment>
+									} </Fragment>: 
+									<Fragment>
+									<h3><span className="title" id="editabletitle">View Stream Details</span></h3>
 									</Fragment>
 									}
 									</div>

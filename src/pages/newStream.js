@@ -16,7 +16,8 @@ class NewStream extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
-		disciplines: []
+		disciplines: [],
+		user: ''
 	}
 	componentDidMount() {
 		document.title = "WeTeach - New Stream";
@@ -24,10 +25,15 @@ class NewStream extends React.Component{
 		const dataset = res.data;
 		this.setState({thisChannel: dataset[0]._id});
 		this.setState({availableDisciplines: dataset[0].disciplines});
+		this.setState({user: localStorage.getItem("user")});
 		});
 		this.setState({startDateTime: moment().utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")});
-		document.getElementById("output-success").style.display='none';
-		document.getElementById("output-failure").style.display='none';
+				
+		if(localStorage.getItem("capability") === "PRESENTER")
+		{
+			document.getElementById("output-success").style.display='none';
+			document.getElementById("output-failure").style.display='none';
+		}
 	}
 
 
@@ -39,13 +45,16 @@ class NewStream extends React.Component{
 
 		const onSubmit = (e) => {
 			e.preventDefault();
-			axios.post(`${dbdaemon}/api/v1/media`,this.state).then((res)=>
+			let token = localStorage.getItem("token");
+			axios.post(`${dbdaemon}/api/v1/media?token=${token}`,this.state).then((res)=>
 			{
 				let mediaID = res.data.insertedId;
 				this.setState({thisMedia: mediaID});
 				let channelID = this.state.thisChannel;
 				let disciplines = this.state.disciplines;
 				/* Index this object in the current channel */
+				
+				
 				axios.post(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{
 					//console.log(r.data);
@@ -83,6 +92,8 @@ class NewStream extends React.Component{
 
 
         return(
+		
+			localStorage.getItem("capability") === "PRESENTER" ?
          <Fragment>
 
 			<div id="content-all">
@@ -189,7 +200,12 @@ class NewStream extends React.Component{
 
 
             </div>
-        </Fragment>
+        </Fragment> : <Fragment><div id="content-all">
+			<div className="col-md-12"><h3>403 Access Denied</h3>
+				Whoops! You do not have permissions to perform this action!
+						</div>								
+						</div></Fragment>
+		
         );
     }
 }

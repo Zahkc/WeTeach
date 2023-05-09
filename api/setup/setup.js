@@ -32,7 +32,7 @@ db.records.insertOne({
 db.records.insertOne({
 	ssid: "public",
 	type: "USER",
-	name: "Anonynmous User",
+	name: "Anonymous User",
 	description: "Public account",
 	createdBy: 0,
 	createdDateTime: new Date(),
