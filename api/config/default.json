@@ -1,0 +1,6 @@
+{
+"MONGODB_LINUX_URL": "mongodb://localhost?serverSelectionTimeoutMS=25000",
+"MONGODB_WIN32_URL":"mongodb://127.0.0.1",
+"PRESENTER_KEY": "sm35eMKK5fAsTYRMi5kBgFaxhhzzJNoN",
+"ATTENDEE_KEY": "x6D7FmiXJQ4PPbY8KhdJ3EfTMJB4YgaD"
+}

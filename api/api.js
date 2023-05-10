@@ -1,3 +1,6 @@
+const config = require('config');
+const PRESENTER_KEY = config.get("PRESENTER_KEY");
+const ATTENDEE_KEY = config.get("ATTENDEE_KEY");
 
 const express = require("express");
 const bcrypt = require("bcryptjs");
@@ -1132,7 +1135,7 @@ graph.post("/auth/login/attendee", async (req, res) => {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
-				process.env.ATTENDEE_KEY,
+				ATTENDEE_KEY,
 				{
 				  expiresIn: "4h",
 				}
@@ -1170,7 +1173,7 @@ graph.post("/auth/login/presenter", async (req, res) => {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
-				process.env.PRESENTER_KEY,
+				PRESENTER_KEY,
 				{
 				  expiresIn: "4h",
 				}
@@ -1208,7 +1211,7 @@ graph.post("/auth/login", async (req, res) => {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
-				process.env.ATTENDEE_KEY,
+				ATTENDEE_KEY,
 				{
 				  expiresIn: "4h",
 				}
@@ -1242,7 +1245,7 @@ graph.post("/auth/login/anonymous", async (req, res) => {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
-				process.env.ATTENDEE_KEY,
+				ATTENDEE_KEY,
 				{
 				  expiresIn: "4h",
 				}
@@ -1276,7 +1279,7 @@ graph.post("/auth/login-secure/wtapp", async (req, res) => {
 
 			  const token = jwt.sign(
 				{ user_id: user._id, username },
-				process.env.PRESENTER_KEY,
+				PRESENTER_KEY,
 				{
 				  expiresIn: "4h",
 				}

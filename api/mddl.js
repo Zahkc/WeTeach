@@ -1,11 +1,13 @@
-
+const config = require('config');
 const { MongoClient } = require("mongodb");
 // Replace the placeholder with your Atlas connection string
 
+
+
 // Mac or Linux config
-const {MONGODB_LINUX_URL} = process.env;
+const MONGODB_LINUX_URL = config.get("MONGODB_LINUX_URL");
 // Windows
-const {MONGODB_WIN32_URL} = process.env;
+const MONGODB_WIN32_URL = config.get("MONGODB_WIN32_URL");
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
