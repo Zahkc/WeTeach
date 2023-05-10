@@ -1,13 +1,14 @@
-const config = require('config');
+const yenv = require('yenv');
+const config = yenv('./config.yaml');
 const { MongoClient } = require("mongodb");
 // Replace the placeholder with your Atlas connection string
 
 
 
 // Mac or Linux config
-const MONGODB_LINUX_URL = config.get("MONGODB_LINUX_URL");
+const MONGODB_LINUX_URL = config.MONGODB_LINUX_URL;
 // Windows
-const MONGODB_WIN32_URL = config.get("MONGODB_WIN32_URL");
+const MONGODB_WIN32_URL = config.MONGODB_WIN32_URL;
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version

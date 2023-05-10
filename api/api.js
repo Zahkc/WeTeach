@@ -1,6 +1,7 @@
-const config = require('config');
-const PRESENTER_KEY = config.get("PRESENTER_KEY");
-const ATTENDEE_KEY = config.get("ATTENDEE_KEY");
+const yenv = require('yenv');
+const config = yenv('./config.yaml');
+const PRESENTER_KEY = config.PRESENTER_KEY;
+const ATTENDEE_KEY = config.ATTENDEE_KEY;
 
 const express = require("express");
 const bcrypt = require("bcryptjs");
