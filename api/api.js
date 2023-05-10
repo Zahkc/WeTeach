@@ -1,5 +1,5 @@
 const yenv = require('yenv');
-const config = yenv('config.yaml');
+const config = yenv(__dirname+'/config.yaml');
 const PRESENTER_KEY = config.PRESENTER_KEY;
 const ATTENDEE_KEY = config.ATTENDEE_KEY;
 

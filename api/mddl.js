@@ -1,5 +1,5 @@
 const yenv = require('yenv');
-const config = yenv('config.yaml');
+const config = yenv(__dirname+'/config.yaml');
 const { MongoClient } = require("mongodb");
 // Replace the placeholder with your Atlas connection string
 

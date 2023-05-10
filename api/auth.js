@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const yenv = require('yenv');
-const config = yenv('config.yaml');
+const config = yenv(__dirname+'/config.yaml');
 
 const verifyToken = (req, res, next) => {
   const token = req.body.token || req.query.token || req.headers["x-access-token"];
