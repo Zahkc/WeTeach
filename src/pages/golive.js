@@ -33,7 +33,7 @@ let screenStream = null;
 let outStream = new MediaStream([]);
 let localCam = null;
 let localVid = null;
-var myusername = Janus.randomString(12);
+var myusername = Janus.randomString(12); // maybe replace with localStorage.getItem("name") === null ? Janus.randomString(12) : localStorage.getItem("name")
 var participants = {};
 var transactions = {};
 let livestream, textroom, recstream;
@@ -41,6 +41,8 @@ let stage = 0;
 let live = 0;
 let recording = 0;
 let chatbox = document.getElementById("chatbox");
+
+let mediaID = "";
 
 const chatStyle = {
   fontSize: '16px',
@@ -57,19 +59,19 @@ const chatStyle = {
 //   });
 function GoLive() {
   document.title = "WeTeach - Go Live";
-  const [janusInstance, setJanusInstance] = useState(null);
 
+var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
      const [media, setMedia] = useState({
 	        id: "",
                 name: "",
                 description: "",
                 liveStatus: -1,
                 disciplines: [],
-               	videoConferenceId: 0
-
+               	videoConferenceId: 0,
+				user: 1,
           });
           const { id } = useParams();
-	  var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
+	  
 
           useEffect(() => {
                 axios
@@ -81,15 +83,17 @@ function GoLive() {
                         description: res.data.description,
                         liveStatus: res.data.liveStatus,
                         disciplines: res.data.disciplines,
-                        videoConferenceId: res.data.videoConferenceId
-                        });
+                        videoConferenceId: res.data.videoConferenceId,
+						user: localStorage.getItem("user")
+                        });						
+						mediaID = res.data._id;
                   })
                   .catch((e) => {
                         console.log(e);
                   });
           }, [id]);
 
-
+  const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
 	/* Insert GET request axios.get or fetch.get to DB */
 
@@ -113,8 +117,8 @@ function GoLive() {
 			<div id="content-all">
 			<div className="col-md-12">
 									<div className="main-title">
-									{id === "test" ? <Fragment><h3><span className="title">Go Live Test</span></h3></Fragment> : <Fragment><h3><span className="title">{media.name}</span></h3>
-									<h6>Go Live Test</h6>
+									{id === "test" ? <Fragment><h3><span className="title">Test Your Device</span></h3></Fragment> : <Fragment><h3><span className="title">{media.name}</span></h3>
+									<h6>Go Live Interface</h6>
 									</Fragment>}
 									</div>
 
@@ -159,7 +163,7 @@ function GoLive() {
 						  <td>
 						  	<button id="recordButton" onClick={startRecording} className='btn btn-record' style={{display:"none"}}>Start Recording</button>
 						  </td>
-						  <td id="streamConcludedText" class="streamConcludedText" >
+						  <td id="streamConcludedText" className="streamConcludedText" >
 							Stream has concluded! <a href="/media/new">Click here</a> to start a new stream!
 						  </td>
 
@@ -199,7 +203,7 @@ function GoLive() {
                                              <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
                                           </p><br /></Fragment> : <Fragment>
 					 <p className="tags mb-0">
-	                                        {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
+	                                        {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={moment()+"-tag-"+k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
                                           </p><br /></Fragment>
 					}
 										  <h6>Video Conference ID:</h6>
@@ -270,6 +274,32 @@ async function stopStream(){
 
 	document.getElementById("streamConcludedText").style.visibility = " visible";
 	document.getElementById("local_vid").style.borderStyle = "hidden";
+	
+	// API STREAM END call here
+	
+	let token = localStorage.getItem("token");
+
+	let luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
+                
+	axios
+	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
+	  .then((res) => {
+
+			axios
+			.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/end?token=${token}`, JSON.stringify({"user": luser}), {headers: {'Content-Type': 'application/json'}})
+			.then((res) => {
+									
+	  })
+	  .catch((e) => {
+			console.log(e); // If DB operation POST fails
+	  });
+
+		
+	  })
+	  .catch((e) => {
+			console.log(e); // If DB operation GET fails
+	  });
+	
 }
 
 async function swapScreen(){
@@ -554,8 +584,43 @@ function startLiveStream() {
 				}});
 
 			}});
+			
+		// API START STREAM call here
+
+	
+	let token = localStorage.getItem("token");
+
+	let luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
+                
+	axios
+	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
+	  .then((res) => {
+
+			axios
+			.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/start?token=${token}`, JSON.stringify({"VCID": room, "user": luser}), {headers: {'Content-Type': 'application/json'}})
+			.then((res) => {
+									
+	  })
+	  .catch((e) => {
+			console.log(e); // Add POST error handling here
+	  });
+
+		
+	  })
+	  .catch((e) => {
+			console.log(e);// Add GET error handling here. Stream doesn't exist.
+	  });
+				
+	
+
+
+//
+		
+			
+			
 		}
 	}});
+	
 	live = 1;
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("startButton").style.display='none'

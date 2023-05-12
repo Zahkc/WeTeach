@@ -524,8 +524,8 @@ try {
 	if(hex.test(req.params.id))
 	{
 		let timestamp = new Date();
-		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", livestatus: 0, locked: 0, purged: 0};
-		let roomId = req.body.videoConferenceId;
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", liveStatus: 0, locked: 0, purged: 0};
+		let roomId = req.body.VCID;
 		let adjacentroomId = roomId + 1;
 		let db_update = {
 			$currentDate: {
@@ -533,10 +533,10 @@ try {
 			},
 			$set: {
 				liveStatus: 1,
-				videoConferenceId: req.body.videoConferenceId,
+				videoConferenceId: req.body.VCID,
 				purged: 0,
 				locked: 1,
-				transcript: req.body.videoConferenceId + '_transcript.txt',
+				transcript: req.body.VCID + '_transcript.txt',
 				lastModifiedBy: req.body.user,
 			},
 			$addToSet: {
@@ -569,19 +569,19 @@ try {
 			})
 
 			nfofilex.write("["+roomId+"] \n");
-			nfofilex.write("name = STREAM" + roomid +"\n");
+			nfofilex.write("name = STREAM" + roomId +"\n");
 			nfofilex.write("date = " + timestamp+"\n");
-			nfofilex.write("audio =" + roomid+"_audio0.mjr\n");
-			nfofilex.write("video =" + roomid+"_video1.mjr\n");
+			nfofilex.write("audio =" + roomId+"_audio0.mjr\n");
+			nfofilex.write("video =" + roomId+"_video1.mjr\n");
 
 			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
 				flags: 'a'
 			})
 
 			nfofiley.write("["+adjacentroomId+"] \n");
-			nfofiley.write("name = STREAM" + roomid +"\n");
+			nfofiley.write("name = STREAM" + roomId +"\n");
 			nfofiley.write("date = " + timestamp+"\n");
-			nfofiley.write("video = " + roomid+"_video2.mjr\n");
+			nfofiley.write("video = " + roomId+"_video2.mjr\n");
 
 			res.json(data)}).catch((e) => console.log(e));
 	}
@@ -600,16 +600,15 @@ graph.route("/api/v1/media/:id/stream/end").post(auth, async function (req, res)
 	var hex = /[0-9A-Fa-f]{24}/g;
 	if(hex.test(req.params.id))
 	{
-		let db_query = { _id: new ObjectId(req.params.id), videoConferenceId: req.body.videoConferenceId, type: "MEDIA", livestatus: 1, purged: 0};
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", liveStatus: 1, purged: 0};
 		let db_update = {
 			$currentDate: {
 				lastModifiedDateTime: true
 			},
 			$set: {
 				liveStatus: 3,
-				videoConferenceId: req.body.videoConferenceId,
 				purged: 0,
-				locked: 1,
+				locked: 0,
 				lastModifiedBy: req.body.user
 			}
 		};
@@ -623,6 +622,75 @@ graph.route("/api/v1/media/:id/stream/end").post(auth, async function (req, res)
  }
  catch (e){console.log(e); res.end(e);}
 });
+// Reset Stream
+graph.route("/api/v1/media/:id/stream/reset").post(auth, async function (req, res) {
+ try {
+	var hex = /[0-9A-Fa-f]{24}/g;
+	if(hex.test(req.params.id))
+	{
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", liveStatus: 1, purged: 0};
+		let db_update = {
+			$currentDate: {
+				lastModifiedDateTime: true
+			},
+			$set: {
+				liveStatus: 0,
+				purged: 0,
+				locked: 0,
+				lastModifiedBy: 0
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
+	else
+	{
+		res.status(400).send("Malformed request");
+	}
+ }
+ catch (e){console.log(e); res.end(e);}
+});
+
+// This logic is captured in START stream but is here in case you need to manually create NFO files.
+graph.route("/api/v1/media/:id/stream/filegen").post(auth, async function (req, res) {
+try {
+	var hex = /[0-9A-Fa-f]{24}/g;
+	if(hex.test(req.params.id))
+	{
+		let timestamp = new Date();
+		
+		let roomId = req.body.VCID;
+		let adjacentroomId = roomId + 1;
+		
+			var nfofilex = fs.createWriteStream("../data/"+roomId + ".nfo", {
+				flags: 'a'
+			})
+
+			nfofilex.write("["+roomId+"] \n");
+			nfofilex.write("name = STREAM" + roomId +"\n");
+			nfofilex.write("date = " + timestamp+"\n");
+			nfofilex.write("audio =" + roomId+"_audio0.mjr\n");
+			nfofilex.write("video =" + roomId+"_video1.mjr\n");
+
+			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
+				flags: 'a'
+			})
+
+			nfofiley.write("["+adjacentroomId+"] \n");
+			nfofiley.write("name = STREAM" + roomId +"\n");
+			nfofiley.write("date = " + timestamp+"\n");
+			nfofiley.write("video = " + roomId+"_video2.mjr\n");
+
+	}
+	else
+	{
+		res.status(400).send("Malformed request");
+	}
+ }
+ catch (e){console.log(e); res.end(e);}
+});
+
+
 
 // Update transcript to a custom file
 graph.route("/api/v1/media/:id/transcript").post(auth, async function (req, res) {
