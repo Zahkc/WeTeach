@@ -669,9 +669,9 @@ try {
  {
 	 res.status(400).send("Malformed request");
  }
- catch (e){console.log(e); res.end(e);}
-});
-
+}
+catch (e){console.log(e); res.end(e);}
+}
 
 
 // Update transcript to a custom file
