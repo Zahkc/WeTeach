@@ -2,7 +2,7 @@ const yenv = require('yenv');
 const config = yenv(__dirname+'/config.yaml');
 const PRESENTER_KEY = config.PRESENTER_KEY;
 const ATTENDEE_KEY = config.ATTENDEE_KEY;
-
+const STORAGE_LOCATION = config.STORAGE_LOCATION;
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -295,7 +295,7 @@ graph.route("/api/v1/channels").post(auth, async function (req,res) {
 		createdDateTime: timestamp,
 		lastModifiedBy: 0,
 		lastModifiedDateTime: timestamp,
-		storage_location: "/weteach/data",
+		storage_location: STORAGE_LOCATION,
 		purged: 0,
 		locked: 0
 	}
@@ -632,17 +632,21 @@ graph.route("/api/v1/media/:id/stream/reset").post(auth, async function (req, re
 
 // This logic is captured in START stream but is here in case you need to manually create NFO files.
 graph.route("/api/v1/media/:id/stream/filegen").post(auth, async function (req, res) {
-try {
 	var hex = /[0-9A-Fa-f]{24}/g;
 	if(hex.test(req.params.id))
 	{
+
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA"};
+                let db_connect = dbo.getDatabase();
+                db_connect.collection("records").findOne(db_query).then((data) => {
+
 		try {
 		let timestamp =  new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 		let roomId = req.body.VCID;
-		let adjacentroomId = roomId + 1;
+		let adjacentroomId = parseInt(roomId) + 1;
 
-			var nfofilex = fs.createWriteStream("../data/"+roomId + ".nfo", {
+			var nfofilex = fs.createWriteStream(STORAGE_LOCATION+"/"+roomId + ".nfo", {
 				flags: 'a'
 			})
 
@@ -652,7 +656,7 @@ try {
 			nfofilex.write("audio = " + roomId+"-audio-0.mjr\n");
 			nfofilex.write("video = " + roomId+"-video-1.mjr\n");
 
-			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
+			var nfofiley = fs.createWriteStream(STORAGE_LOCATION+"/"+adjacentroomId + ".nfo", {
 				flags: 'a'
 			})
 
@@ -663,15 +667,15 @@ try {
 			res.status(200).send("Success");
 		}
 		catch(e){res.status(500).send("Server error"); // lodge permissions error
+		}
+		}).catch((e) => console.log(e));
 	}
- }
- else
- {
-	 res.status(400).send("Malformed request");
- }
-}
-catch (e){console.log(e); res.end(e);}
-}
+
+	else
+	{
+		res.status(400).send("Malformed request");
+	}
+});
 
 
 // Update transcript to a custom file
