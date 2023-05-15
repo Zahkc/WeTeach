@@ -543,17 +543,17 @@ try {
 				src: {
 					$each: [ {
 						trackName: "audio",
-						href: "rec"+roomId + "_audio-0.mjr",
+						href: "rec"+roomId + "-audio-0.mjr",
 						contentType: "application/mjr"
 					},
 					{
 						trackName: "video1",
-						href: "rec"+roomId + "_video-1.mjr",
+						href: "rec"+roomId + "-video-1.mjr",
 						contentType: "application/mjr"
 					},
 					{
 						trackName: "video2",
-						href: "rec"+roomId + "_video-2.mjr",
+						href: "rec"+roomId + "-video-2.mjr",
 						contentType: "application/mjr"
 					}
 
@@ -649,8 +649,8 @@ try {
 			nfofilex.write("["+roomId+"] \n");
 			nfofilex.write("name = STREAM" + roomId +"\n");
 			nfofilex.write("date = " + timestamp+"\n");
-			nfofilex.write("audio = " + roomId+"-audio0.mjr\n");
-			nfofilex.write("video = " + roomId+"-video1.mjr\n");
+			nfofilex.write("audio = " + roomId+"-audio-0.mjr\n");
+			nfofilex.write("video = " + roomId+"-video-1.mjr\n");
 
 			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
 				flags: 'a'
@@ -659,7 +659,7 @@ try {
 			nfofiley.write("["+adjacentroomId+"] \n");
 			nfofiley.write("name = STREAM" + roomId +"\n");
 			nfofiley.write("date = " + timestamp+"\n");
-			nfofiley.write("video = " + roomId+"-video2.mjr\n");
+			nfofiley.write("video = " + roomId+"-video-2.mjr\n");
 			res.status(200).send("Success");
 		}
 		catch(e){res.status(500).send("Server error"); // lodge permissions error
