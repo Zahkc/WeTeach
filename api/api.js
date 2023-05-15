@@ -669,8 +669,8 @@ try {
 			nfofilex.write("["+roomId+"] \n");
 			nfofilex.write("name = STREAM" + roomId +"\n");
 			nfofilex.write("date = " + timestamp+"\n");
-			nfofilex.write("audio =" + roomId+"_audio0.mjr\n");
-			nfofilex.write("video =" + roomId+"_video1.mjr\n");
+			nfofilex.write("audio = " + roomId+"-audio0.mjr\n");
+			nfofilex.write("video = " + roomId+"-video1.mjr\n");
 
 			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
 				flags: 'a'
@@ -679,7 +679,7 @@ try {
 			nfofiley.write("["+adjacentroomId+"] \n");
 			nfofiley.write("name = STREAM" + roomId +"\n");
 			nfofiley.write("date = " + timestamp+"\n");
-			nfofiley.write("video = " + roomId+"_video2.mjr\n");
+			nfofiley.write("video = " + roomId+"-video2.mjr\n");
 
 	}
 	else
