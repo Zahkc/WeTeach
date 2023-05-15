@@ -562,28 +562,7 @@ try {
 			}
 		};
 		let db_connect = dbo.getDatabase();
-		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {
-
-			var nfofilex = fs.createWriteStream("../data/"+roomId + ".nfo", {
-				flags: 'a'
-			})
-
-			nfofilex.write("["+roomId+"] \n");
-			nfofilex.write("name = STREAM" + roomId +"\n");
-			nfofilex.write("date = " + timestamp+"\n");
-			nfofilex.write("audio = " + roomId+"-audio0.mjr\n");
-			nfofilex.write("video = " + roomId+"-video1.mjr\n");
-
-			var nfofiley = fs.createWriteStream("../data/"+adjacentroomId + ".nfo", {
-				flags: 'a'
-			})
-
-			nfofiley.write("["+adjacentroomId+"] \n");
-			nfofiley.write("name = STREAM" + roomId +"\n");
-			nfofiley.write("date = " + timestamp+"\n");
-			nfofiley.write("video = " + roomId+"-video2.mjr\n");
-
-			res.json(data)}).catch((e) => console.log(e));
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
 	}
 	else
 	{
@@ -657,6 +636,7 @@ try {
 	var hex = /[0-9A-Fa-f]{24}/g;
 	if(hex.test(req.params.id))
 	{
+		try {
 		let timestamp =  new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 		let roomId = req.body.VCID;
@@ -680,7 +660,9 @@ try {
 			nfofiley.write("name = STREAM" + roomId +"\n");
 			nfofiley.write("date = " + timestamp+"\n");
 			nfofiley.write("video = " + roomId+"-video2.mjr\n");
-
+			res.status(200).send("Success");
+		}
+		catch(e){res.status(500).send("Server error"); // lodge permissions error
 	}
 	else
 	{
