@@ -664,10 +664,10 @@ try {
 		}
 		catch(e){res.status(500).send("Server error"); // lodge permissions error
 	}
-	else
-	{
-		res.status(400).send("Malformed request");
-	}
+ }
+ else
+ {
+	 res.status(400).send("Malformed request");
  }
  catch (e){console.log(e); res.end(e);}
 });
