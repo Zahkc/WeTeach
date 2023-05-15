@@ -7,8 +7,8 @@ export const server = "https://weteach.ddns.net:8089/janus";
 // Change when dev testing API on localhost
 export const mediaserver = "https://weteach.ddns.net/";
 
-export const dbdaemon = process.env.NODE_ENV === "production" ? "https://weteach.ddns.net/" : "http://localhost:5000";
-export const uploaddaemon = process.env.NODE_ENV === "production" ? "https://weteach.ddns.net/ds/" : "http://localhost:5002";
+export const dbdaemon = "https://weteach.ddns.net/";
+export const uploaddaemon = "https://weteach.ddns.net/ds/";
 
 
 // For future load scaling

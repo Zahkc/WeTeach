@@ -658,10 +658,10 @@ try {
 	if(hex.test(req.params.id))
 	{
 		let timestamp = new Date();
-		
+
 		let roomId = req.body.VCID;
 		let adjacentroomId = roomId + 1;
-		
+
 			var nfofilex = fs.createWriteStream("../data/"+roomId + ".nfo", {
 				flags: 'a'
 			})
@@ -1233,7 +1233,7 @@ graph.post("/auth/login/presenter", async (req, res) => {
   try {
     // Get user input
     const { username, password } = req.body;
-	
+
 	let db_query = { username: req.body.username, type: "USER" };
 	let db_connect = dbo.getDatabase();
 	db_connect.collection("records").findOne(db_query).then((user) => {

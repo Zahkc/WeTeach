@@ -38,10 +38,7 @@ function WatchVOD() {
  document.title = "WeTeach - Watch Stream Playback";
   const inputRef = useRef(null);
 
- function handleClick() {
-   room = parseInt(inputRef.current.value);
-	 startVOD();
- }
+
 
   params=useParams(); // not needed
 
@@ -70,6 +67,12 @@ function WatchVOD() {
 			startDateTime: res.data.startDateTime,
 			videoConferenceID: res.data.videoConferenceId,
                         });
+												axios.get(`${dbdaemon}/api/v1/media/${id}`).then(res => {
+													room = res.data.videoConferenceId;
+													console.log("Found room id: " + room);
+													startVOD();
+													//fill out other dataspots
+												}).catch((e) => console.log(e));
                   })
                   .catch((e) => {
                         console.log(e);
@@ -123,9 +126,6 @@ function WatchVOD() {
 							<table><tbody>
                             <tr>
                               <td>
-                              <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-                              <button className="btn btn-primary" onClick={handleClick} id="connect">connect</button>
-                              <button className="btn btn-primary" onClick={leaveStream} id="disconnect">disconnect</button>
                               </td>
                             </tr></tbody>
                           </table>

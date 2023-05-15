@@ -23,7 +23,7 @@ import screenshareOffSwap from '../assets/img/Screenshare-Swap.png';
 import {dbdaemon} from '../components/janus/settings'
 import { func } from 'prop-types';
 let camStream = null;
-let janusInstance, setJanusInstance, janus, chanus;
+let janus, chanus;
 var opaqueId = "screensharingtest-"+Janus.randomString(12);
 var capture, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
@@ -33,7 +33,7 @@ let screenStream = null;
 let outStream = new MediaStream([]);
 let localCam = null;
 let localVid = null;
-var myusername = Janus.randomString(12); // maybe replace with localStorage.getItem("name") === null ? Janus.randomString(12) : localStorage.getItem("name")
+var myusername; // maybe replace with localStorage.getItem("name") === null ? Janus.randomString(12) : localStorage.getItem("name")
 var participants = {};
 var transactions = {};
 let livestream, textroom, recstream;
@@ -41,26 +41,17 @@ let stage = 0;
 let live = 0;
 let recording = 0;
 let chatbox = document.getElementById("chatbox");
+let token, luser;
 
 let mediaID = "";
 
 const chatStyle = {
   fontSize: '16px',
 };
-// This is for the spinner. It needs to be in watchStream and watchVideo too. I don't know where to put it here for now
-// const video = document.getElementById('local_vid');
-// const spinnerObj = document.querySelector('.spinner');
-// video.addEventListener('loadstart', () => {
-// 	spinnerObj.style.display = 'block';
-//   });
-
-//   video.addEventListener('canplaythrough', () => {
-// 	spinnerObj.style.display = 'none';
-//   });
 function GoLive() {
   document.title = "WeTeach - Go Live";
 
-var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
+	var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
      const [media, setMedia] = useState({
 	        id: "",
                 name: "",
@@ -71,7 +62,9 @@ var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
 				user: 1,
           });
           const { id } = useParams();
-	  
+					token = localStorage.getItem("token");
+					luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
+					myusername = localStorage.getItem("name") + "#" + localStorage.getItem("user");
 
           useEffect(() => {
                 axios
@@ -85,7 +78,7 @@ var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
                         disciplines: res.data.disciplines,
                         videoConferenceId: res.data.videoConferenceId,
 						user: localStorage.getItem("user")
-                        });						
+                        });
 						mediaID = res.data._id;
                   })
                   .catch((e) => {
@@ -93,11 +86,11 @@ var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
                   });
           }, [id]);
 
-  const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
 	/* Insert GET request axios.get or fetch.get to DB */
 
     getMedia();
+		document.getElementById("startButton").disabled = true;
     initJanus();
 		document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
 		document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
@@ -274,13 +267,13 @@ async function stopStream(){
 
 	document.getElementById("streamConcludedText").style.visibility = " visible";
 	document.getElementById("local_vid").style.borderStyle = "hidden";
-	
+
 	// API STREAM END call here
-	
+
 	let token = localStorage.getItem("token");
 
 	let luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
-                
+
 	axios
 	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
 	  .then((res) => {
@@ -288,18 +281,18 @@ async function stopStream(){
 			axios
 			.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/end?token=${token}`, JSON.stringify({"user": luser}), {headers: {'Content-Type': 'application/json'}})
 			.then((res) => {
-									
+
 	  })
 	  .catch((e) => {
 			console.log(e); // If DB operation POST fails
 	  });
 
-		
+
 	  })
 	  .catch((e) => {
 			console.log(e); // If DB operation GET fails
 	  });
-	
+
 }
 
 async function swapScreen(){
@@ -401,6 +394,54 @@ function initJanus(){
 							var body = { request: "setup" };
 							Janus.debug("Sending message:", body);
 							livestream.send({ message: body });
+
+							janus.attach({
+								plugin: "janus.plugin.textroom",
+								opaqueId: opaqueId,
+								success: function(chatHandle) {
+									textroom = chatHandle;
+									console.log("-- Chatroom Plugin Loaded --");
+									let body = { request: "setup" };
+									Janus.debug("Sending message:", body);
+									textroom.send({ message: body });
+									document.getElementById("startButton").disabled = false;
+								},
+								error: function(error){console.error(error)},
+								onmessage: function(msg, jsep) {
+									if(jsep) {
+										// Answer
+										textroom.createAnswer(
+											{
+												jsep: jsep,
+												// We only use datachannels
+												tracks: [
+													{ type: 'data' }
+												],
+												success: function(jsep) {
+													Janus.debug("Got SDP!", jsep);
+													let body = { request: "ack" };
+													textroom.send({ message: body, jsep: jsep });
+												},
+												error: function(error) {
+													Janus.error("WebRTC error:", error);
+												}
+											});
+									}
+								},
+								ondataopen: function(label, protocol){
+									console.log("Datachannel Open");
+								},
+								ondata: function(data) {
+									console.log("Data Recived: " + data);
+									if(JSON.parse(data)["textroom"] == "message"){
+										chatbox = document.getElementById("chatbox");
+										chatbox.value += (formatChatMsg(data)+"\n");
+										chatbox.scrollTop = chatbox.scrollHeight;
+									}
+								}
+							});
+
+
           },
           error: function(error) {console.error(error)},
           onmessage: function(msg, jsep) {
@@ -415,9 +456,6 @@ function initJanus(){
                 Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
                 Janus.debug("Negotiating WebRTC stream for our screen (capture " + capture + ")");
 
-                if(Janus.webRTCAdapter.browserDetails.browser === "safari") {
-                  console.log("Rip Apple users");
-                } else {
 									if (screenStream == null) {
 										livestream.createOffer({
 											tracks: [
@@ -455,8 +493,6 @@ function initJanus(){
 										});
 									}
 
-                }
-
               } else if(msg["error"]) {
                   console.error(msg["error"]);
                 }
@@ -476,57 +512,55 @@ function initJanus(){
           }
         });
 
-				janus.attach({
-					plugin: "janus.plugin.textroom",
-          opaqueId: opaqueId,
-					success: function(chatHandle) {
-						textroom = chatHandle;
-						console.log("-- Chatroom Plugin Loaded --");
-						let body = { request: "setup" };
-						Janus.debug("Sending message:", body);
-						textroom.send({ message: body });
-					},
-					error: function(error){console.error(error)},
-					onmessage: function(msg, jsep) {
-						if(jsep) {
-							// Answer
-							textroom.createAnswer(
-								{
-									jsep: jsep,
-									// We only use datachannels
-									tracks: [
-										{ type: 'data' }
-									],
-									success: function(jsep) {
-										Janus.debug("Got SDP!", jsep);
-										let body = { request: "ack" };
-										textroom.send({ message: body, jsep: jsep });
-									},
-									error: function(error) {
-										Janus.error("WebRTC error:", error);
-									}
-								});
-						}
-					},
-					ondataopen: function(label, protocol){
-						console.log("Datachannel Open");
-					},
-					ondata: function(data) {
-						console.log("Data Recived: " + data);
-						if(JSON.parse(data)["textroom"] == "message"){
-							chatbox = document.getElementById("chatbox");
-							chatbox.value += (formatChatMsg(data)+"\n");
-							chatbox.scrollTop = chatbox.scrollHeight;
-						}
-					}
-				});
+
+
       },
       error: function(error) {
         Janus.error(error);
-                    setJanusInstance(null);
+        janus = null;
+				camStream = null;
+				vidStream = null;
+				axios
+					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
+					.then((res) => {
+
+						axios
+						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/start?token=${token}`, JSON.stringify({"user": luser}), {headers: {'Content-Type': 'application/json'}})
+						.then((res) => {
+
+					})
+					.catch((e) => {
+						console.log(e); // Add POST error handling here
+					});
+
+
+					})
+					.catch((e) => {
+						console.log(e);// Add GET error handling here. Stream doesn't exist.
+					});
+
       },
       destroyed: function() {
-                    setJanusInstance(null);
+				janus = null;
+				axios
+					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
+					.then((res) => {
+
+						axios
+						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/stop?token=${token}`, JSON.stringify({"user": luser}), {headers: {'Content-Type': 'application/json'}})
+						.then((res) => {
+
+					})
+					.catch((e) => {
+						console.log(e); // Add POST error handling here
+					});
+
+
+					})
+					.catch((e) => {
+						console.log(e);// Add GET error handling here. Stream doesn't exist.
+					});
+
       }
             });
 
@@ -553,7 +587,6 @@ function startLiveStream() {
 			room = result["room"];
 			Janus.log("Screen sharing session created: " + room);
 			document.getElementById("codeDisp").value = room;
-			myusername = Janus.randomString(12);
 			var register = {
 				request: "join",
 				room: room,
@@ -584,14 +617,11 @@ function startLiveStream() {
 				}});
 
 			}});
-			
+
 		// API START STREAM call here
 
-	
-	let token = localStorage.getItem("token");
 
-	let luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
-                
+
 	axios
 	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
 	  .then((res) => {
@@ -599,28 +629,28 @@ function startLiveStream() {
 			axios
 			.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/start?token=${token}`, JSON.stringify({"VCID": room, "user": luser}), {headers: {'Content-Type': 'application/json'}})
 			.then((res) => {
-									
+
 	  })
 	  .catch((e) => {
 			console.log(e); // Add POST error handling here
 	  });
 
-		
+
 	  })
 	  .catch((e) => {
 			console.log(e);// Add GET error handling here. Stream doesn't exist.
 	  });
-				
-	
+
+
 
 
 //
-		
-			
-			
+
+
+
 		}
 	}});
-	
+
 	live = 1;
 	document.getElementById("startButton").disabled = true;
 	document.getElementById("startButton").style.display='none'
@@ -645,6 +675,8 @@ function startRecording(){
 			success: function(){
 				console.log("Sent end record publish request")
 				recording = 0;
+				document.getElementById("recordButton").innerText = "Start Recording";
+
 			}
 		});
 	} else {
@@ -660,6 +692,25 @@ function startRecording(){
 			success: function(){
 				console.log("Sent record publish request")
 				recording = 1;
+
+				axios
+					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
+					.then((res) => {
+						axios
+						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/filegen?token=${token}`, JSON.stringify({"VCID": room}), {headers: {'Content-Type': 'application/json'}})
+						.then((res) => {
+					})
+					.catch((e) => {
+						console.log(e); // Add POST error handling here
+					});
+					})
+					.catch((e) => {
+						console.log(e);// Add GET error handling here. Stream doesn't exist.
+					});
+
+
+				document.getElementById("recordButton").innerText = "Stop Recording";
+
 			}
 		});
 

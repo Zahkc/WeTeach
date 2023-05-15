@@ -20,7 +20,7 @@ var opaqueId = "screensharingtest-"+Janus.randomString(12);
 var remoteFeed, screentest, room, role, myid, source, spinner, roomid;
 var localTracks = {}, localVideos = 0,
 	remoteTracks = {}, remoteVideos = 0;
-var myusername = Janus.randomString(12);
+var myusername;
 let textroom;
 let stage = 0;
 let localVid;
@@ -46,6 +46,7 @@ function WatchLive() {
  }
 
   params=useParams(); // not needed
+	myusername = localStorage.getItem("name") + "#" + localStorage.getItem("user");
 
 const [media, setMedia] = useState({
                 id: "",
