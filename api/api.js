@@ -671,7 +671,7 @@ try {
  }
 }
 catch (e){console.log(e); res.end(e);}
-}
+});
 
 
 // Update transcript to a custom file
