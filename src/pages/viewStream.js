@@ -96,9 +96,7 @@ const [media, setMedia] = useState({
     <Fragment>
       <div id="content-all">
 			<div className="col-md-12">
-									<div className="main-title">
-									<h3><span className="title">{media.name}</span></h3>
-									</div>
+
 
 			</div><br />
 
@@ -123,15 +121,6 @@ const [media, setMedia] = useState({
               onPause={handlePause}
               onPlay={handlePlay}
               ></video>
-							<table><tbody>
-                            <tr>
-                              <td>
-                              <input type="text" ref={inputRef} id="title" placeholder="Enter Session ID"></input>
-                              <button className="btn btn-primary" onClick={handleClick} id="connect">connect</button>
-                              <button className="btn btn-primary" onClick={leaveStream} id="disconnect">disconnect</button>
-                              </td>
-                            </tr></tbody>
-                          </table>
 						</div>
 
 
@@ -153,10 +142,14 @@ const [media, setMedia] = useState({
 
 						 </div></div>
 
-
+						 <div className="main-title">
+						 <h3><span className="title">{media.name}</span></h3>
+						 </div>
 						 <div className="single-video-info-content box mb-3">
+						 															<h6>Streamed By:</h6>
+																					<p>{media.createdBy}</p>
                                           <p>{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD, yyyy H:mm')}</p>
-                                          <h6>About:</h6>
+                                          <h6>Description:</h6>
                                           <p>{media.description}
                                           </p>
                                           <h6>Disciplines:</h6>
@@ -302,11 +295,8 @@ async function initJanus(){
                   // One of the publishers has gone away?
                   var leaving = msg["leaving"];
                   Janus.log("Publisher left: " + leaving);
-                  if(role === "listener" && msg["leaving"] === source) {
-                    console.log("The screen sharing session is over, the publisher left", function() {
-                      window.location.reload();
-                    });
-                  }
+									janus.destroy();
+									janus = null;
                 } else if(msg["error"]) {
                   console.error(msg["error"]);
                 }
@@ -320,10 +310,12 @@ async function initJanus(){
       },
       error: function(error) {
         Janus.error(error);
-                    setJanusInstance(null);
+				janus.destroy();
+        janus = null;
       },
       destroyed: function() {
-                    setJanusInstance(null);
+				janus.destroy();
+				janus = null;
       }
             });
     }});

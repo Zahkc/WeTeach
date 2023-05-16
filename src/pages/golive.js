@@ -227,11 +227,15 @@ function displayMedia(){
 	if (stage == 0) {
 		localCam.srcObject = null;
 		localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-		screenStream.getVideoTracks()[0].enabled = false;
+		if (screenStream != null) {
+			screenStream.getVideoTracks()[0].enabled = false;
+		}
 	} else {
 		localVid.srcObject = new MediaStream([screenStream.getVideoTracks()[0]]);
 		localCam.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
-		screenStream.getVideoTracks()[0].enabled = true;
+		if (screenStream != null) {
+			screenStream.getVideoTracks()[0].enabled = true;
+		}
 	}
 }
 
@@ -298,7 +302,6 @@ async function stopStream(){
 async function swapScreen(){
 	stage = 1;
 	try {
-
 		if (screenStream == null && live == 0) {
 			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 		} else if(screenStream == null && live == 1){
@@ -693,12 +696,14 @@ function startRecording(){
 				console.log("Sent record publish request")
 				recording = 1;
 
+				console.log("ATTEMPING NFO WRITE");
 				axios
 					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
 					.then((res) => {
 						axios
 						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/filegen?token=${token}`, JSON.stringify({"VCID": room}), {headers: {'Content-Type': 'application/json'}})
 						.then((res) => {
+							console.log("WRITTEN NFO FILE");
 					})
 					.catch((e) => {
 						console.log(e); // Add POST error handling here
