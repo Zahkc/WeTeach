@@ -16,10 +16,11 @@ class NewStream extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
+		sponsor: '',
 		disciplines: [],
 		user: '',
-		author: "",
-		sponsor: "",
+		author: '',
+		
 	}
 	componentDidMount() {
 		document.title = "WeTeach - New Stream";
@@ -148,7 +149,7 @@ class NewStream extends React.Component{
                                     type="text"
                                     placeholder="Enter authors of academic resources here"
                                     id="e3"
-                                    className="form-control" required="1"
+                                    className="form-control"
 									autoComplete="off"
 									onChange={onChange}
                                     />

@@ -503,6 +503,27 @@ div.dropdown-menu
  .text-primary{
      color: #ff516b !important;
 }
+ .highlight{
+     color: #ff516b !important;
+}
+
+.video-metadata {
+	 font-size: 15px;
+	 display:table-row	!important;
+	 height:35px	 !important;
+}
+.video-metadata-key {
+     color: #ff516b !important;
+	 min-width: 180px !important;
+}
+.video-metadata-key i {
+     width:17px;
+}
+
+.video-metadata span {
+	 display:table-cell	!important;
+}
+
  .progress-bar{
      background-color: #ff516b;
 }

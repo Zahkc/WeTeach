@@ -53,13 +53,17 @@ function GoLive() {
 
 	var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
      const [media, setMedia] = useState({
-	        id: "",
+				id: "",
                 name: "",
                 description: "",
                 liveStatus: -1,
+				startDateTime: "",
+				sponsor: "",
                 disciplines: [],
                	videoConferenceId: 0,
 				user: 1,
+				author: "",
+				
           });
           const { id } = useParams();
 					token = localStorage.getItem("token");
@@ -77,7 +81,9 @@ function GoLive() {
                         liveStatus: res.data.liveStatus,
                         disciplines: res.data.disciplines,
                         videoConferenceId: res.data.videoConferenceId,
-						user: localStorage.getItem("user")
+						user: localStorage.getItem("user"),
+						author: res.data.createdByName,
+						sponsor: res.data.sponsoredByName
                         });
 						mediaID = res.data._id;
                   })
@@ -183,23 +189,24 @@ function GoLive() {
 							</div>
 
 						 </div></div>
-
-
+						 {id === "test" ? null :
+						 <Fragment>
+						 <p className="tags mb-0">
+                                          {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
+                                          </p><br /><br />
+						 </Fragment> }
 						 <div className="single-video-info-content box mb-3">
-                                          <p>{/*Stream Date & Time*/}</p>
-                                          <h6>About:</h6>
-                                          <p>{id === "test" ? "Test your camera for live streaming here" : media.description}  </p>
-                                          <h6>Disciplines:</h6>
-					{(id === "test") ? <Fragment>
-                                          <p className="tags mb-0">
-                                             <span><a href="#v">IT</a></span>&nbsp;&nbsp;
-                                             <span><a href="#v">Computing</a></span>&nbsp;&nbsp;
-                                          </p><br /></Fragment> : <Fragment>
-					 <p className="tags mb-0">
-	                                        {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={moment()+"-tag-"+k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
-                                          </p><br /></Fragment>
-					}
-										  <h6>Video Conference ID:</h6>
+						 {id === "test" ? <Fragment><p>Test your camera for live streaming here</p></Fragment> : <Fragment>
+						 <h6>Stream Details:</h6>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>										   
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>										  
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-book-reader"></i>&nbsp;&nbsp;Content Creators:</span>&nbsp;&nbsp;{media.sponsor}</p>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-calendar-alt"></i>&nbsp;&nbsp;Scheduled Date:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD yyyy')}</p>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>						              
+						 <br /></Fragment>
+						 }
+						 
+						  <h6>Video Conference ID:</h6>
 
 										  <input type="text" disabled="1" id="codeDisp" defaultValue="Room Code"/>
 						 </div>

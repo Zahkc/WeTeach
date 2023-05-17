@@ -1,4 +1,4 @@
-import React, { Fragment,Component} from 'react';
+import React, { Fragment} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
@@ -7,7 +7,6 @@ import moment from 'moment-timezone';
 import '../css/weteach-main.css';
 import { useParams } from "react-router-dom";
 import {dbdaemon} from '../components/janus/settings';
-import { useSearchParams } from "react-router-dom";
 
 class EditStream extends React.Component{
 
@@ -44,11 +43,11 @@ class EditStream extends React.Component{
 		this.setState({disciplines: mdataset.disciplines});
 		this.setState({liveStatus: mdataset.liveStatus});
 
-		if(mdataset.locked == 1 || mdataset.purged == 1 || mdataset.liveStatus == 1 || mdataset.liveStatus == 4 || localStorage.getItem("capability") != "PRESENTER" || (mdataset.liveStatus == 0 && localStorage.getItem("user") != mdataset.createdBy))
+		if(mdataset.locked === 1 || mdataset.purged === 1 || mdataset.liveStatus === 1 || mdataset.liveStatus === 4 || localStorage.getItem("capability") !== "PRESENTER" || (mdataset.liveStatus === 0 && localStorage.getItem("user") !== mdataset.createdBy))
 		{
 			this.setState({formEnabled: false})
 		}
-		if(mdataset.liveStatus == 2)
+		if(mdataset.liveStatus === 2)
 		{
 			document.title = "WeTeach - Edit Video";
 		}
@@ -74,8 +73,7 @@ class EditStream extends React.Component{
 			{
 
 				this.setState({thisMedia: mediaID});
-				let channelID = this.state.thisChannel;
-				let disciplines = this.state.disciplines;
+				let channelID = this.state.thisChannel;				
 
 				/* Un-Index this object in the current channel */
 				axios.delete(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
@@ -143,7 +141,7 @@ class EditStream extends React.Component{
 										localStorage.getItem("capability") === "PRESENTER" ?
 									<Fragment>
 									{
-									(this.state.liveStatus == 2) ?
+									(this.state.liveStatus === 2) ?
 									<Fragment>
 									<h3><span className="title" id="editabletitle">Edit Video</span></h3>
 									</Fragment> :<Fragment>
@@ -226,23 +224,23 @@ class EditStream extends React.Component{
 								}
                                 </div>
                                 </div>
-												</div><div className="row">
-				<div className="col-xl-3 col-sm-6 mb-3">
+								</div><div className="row">
+								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
                                     <label htmlFor="sponsor">Resource Contributers</label>
 					{
-                                                                        this.state.formEnabled ?
-					<Fragment>
+								this.state.formEnabled ?
+									<Fragment>
                                     <input name="sponsor"
                                     type="text"
-				defaultValue={this.state.sponsor}
+									defaultValue={this.state.sponsor}
                                     placeholder={this.state.sponsor}
                                     id="e3"
-                                    className="form-control" required="1"
-                                                                        autoComplete="off"
-                                                                        onChange={onChange}
-                                    /></Fragment>: <Fragment>
-					<Fragment>
+                                    className="form-control"
+									autoComplete="off"
+									onChange={onChange}
+                                    /></Fragment>:
+									<Fragment>
                                     <input name="sponsor"
                                     type="text"
                                     value={this.state.sponsor}
@@ -250,12 +248,8 @@ class EditStream extends React.Component{
                                     className="form-control" required="1" disabled
                                     /></Fragment>
 					}
-
-                                </div>
-                                </div>
-
-
-
+                                </div>   
+								</div>
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
@@ -315,11 +309,11 @@ class EditStream extends React.Component{
 									this.state.formEnabled ?
 								<Fragment>
 								<div className="row" id="submit-buttons">
-								<div className="col-xl-3 col-sm-6 mb-3">
+								<div className="col-xl-12 col-sm-6 mb-3">
                                 <div className="form-group">
 								<div className="restyled-area mt-3">
 								{
-									(this.state.liveStatus == 2) ?
+									(this.state.liveStatus === 2) ?
 									<Fragment>
 								<button type="submit" className="btn btn-primary" formTarget="_self">Update Video</button>&nbsp;&nbsp;
 
@@ -332,7 +326,8 @@ class EditStream extends React.Component{
 								</Fragment>
 								}
 
-								<button type="reset" className="btn btn-secondary">Reset</button>
+								<button type="reset" className="btn btn-secondary">Reset</button>&nbsp;&nbsp;
+								
 								</div>
 								</div>
 								</div></div>
@@ -349,9 +344,11 @@ class EditStream extends React.Component{
                                 <div className="form-group">
 						<div id="output-failure" style={{display:"none"}}>
 								<div className="bg-failure">Stream failed to updated</div><br />
+								<Link to="/" className="btn btn-secondary">Retry Later</Link>
 						</div>
 						<div id="output-success" style={{display:"none"}}>
 								<div className="bg-success">Stream successfully updated!</div><br />
+								<Link to="/" className="btn btn-secondary">Return to All Streams</Link>
 						</div>
 						</div>
 								</div>

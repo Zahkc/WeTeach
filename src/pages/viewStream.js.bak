@@ -147,7 +147,7 @@ const [media, setMedia] = useState({
 							</div>
 
 						 </div></div>
-						 <div className="main-title">											
+						 <div className="main-title"><br />												
 									<h3><span className="title">{media.name}</span></h3>																		
 									
 									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className={`live${media.liveStatus}`}></div><br />

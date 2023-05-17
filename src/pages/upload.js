@@ -175,9 +175,9 @@ class VideoUpload extends React.Component{
                                     type="text"
                                     placeholder="Enter authors of academic resources here"
                                     id="e3"
-                                    className="form-control" required="1"
-                                                                        autoComplete="off"
-                                                                        onChange={onChange}
+                                    className="form-control" 
+									autoComplete="off"
+									onChange={onChange}
                                     />
                                 </div>
                                 </div>

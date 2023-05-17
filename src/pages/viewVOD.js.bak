@@ -151,8 +151,8 @@ function WatchVOD() {
 						 </div></div>
 						 <div className="main-title">												
 									<h3><span className="title">{media.name}</span></h3>																		
-									
-									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live3"></div>
+									</div>
+									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live3">
 						 <p className="tags mb-0">
                                           {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
                                           </p><br /><br />
