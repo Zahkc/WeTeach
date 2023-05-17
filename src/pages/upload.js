@@ -17,8 +17,11 @@ class VideoUpload extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
+		sponsor: '',
 		disciplines: [],
 		files: undefined,
+		user: '',
+		author: '',
 
 	}
 	componentDidMount() {
@@ -27,6 +30,9 @@ class VideoUpload extends React.Component{
 		const dataset = res.data;
 		this.setState({thisChannel: dataset[0]._id});
 		this.setState({availableDisciplines: dataset[0].disciplines});
+		this.setState({user: localStorage.getItem("user")});
+		this.setState({author: localStorage.getItem("name")});
+
 		});
 		this.setState({startDateTime: moment().utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")});
 		if(localStorage.getItem("capability") === "PRESENTER")
@@ -51,7 +57,7 @@ class VideoUpload extends React.Component{
 			var formData = new FormData();
 			console.log(this.state.files);
 			formData.append("files", this.state.files[0]);
-			
+
 			if(localStorage.getItem("token") === null)
 			{
 				document.getElementById("output-success").style.display='none';
@@ -64,11 +70,11 @@ class VideoUpload extends React.Component{
 			{
 				let fileSubmission = res.data;
 				let jsonData = this.state;
-				
+
 				jsonData.href = fileSubmission.href;
 				jsonData.contentType = fileSubmission.contentType;
 				let token = localStorage.getItem("token");
-			
+
 			axios.post(`${dbdaemon}/api/v1/media/upload?token=${token}`,jsonData).then((res)=>
 			{
 
@@ -161,6 +167,22 @@ class VideoUpload extends React.Component{
                                     />
                                 </div>
                                 </div>
+				</div><div className="row">
+                                <div className="col-xl-3 col-sm-6 mb-3">
+                                <div className="form-group">
+                                    <label htmlFor="sponsor">Resource Contributers</label>
+                                    <input name="sponsor"
+                                    type="text"
+                                    placeholder="Enter authors of academic resources here"
+                                    id="e3"
+                                    className="form-control" required="1"
+                                                                        autoComplete="off"
+                                                                        onChange={onChange}
+                                    />
+                                </div>
+                                </div>
+
+
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">

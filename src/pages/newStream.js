@@ -17,7 +17,9 @@ class NewStream extends React.Component{
 		description: '',
 		startDateTime: '',
 		disciplines: [],
-		user: ''
+		user: '',
+		author: "",
+		sponsor: "",
 	}
 	componentDidMount() {
 		document.title = "WeTeach - New Stream";
@@ -26,9 +28,11 @@ class NewStream extends React.Component{
 		this.setState({thisChannel: dataset[0]._id});
 		this.setState({availableDisciplines: dataset[0].disciplines});
 		this.setState({user: localStorage.getItem("user")});
+		this.setState({author: localStorage.getItem("name")});
+
 		});
 		this.setState({startDateTime: moment().utc().format("YYYY-MM-DD[T]hh:mm:00[Z]")});
-				
+
 		if(localStorage.getItem("capability") === "PRESENTER")
 		{
 			document.getElementById("output-success").style.display='none';
@@ -53,8 +57,8 @@ class NewStream extends React.Component{
 				let channelID = this.state.thisChannel;
 				let disciplines = this.state.disciplines;
 				/* Index this object in the current channel */
-				
-				
+
+
 				axios.post(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{
 					//console.log(r.data);
@@ -92,7 +96,7 @@ class NewStream extends React.Component{
 
 
         return(
-		
+
 			localStorage.getItem("capability") === "PRESENTER" ?
          <Fragment>
 
@@ -130,6 +134,20 @@ class NewStream extends React.Component{
                                     type="text"
                                     placeholder="Enter description for stream here"
                                     id="e2"
+                                    className="form-control" required="1"
+									autoComplete="off"
+									onChange={onChange}
+                                    />
+                                </div>
+                                </div>
+				</div><div className="row">
+                                <div className="col-xl-3 col-sm-6 mb-3">
+                                <div className="form-group">
+                                    <label htmlFor="sponsor">Resource Contributers</label>
+                                    <input name="sponsor"
+                                    type="text"
+                                    placeholder="Enter authors of academic resources here"
+                                    id="e3"
                                     className="form-control" required="1"
 									autoComplete="off"
 									onChange={onChange}
@@ -203,9 +221,9 @@ class NewStream extends React.Component{
         </Fragment> : <Fragment><div id="content-all">
 			<div className="col-md-12"><h3>403 Access Denied</h3>
 				Whoops! You do not have permissions to perform this action!
-						</div>								
+						</div>
 						</div></Fragment>
-		
+
         );
     }
 }

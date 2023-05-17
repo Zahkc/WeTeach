@@ -18,9 +18,10 @@ class EditStream extends React.Component{
 		name: '',
 		description: '',
 		startDateTime: '',
+		sponsor: '',
 		disciplines: [],
 		liveStatus: 0,
-		formEnabled: true
+		formEnabled: true,
 	}
 	componentDidMount() {
 		document.title = "WeTeach - Edit Stream";
@@ -39,6 +40,7 @@ class EditStream extends React.Component{
 		this.setState({description: mdataset.description});
 
 		this.setState({startDateTime: mdataset.startDateTime});
+		this.setState({sponsor: mdataset.sponsoredByName});
 		this.setState({disciplines: mdataset.disciplines});
 		this.setState({liveStatus: mdataset.liveStatus});
 
@@ -49,12 +51,12 @@ class EditStream extends React.Component{
 		if(mdataset.liveStatus == 2)
 		{
 			document.title = "WeTeach - Edit Video";
-		}		
+		}
 		if(localStorage.getItem("capability") === "PRESENTER")
 		{
 			document.getElementById("output-success").style.display='none';
 			document.getElementById("output-failure").style.display='none';
-		}	
+		}
 		}).catch((e) => console.log(e));
 	}
 
@@ -131,14 +133,14 @@ class EditStream extends React.Component{
 		};
 
         return(
-		
+
          <Fragment>
 
 			<div id="content-all">
 			<div className="col-md-12">
 									<div className="main-title">
 									{
-										localStorage.getItem("capability") === "PRESENTER" ?									
+										localStorage.getItem("capability") === "PRESENTER" ?
 									<Fragment>
 									{
 									(this.state.liveStatus == 2) ?
@@ -147,7 +149,7 @@ class EditStream extends React.Component{
 									</Fragment> :<Fragment>
 									<h3><span className="title" id="editabletitle">Edit Stream</span></h3>
 									</Fragment>
-									} </Fragment>: 
+									} </Fragment>:
 									<Fragment>
 									<h3><span className="title" id="editabletitle">View Stream Details</span></h3>
 									</Fragment>
@@ -216,15 +218,44 @@ class EditStream extends React.Component{
                                     type="text"
                                     value={this.state.description}
                                     id="e2"
-                                    className="form-control" required="1"
+                                    className="form-control"
 									autoComplete="off"
-									onChange={onChange}
 									disabled
                                     />
 								</Fragment>
 								}
                                 </div>
                                 </div>
+												</div><div className="row">
+				<div className="col-xl-3 col-sm-6 mb-3">
+                                <div className="form-group">
+                                    <label htmlFor="sponsor">Resource Contributers</label>
+					{
+                                                                        this.state.formEnabled ?
+					<Fragment>
+                                    <input name="sponsor"
+                                    type="text"
+				defaultValue={this.state.sponsor}
+                                    placeholder={this.state.sponsor}
+                                    id="e3"
+                                    className="form-control" required="1"
+                                                                        autoComplete="off"
+                                                                        onChange={onChange}
+                                    /></Fragment>: <Fragment>
+					<Fragment>
+                                    <input name="sponsor"
+                                    type="text"
+                                    value={this.state.sponsor}
+                                    id="e3"
+                                    className="form-control" required="1" disabled
+                                    /></Fragment>
+					}
+
+                                </div>
+                                </div>
+
+
+
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">

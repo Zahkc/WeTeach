@@ -403,7 +403,9 @@ graph.route("/api/v1/media").post(auth, async function (req,res) {
 		name: req.body.name,
 		description: req.body.description,
 		createdBy: req.body.user,
+		createdByName: req.body.author,
 		createdDateTime: timestamp,
+		sponsoredByName: req.body.sponsor,
 		lastModifiedBy: req.body.user,
 		lastModifiedDateTime: timestamp,
 		videoConferenceId: 0,
@@ -428,7 +430,9 @@ graph.route("/api/v1/media/upload").post(auth, async function (req,res) {
 		name: req.body.name,
 		description: req.body.description,
 		createdBy: req.body.user,
+		createdByName: req.body.author,
 		createdDateTime: timestamp,
+		sponsoredByName: req.body.sponsor,
 		lastModifiedBy: req.body.user,
 		lastModifiedDateTime: timestamp,
 		videoConferenceId: 0,
@@ -468,6 +472,7 @@ graph.route("/api/v1/media/:id").post(auth, async function (req, res) {
 				name: req.body.name,
 				description: req.body.description,
 				startDateTime: start,
+				sponsoredByName: req.body.sponsor,
 				lastModifiedBy: req.body.user
 			},
 		};
