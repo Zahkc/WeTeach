@@ -70,7 +70,7 @@ function WatchVOD() {
 												axios.get(`${dbdaemon}/api/v1/media/${id}`).then(res => {
 													room = res.data.videoConferenceId;
 													console.log("Found room id: " + room);
-													startVOD();
+													initJanus();
 													//fill out other dataspots
 												}).catch((e) => console.log(e));
                   })
@@ -84,7 +84,6 @@ function WatchVOD() {
   useEffect(() => {
 		localVid = document.getElementById('local_vid');
 		localCam = document.getElementById('local_cam');
-    initJanus();
   });
 	document.title = "WeTeach - View Stream";
 
@@ -294,6 +293,7 @@ function initJanus(){
 
 function startVOD(){
 	updateVODS();
+	listVODS();
 	console.log("Starting vod: " + room);
 	pb1.send({
 		message: {

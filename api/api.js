@@ -675,11 +675,21 @@ graph.route("/api/v1/media/:id/stream/filegen").post(auth, async function (req, 
 		}
 		}).catch((e) => console.log(e));
 	}
+<<<<<<< HEAD
+ }
+ else
+ {
+	 res.status(400).send("Malformed request");
+ }
+}
+catch (e){console.log(e); res.end(e);}
+=======
 
 	else
 	{
 		res.status(400).send("Malformed request");
 	}
+>>>>>>> 7fe92d809208a4f79fa18864418093d2055e79b2
 });
 
 
