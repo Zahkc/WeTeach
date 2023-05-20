@@ -1229,7 +1229,7 @@ video-card {
 video-card-image .img-fluid
 {
      z-index:1;
-     max-height:250px !important;
+     height:100%;
      overflow: hidden;  
  	
 }
