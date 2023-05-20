@@ -49,7 +49,6 @@ class EditStream extends React.Component{
 		this.setState({disciplines: mdataset.disciplines});
 		this.setState({thumbnailLabel: mdataset.thumbnail.label});
 		this.setState({thumbnailValue: mdataset.thumbnail.value});
-		
 		this.setState({liveStatus: mdataset.liveStatus});
 		if(localStorage.getItem("capability") === "PRESENTER")
 		{
@@ -89,7 +88,7 @@ class EditStream extends React.Component{
 			{
 
 				this.setState({thisMedia: mediaID});
-				let channelID = this.state.thisChannel;				
+				let channelID = this.state.thisChannel;
 
 				/* Un-Index this object in the current channel */
 				axios.delete(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
@@ -270,7 +269,7 @@ class EditStream extends React.Component{
                                     className="form-control" required="1" disabled
                                     /></Fragment>
 					}
-                                </div>   
+                                </div>
 								</div>
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
@@ -303,15 +302,15 @@ class EditStream extends React.Component{
 								{
 									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment><Select
-									defaultValue={{"value": this.state.thumbNailValue, "label": this.state.thumbNailLabel}}
+									defaultValue={{"value": this.state.thumbnailValue, "label": this.state.thumbnailLabel}}
 									options={this.state.availableThumbnails}
-									onChange={(v) => {this.setState({thumbNailValue: v.value}); this.setState({thumbNailLabel: v.label})}}
-									/>	
+									onChange={(v) => {this.setState({thumbnailValue: v.value}); this.setState({thumbnailLabel: v.label})}}
+									/>
 								</Fragment> :
-								<Fragment><Select								
-									defaultValue={{"value": this.state.thumbNailValue, "label": this.state.thumbNailLabel}}
+								<Fragment><Select
+									defaultValue={{"value": this.state.thumbnailValue, "label": this.state.thumbnailLabel}}
 									options={this.state.availableThumbnails}
-									onChange={(v) => {this.setState({thumbNailValue: v.value}); this.setState({thumbNailLabel: v.label})}}
+									onChange={(v) => {this.setState({thumbnailValue: v.value}); this.setState({thumbnailLabel: v.label})}}
 									isDisabled />
 								</Fragment>
 

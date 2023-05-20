@@ -13,7 +13,7 @@ function Login() {
 		const [lsession, setLSession] = useState({
 			username: '',
 			name: '',
-			password: '',	
+			password: '',
 			role: 0
 		});
 
@@ -24,7 +24,7 @@ function Login() {
 
 		const onSubmit = (e) => {
 			e.preventDefault();
-			
+
 			switch(lsession.role)
 			{
 				case 0:
@@ -32,41 +32,41 @@ function Login() {
 				{
 					let session = res.data;
 					setLSession({ ...lsession,password: ""});
-					
+
 					localStorage.clear();
 					localStorage.setItem("user", session.wmid);
 					localStorage.setItem("name", session.name);
-					localStorage.setItem("token", session.token);					
+					localStorage.setItem("token", session.token);
 					localStorage.setItem("capability", "PRESENTER");
 					navigate("/");
 				}).catch((e) => {document.getElementById("output-failure").style.display="inline-block"; console.log(e)});
 				break;
 				case 2:
 				axios.post(`${dbdaemon}/auth/login/attendee`,lsession).then((res)=>
-				{					
+				{
 					let session = res.data;
-					setLSession({ ...lsession,password: ""});					
+					setLSession({ ...lsession,password: ""});
 					localStorage.clear();
 					localStorage.setItem("user", session.wmid);
-					localStorage.setItem("name", session.name);					
-					localStorage.setItem("token", session.token);					
+					localStorage.setItem("name", session.name);
+					localStorage.setItem("token", session.token);
 					localStorage.setItem("capability", "ATTENDEE");
 					navigate("/");
-				}).catch((e) => {document.getElementById("output-failure").style.display="inline-block"; console.log(e)});				
+				}).catch((e) => {document.getElementById("output-failure").style.display="inline-block"; console.log(e)});
 				break;
 				default:
 				axios.post(`${dbdaemon}/auth/login/`,lsession).then((res)=>
 				{
 					let session = res.data;
 					setLSession({ ...lsession,password: ""});
-					localStorage.clear();				
+					localStorage.clear();
 					localStorage.setItem("name", lsession.name);
 					navigate("/");
-				}).catch((e) => navigate("/"));					
+				}).catch((e) => navigate("/"));
 				break;
 			}
 		};
-	
+
 		return(
          <Fragment>
             <section className="login-main-wrapper">
@@ -88,7 +88,7 @@ function Login() {
 						classNamePrefix="select"
 						 options={
 							 [
-							 
+
 							 {value:0, label:"Presenter"},
 							 {value:2, label:"Attendee"},
 							 {value:6, label:"Guest / Anonymous Login"}]}
@@ -98,24 +98,24 @@ function Login() {
 						</div>
                         <div className="form-group">
                             {lsession.role === 6 ? <Fragment><label>Display Name</label>
-                            <input name="name"							
+                            <input name="name"
                             type="text"
                             className="form-control"
                             placeholder="Enter display name"
 							autoComplete="off"
 							onChange={onChange}
                             /></Fragment>:<Fragment><label>Username</label>
-                            <input name="username"							
+                            <input name="username"
                             type="text"
                             className="form-control"
                             placeholder="Enter username"
-							autoComplete="off"						
-							onChange={onChange}
+				autoComplete="off"
+				onChange={onChange}
                             /></Fragment>
 							}
-							
+
                         </div>
-                        <div className="form-group">                            
+                        <div className="form-group">
 							{lsession.role === 6 ? <Fragment><label>Password</label><input name="password"
                             type="password"
                             className="form-control"
@@ -147,9 +147,8 @@ function Login() {
 
 						</div>
 						<div id="output-failure" style={{display:"none",color:"#ff253a"}} className="mt-4">
-								<div className="bg-failure">Login failed for user {lsession.username}</div><br />								
+								<div className="bg-failure">Login failed for user {lsession.username}</div><br />
 						</div>
-						
                         </form>
                     </div>
                     </div>

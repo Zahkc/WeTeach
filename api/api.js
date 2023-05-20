@@ -413,9 +413,9 @@ graph.route("/api/v1/media").post(auth, async function (req,res) {
 		startDateTime: start,
 		thumbnail: {
 		value: "pexels-raindrops.jpg",
-		name: "Raindrops"
+		label: "Raindrops"
 		},
-		liveStatus: 0,		
+		liveStatus: 0,
 		purged: 0,
 		locked: 0
 	}
@@ -445,7 +445,7 @@ graph.route("/api/v1/media/upload").post(auth, async function (req,res) {
 		uploadSignature: req.body.href,
 		thumbnail: {
 		value: "pexels-raindrops.jpg",
-		name: "Raindrops"
+		label: "Raindrops"
 		},
 		liveStatus: 2,
 		purged: 0,
