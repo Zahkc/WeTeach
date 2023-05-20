@@ -16,7 +16,7 @@ class EditStream extends React.Component{
 		thisChannel: '',
 		thisMedia: '',
 		availableDisciplines: [],
-		availableThumbnails: [],		
+		availableThumbnails: [],
 		name: '',
 		description: '',
 		startDateTime: '',
@@ -24,8 +24,8 @@ class EditStream extends React.Component{
 		disciplines: [],
 		liveStatus: 0,
 		formEnabled: true,
-		thumbnailLabel: "Raindrops",
-		thumbnailValue: "pexels-raindrops.jpg"
+		thumbnailLabel: "",
+		thumbnailValue: ""
 	}
 	componentDidMount() {
 		document.title = "WeTeach - Edit Stream";
