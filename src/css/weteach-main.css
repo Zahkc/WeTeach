@@ -1223,8 +1223,17 @@ div.dropdown-menu
      position: absolute;
      right: 0;
 }
-.single-channel-image .img-fluid {
-    width: 100%;
+
+video-card-image .img-fluid
+{
+     z-index:1;
+     max-height:100px;
+     overflow: hidden;  
+ 	
+}
+overlay-icon
+{
+   z-index: 4;
 }
  .channel-profile-img {
      background: #fff none repeat scroll 0 0;
@@ -1935,15 +1944,6 @@ td {
 	color: #FFFFFF !important;
 }
 
-
-
-
-
-#folder-tree a:link, #folder-tree a:visited {
-	background: none !important;
-	color:#555555 !important;
-}
-
 #content-all a:hover, #content-all a:active, #folder-tree a:hover, #folder-tree a:active {
 	text-decoration: none !important;
 	color: #0000FF !important;
@@ -2001,116 +2001,6 @@ td {
 	height:0px !important;
 }
 
-#overlaybar
-{
-	position:absolute;
-	top:0px;
-	width:100%;
-	background-color: #5555FF;
-	z-index: 2;
-	padding: 3px 0px 3px;
-	color:#FFFFFF;
-}
-
-#overlaybar a:link, #overlaybar a:visited
-{
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	padding: 0px 1px 0px;
-	background-color:#ff516b;
-	color:#FFFFFF;
-}
-
-#overlaybar a:hover, #overlaybar a:active
-{
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	background-color: #222222;
-	color:#FFFFFF;
-}
-#overlaybar #overlayinsert
-{
-	float:right;
-}
-#folder-tree .current
-{
-	font-weight: bold;
-}
-#folder-tree .reverse
-{
-	float:right;
-}
-#web-grid, #web-grid > div {
-	overflow: auto;
-	margin-top: 4px;
-}
-
-#web-grid > div, #web-list > div
-{
-	display: table;
-}
-#web-grid > div > div
-{
-	display: table-row;
-}
-#web-grid > div > div > div
-{
-	display: table-cell;
-	position: relative;
-	width: 200px;
-	height: 90px;
-}
-
-
-
-#web-grid > div > div > div > a > span, #web-grid > div > div > div > a > span > span
-{
-	display: inline-block;
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-}
-
-#web-grid > div > div > div > a > span
-{
-	border: solid 1px #F5F5FF;
-	text-align: bottom;
-	background-color: rgb(255, 255, 255);
-	margin-top: 45px;
-	font-size: 14px !important;
-}
-
-#web-grid > div > div > div > a > span:hover {
-	background-color: #FAFAFF !important;
-	color: #FFFFFF !important;
-}
-
-#web-grid > div > div > div > a > span:hover > span {
-	background-color: #ff516b !important;
-	color: #FFFFFF !important;
-}
-
-#web-grid > div > div > div > a > span:hover > span.inactive {
-	background-color: #555555 !important;
-	color: #FFFFFF !important;
-}
-
-
-
-#web-grid > div > div > div > a > span > span, #web-grid div > div > div > a > span > span {
-	background-color: #E5E5FF !important;
-}
-
-#web-grid > div > div > div > a > span img
-{
-	margin-left:5px;
-	margin-top: 5px;
-}
-
 #web-list > div > div
 {
 	display: table-row;
@@ -2132,50 +2022,6 @@ td {
 
 }
 
-/* hack for IE9+; IE8 and lower not supported anyways */
-@media screen and (min-width:0\0) {
-	#web-grid > div > div > div
-	{
-		display: inline-block !important;
-	}
-}
-
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-	#web-grid > div > div > div
-	{
-		display: inline-block !important;
-	}
-}
-
-/*
-.title {
-	border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	display: inline-block;
-	width: 100%;
-	background-color: rgb(248, 248, 248) !important;
-	color: #555555 !important;
-}*/
-
-#content-all table.listing { /* fix whitespace */
-	width:100%;
-	margin-top:10px;
-}
-
-#content-all table.listing td {
-	font-weight:bold;
-}
-#content-all table.listing tr.content td {
-	font-weight:normal !important;
-}
-
-#content-all table.listing td span.content {
-	display: inline-block;
-	padding-left: 25px;
-	padding-bottom: 12px;
-	font-weight: normal !important;
-}
 
 @media screen and (max-width:768px) {
 	.reducible {
@@ -2203,10 +2049,6 @@ td {
 
 	.smallscreen {
 		display: block !important;
-	}
-
-	#web-grid, #folder-tree {
-		display: none !important;
 	}
 
 	.reverse-element, .reverse-wedge {

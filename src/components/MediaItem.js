@@ -11,7 +11,16 @@ return (
 	<div className="video-card">
 	<div className="video-card-image">
 	<Link to={`/media/${media._id}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
-	<Link to={`/media/${media._id}`}>&nbsp;&nbsp;<i className="fas fa-fw fas fas fa-video"></i><br /><br /><br /><br /></Link>
+	<Link to={`/media/${media._id}`}>&nbsp;&nbsp;
+	<i className="fas fa-fw fas fas fa-video" className="overlay-icon"></i>
+	{/*</Fragment>*/}
+	{
+		(typeof media.thumbnail=== "undefined") ? 
+		
+		<img className="img-fluid" src={process.env.PUBLIC_URL+"/assets/img/thumbnails/pexels-raindrops.jpg"} alt="" />
+	: <img className="img-fluid" src={process.env.PUBLIC_URL+"/assets/img/thumbnails/"+media.thumbnail.value} alt="" />
+	}
+	</Link>
 	<div className={`live${media.liveStatus}`}></div>
 	</div>
 		<div className="video-card-body">

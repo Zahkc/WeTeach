@@ -411,7 +411,11 @@ graph.route("/api/v1/media").post(auth, async function (req,res) {
 		videoConferenceId: 0,
 		allowMeetingChat: 1,
 		startDateTime: start,
-		liveStatus: 0,
+		thumbnail: {
+		value: "pexels-raindrops.jpg",
+		name: "Raindrops"
+		},
+		liveStatus: 0,		
 		purged: 0,
 		locked: 0
 	}
@@ -439,6 +443,10 @@ graph.route("/api/v1/media/upload").post(auth, async function (req,res) {
 		allowMeetingChat: 0,
 		startDateTime: start,
 		uploadSignature: req.body.href,
+		thumbnail: {
+		value: "pexels-raindrops.jpg",
+		name: "Raindrops"
+		},
 		liveStatus: 2,
 		purged: 0,
 		locked: 0,
@@ -675,21 +683,10 @@ graph.route("/api/v1/media/:id/stream/filegen").post(auth, async function (req, 
 		}
 		}).catch((e) => console.log(e));
 	}
-<<<<<<< HEAD
- }
  else
  {
 	 res.status(400).send("Malformed request");
  }
-}
-catch (e){console.log(e); res.end(e);}
-=======
-
-	else
-	{
-		res.status(400).send("Malformed request");
-	}
->>>>>>> 7fe92d809208a4f79fa18864418093d2055e79b2
 });
 
 
@@ -747,6 +744,37 @@ graph.route("/api/v1/media/:id/transcript").delete(auth, async function (req, re
  catch (e){console.log(e); res.end(e);}
 });
 
+// Update thumbnail to a custom file
+graph.route("/api/v1/media/:id/thumbnail").post(auth, async function (req, res) {
+ try {
+	var hex = /[0-9A-Fa-f]{24}/g;
+	if(hex.test(req.params.id))
+	{
+		let db_query = { _id: new ObjectId(req.params.id), type: "MEDIA", locked: 0, purged: 0};
+		let db_update = {
+			$currentDate: {
+				lastModifiedDateTime: true
+			},
+			$set: {
+				thumbnail: {
+					value: req.body.thumbnailValue,
+					label: req.body.thumbnailLabel
+				},
+				lastModifiedBy: req.body.user
+			}
+		};
+		let db_connect = dbo.getDatabase();
+		db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+	}
+	else
+	{
+		res.status(400).send("Malformed request");
+	}
+ }
+ catch (e){console.log(e); res.end(e);}
+});
+
+
 // 6. PUSH Functions
 // Push a discipline onto a channel. This is required for discipline dropdowns
 graph.route("/api/v1/channels/:id/disciplines").post((req, res) => {
@@ -785,6 +813,48 @@ graph.route("/api/v1/channels/:id/disciplines").post((req, res) => {
  catch (e){console.log(e); res.end(e);}
 
 });
+
+// Push a custom thumbnail onto a channel. This is required for thumbnail dropdowns.
+// You will need to manually add the file to the /public/assets/img/thumbnails folder before build
+// No removal option implemented in API use mongosh to manually remove a thumbnail
+graph.route("/api/v1/channels/:id/thumbnail").post((req, res) => {
+ try {
+	var hex = /[0-9A-Fa-f]{24}/g;
+	if(hex.test(req.params.id))
+	{
+		let db_query = { _id: new ObjectId(req.params.id), type: "CHANNEL", purged: 0};
+		let db_content = req.body.thumbnailValue
+		
+		if(!(typeof db_content === "undefined"))
+		{
+
+			let db_update = {
+				$currentDate: {
+					lastModified: true
+				},
+				$addToSet: {
+					thumbnails: {
+						value: db_content,
+						label: req.body.thumbnailLabel
+					}
+				},
+				$set: {
+					lastModifiedBy: req.body.user
+				}
+			};
+			let db_connect = dbo.getDatabase();
+			db_connect.collection("records").updateOne(db_query, db_update).then((data) => {res.json(data)}).catch((e) => console.log(e));
+		}
+	}
+	else
+	{
+		res.status(400).send("Malformed request");
+	}
+ }
+ catch (e){console.log(e); res.end(e);}
+
+});
+
 
 // Push a media onto a channel. This is required for searching content
 graph.route("/api/v1/channels/:id/media").post((req, res) => {

@@ -2,6 +2,8 @@ import React, { Fragment} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
+
 import { DateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment-timezone';
 import '../css/weteach-main.css';
@@ -14,6 +16,7 @@ class EditStream extends React.Component{
 		thisChannel: '',
 		thisMedia: '',
 		availableDisciplines: [],
+		availableThumbnails: [],		
 		name: '',
 		description: '',
 		startDateTime: '',
@@ -21,6 +24,8 @@ class EditStream extends React.Component{
 		disciplines: [],
 		liveStatus: 0,
 		formEnabled: true,
+		thumbnailLabel: "Raindrops",
+		thumbnailValue: "pexels-raindrops.jpg"
 	}
 	componentDidMount() {
 		document.title = "WeTeach - Edit Stream";
@@ -31,6 +36,7 @@ class EditStream extends React.Component{
 		const dataset = res.data;
 		this.setState({thisChannel: dataset[0]._id});
 		this.setState({availableDisciplines: dataset[0].disciplines});
+		this.setState({availableThumbnails: dataset[0].thumbnails});
 		});
 
 		axios.get(`${dbdaemon}/api/v1/media/${mediaID}`).then(res => {
@@ -41,9 +47,19 @@ class EditStream extends React.Component{
 		this.setState({startDateTime: mdataset.startDateTime});
 		this.setState({sponsor: mdataset.sponsoredByName});
 		this.setState({disciplines: mdataset.disciplines});
+		this.setState({thumbnailLabel: mdataset.thumbnail.label});
+		this.setState({thumbnailValue: mdataset.thumbnail.value});
+		
 		this.setState({liveStatus: mdataset.liveStatus});
-
-		if(mdataset.locked === 1 || mdataset.purged === 1 || mdataset.liveStatus === 1 || mdataset.liveStatus === 4 || localStorage.getItem("capability") !== "PRESENTER" || (mdataset.liveStatus === 0 && localStorage.getItem("user") !== mdataset.createdBy))
+		if(localStorage.getItem("capability") === "PRESENTER")
+		{
+			this.setState({formEnabled: true})
+		}
+		else
+		{
+			this.setState({formEnabled: false})
+		}
+		if(mdataset.locked === 1 || mdataset.purged === 1 || mdataset.liveStatus === 1 || mdataset.liveStatus === 4 || (mdataset.liveStatus === 0 && localStorage.getItem("user") !== mdataset.createdBy))
 		{
 			this.setState({formEnabled: false})
 		}
@@ -101,6 +117,12 @@ class EditStream extends React.Component{
 				this.setState({thisMedia: mediaID});
 				let channelID = this.state.thisChannel;
 				let disciplines = this.state.disciplines;
+
+				/* Update Thumbnail */
+				axios.post(`${dbdaemon}/api/v1/media/${mediaID}/thumbnail`,this.state).then((r)=>
+				{
+					//console.log(r.data);
+				}).catch((e) => console.log(e));
 
 				/* Index this object in the current channel */
 				axios.post(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
@@ -166,7 +188,7 @@ class EditStream extends React.Component{
                                 <div className="form-group">
                                     <label htmlFor="name">Stream Title</label>
 								{
-									this.state.formEnabled ?
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment>
 									<input
                                     type="text" name="name"
@@ -198,7 +220,7 @@ class EditStream extends React.Component{
 
 								<label htmlFor="description">Description</label>
 								{
-									this.state.formEnabled ?
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment>
 								<input
                                     type="text" name="description"
@@ -229,7 +251,7 @@ class EditStream extends React.Component{
                                 <div className="form-group">
                                     <label htmlFor="sponsor">Resource Contributers</label>
 					{
-								this.state.formEnabled ?
+								(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 									<Fragment>
                                     <input name="sponsor"
                                     type="text"
@@ -255,7 +277,7 @@ class EditStream extends React.Component{
                                 <div className="form-group">
 								<label htmlFor="e3">Disciplines</label>
 								{
-									this.state.formEnabled ?
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment><CreatableSelect
 									isMulti
 									closeMenuOnSelect={false}
@@ -277,11 +299,33 @@ class EditStream extends React.Component{
 								</div><div className="row">
                                 <div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
-
-
-								<label htmlFor="e3">Stream Start Date (optional)</label><br />
+								<label htmlFor="e4">Thumbnail</label>
 								{
-									this.state.formEnabled ?
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
+								<Fragment><Select
+									defaultValue={{"value": this.state.thumbNailValue, "label": this.state.thumbNailLabel}}
+									options={this.state.availableThumbnails}
+									onChange={(v) => {this.setState({thumbNailValue: v.value}); this.setState({thumbNailLabel: v.label})}}
+									/>	
+								</Fragment> :
+								<Fragment><Select								
+									defaultValue={{"value": this.state.thumbNailValue, "label": this.state.thumbNailLabel}}
+									options={this.state.availableThumbnails}
+									onChange={(v) => {this.setState({thumbNailValue: v.value}); this.setState({thumbNailLabel: v.label})}}
+									isDisabled />
+								</Fragment>
+
+								}
+                                </div>
+                                </div>
+								</div><div className="row">
+                                <div className="col-xl-3 col-sm-6 mb-3">
+                                <div className="form-group">
+
+
+								<label htmlFor="e5">Stream Start Date (optional)</label><br />
+								{
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment>
 								<DateTimePicker
 									ampm={false}
@@ -306,7 +350,7 @@ class EditStream extends React.Component{
                                 </div>
 								</div>
 								{
-									this.state.formEnabled ?
+									(this.state.formEnabled && localStorage.getItem("capability") === "PRESENTER") ?
 								<Fragment>
 								<div className="row" id="submit-buttons">
 								<div className="col-xl-12 col-sm-6 mb-3">
@@ -343,7 +387,7 @@ class EditStream extends React.Component{
 								<div className="col-xl-3 col-sm-6 mb-3">
                                 <div className="form-group">
 						<div id="output-failure" style={{display:"none"}}>
-								<div className="bg-failure">Stream failed to updated</div><br />
+								<div className="bg-failure">Unable to save changes</div><br />
 								<Link to="/" className="btn btn-secondary">Retry Later</Link>
 						</div>
 						<div id="output-success" style={{display:"none"}}>
