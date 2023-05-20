@@ -13,7 +13,7 @@ return (
 	<Link to={`/media/${media._id}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
 	<Link to={`/media/${media._id}`}>
 	{
-		(typeof media.thumbnail.value === "undefined") ?
+		(typeof media.thumbnail === "undefined") ?
 
 		<img className="img-fluid" src={process.env.PUBLIC_URL+"/assets/img/thumbnails/pexels-raindrops.jpg"} alt="" />
 	: <img className="img-fluid" src={process.env.PUBLIC_URL+"/assets/img/thumbnails/"+media.thumbnail.value} alt="" />
