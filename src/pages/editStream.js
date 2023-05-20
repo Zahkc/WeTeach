@@ -118,7 +118,7 @@ class EditStream extends React.Component{
 				let disciplines = this.state.disciplines;
 
 				/* Update Thumbnail */
-				axios.post(`${dbdaemon}/api/v1/media/${mediaID}/thumbnail`,this.state).then((r)=>
+				axios.post(`${dbdaemon}/api/v1/media/${mediaID}/thumbnail?token=${token}`,this.state).then((r)=>
 				{
 					//console.log(r.data);
 				}).catch((e) => console.log(e));
