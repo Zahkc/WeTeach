@@ -931,7 +931,7 @@ div.dropdown-menu
      opacity: unset;
 }
 .video-card-image img {
-    width: 100%;
+    height:300px !important;
 }
  .play-icon {
      opacity: 0;
