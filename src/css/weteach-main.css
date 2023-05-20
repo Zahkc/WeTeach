@@ -1223,11 +1223,13 @@ div.dropdown-menu
      position: absolute;
      right: 0;
 }
-
+video-card {
+    max-height:350px;
+}
 video-card-image .img-fluid
 {
      z-index:1;
-     max-height:100px;
+     max-height:250px !important;
      overflow: hidden;  
  	
 }
