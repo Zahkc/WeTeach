@@ -29,24 +29,22 @@ function UI() {
   return (
 
 	<div id="page-wrapper">
-        
-		
         <Routes>
           <Route exact path='/' element={<><Header/><Home/></>}/>
 			<Route exact path='/login' element={<Login/>}/>
 		  <Route exact path='/search-results' element={<><Header/><SearchResults/></>}/>
-		  <Route path="/search-results/:search" element={<><Header/><SearchResults/></>}/>	
+		  <Route path="/search-results/:search" element={<><Header/><SearchResults/></>}/>
 		  <Route exact path='/media/new' element={<><Header/><NewStream/></>}/>
 		  <Route exact path='/media/:id/present' element={<><Header/><GoLive/></>}/>
 		  <Route exact path='/media/:id/' element={<><Header/><EditStream/></>}/>
-		  <Route exact path='/media/:id/view/0' element={<><Header/><WatchStream/></>}/>
+		  <Route exact path='/media/:id/view/0' element={<><Header/><EditStream/></>}/>
 		  <Route exact path='/media/:id/view/1' element={<><Header/><WatchStream/></>}/>
 		  <Route exact path='/media/:id/view/2' element={<><Header/><Viewer/></>}/>
 		  <Route exact path='/media/:id/view/3' element={<><Header/><WatchVideo/></>}/>
 
 		  <Route exact path='/media/:id/edit' element={<><Header/><EditStream/></>}/>
 		  <Route exact path='/media/:id/details' element={<><Header/><EditStream/></>}/>
-		  
+
 		  <Route exact path='/upload' element={<><Header/><Upload/></>}/>
 
 		  <Route path="*" element ={<><Header/><NotFound /></>}/>

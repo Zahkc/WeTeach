@@ -10,8 +10,8 @@ return (
 
 	<div className="video-card">
 	<div className="video-card-image">
-	<Link to={`/media/${media._id}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
-	<Link to={`/media/${media._id}`}>
+	<Link to={`/media/${media._id}/view/${media.livestatus}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
+	<Link to={`/media/${media._id}/view/${media.livestatus}`}>
 	{
 		(typeof media.thumbnail === "undefined") ?
 
@@ -40,7 +40,7 @@ return (
 				<Fragment>
 				<Link to={`/media/${media._id}/edit`} >Edit Video</Link>&nbsp;&nbsp;
 				</Fragment> : null
-			} 
+			}
 
 			{
 			((media.liveStatus === 0 || media.liveStatus === 1) && localStorage.getItem("user") === media.createdBy) ?
@@ -49,7 +49,7 @@ return (
 				</Fragment> : null
 			}
 			</Fragment> : <Fragment>
-			
+
 			{
 			  ((media.liveStatus === 0 || media.liveStatus === 3)) ?
 				<Fragment>
@@ -60,11 +60,10 @@ return (
 				<Fragment>
 				<Link to={`/media/${media._id}/details`} >View Video Details</Link>&nbsp;&nbsp;
 				</Fragment> : null
-			} 
-			</Fragment>
-			
 			}
-			
+			</Fragment>
+			}
+
 			</div>
 		</div>
 		</div>
