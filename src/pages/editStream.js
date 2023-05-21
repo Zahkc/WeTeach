@@ -85,7 +85,7 @@ class EditStream extends React.Component{
 			e.preventDefault();
 			let mediaID = this.state.thisMedia;
 			let token = localStorage.getItem("token");
-			axios.delete(`${dbdaemon}/api/v1/media/${mediaID}`,this.state).then((res)=>
+			axios.delete(`${dbdaemon}/api/v1/media/${mediaID}?token=${token}`,this.state).then((res)=>
 			{
 
 				this.setState({thisMedia: mediaID});
