@@ -84,6 +84,7 @@ class EditStream extends React.Component{
 		const onDelete = (e) => {
 			e.preventDefault();
 			let mediaID = this.state.thisMedia;
+			let token = localStorage.getItem("token");
 			axios.delete(`${dbdaemon}/api/v1/media/${mediaID}`,this.state).then((res)=>
 			{
 
@@ -91,7 +92,7 @@ class EditStream extends React.Component{
 				let channelID = this.state.thisChannel;
 
 				/* Un-Index this object in the current channel */
-				axios.delete(`${dbdaemon}/api/v1/channels/${channelID}/media`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
+				axios.delete(`${dbdaemon}/api/v1/channels/${channelID}/media?token=${token}`,JSON.stringify({"media": mediaID}), {headers: {'Content-Type': 'application/json'}}).then((r)=>
 				{
 					//console.log(r.data);
 				}).catch((e) => console.log(e));
