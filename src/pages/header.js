@@ -25,7 +25,7 @@ function Header() {
 	}
 	if(!(localStorage.getItem("token"))==="null")
 	{
-		if (isExpired(localStorage.getItem("token"))
+		if (isExpired(localStorage.getItem("token")))
 		{
 	                localStorage.clear(); // simulate logout if token expired
         	        window.location.reload(true);
