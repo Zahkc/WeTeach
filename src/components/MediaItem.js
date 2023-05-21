@@ -10,8 +10,8 @@ return (
 
 	<div className="video-card">
 	<div className="video-card-image">
-	<Link to={`/media/${media._id}/view/${media.livestatus}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
-	<Link to={`/media/${media._id}/view/${media.livestatus}`}>
+	<Link to={`/media/${media._id}/view/${media.liveStatus}`} className="play-icon"><i className="fas fa-play-circle"></i></Link>
+	<Link to={`/media/${media._id}/view/${media.liveStatus}`}>
 	{
 		(typeof media.thumbnail === "undefined") ?
 
