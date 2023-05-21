@@ -4,7 +4,7 @@ import {NavLink,Link} from 'react-router-dom';
 import Helmet from 'react-helmet'
 import Logo from "../assets/img/logo.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import {isExpired} from "react-jwt";
 function Header() {
 	const [searchInput, setSearchInput] = useState("");
 	const handleChange = (e) => {
@@ -16,14 +16,21 @@ function Header() {
 		localStorage.clear();
 		window.location.reload(true);
 	}
-	
+
 	let navigate = useNavigate();
 	const search = (e) => {
 		e.preventDefault();
 		navigate(`/search-results/${searchInput}`);
 		window.location.reload(true); // trigger a hard refresh to display search results
 	}
-
+	if(!(localStorage.getItem("token"))==="null")
+	{
+		if (isExpired(localStorage.getItem("token"))
+		{
+	                localStorage.clear(); // simulate logout if token expired
+        	        window.location.reload(true);
+		}
+	}
     return(
         <Fragment>
 		{/* Desktop navigation bar */}
@@ -68,12 +75,12 @@ function Header() {
 							<div className="dropdown-divider"></div>
 							</Fragment>: null
 							}
-							
+
 								{
 								 !(localStorage.getItem("token") === null) ? <Fragment>
 								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-users"></i> &nbsp; Switch User</NavLink>
-								<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onClick={logout}><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a></Fragment>: 
-								
+							<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onClick={logout}><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a></Fragment>: 
+
 								<Fragment>
 								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-in-alt"></i> &nbsp; Login</NavLink>
 								</Fragment>
