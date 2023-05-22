@@ -32,7 +32,8 @@ let params, mdata;
 const chatStyle = {
   fontSize: '16px',
   resize: "none",
-  overflowY: 'scroll'
+  overflowY: 'scroll',
+	height: '200px'
 };
 localCam = document.getElementById("local_cam");
 
@@ -77,7 +78,7 @@ const [media, setMedia] = useState({
                         liveStatus: res.data.liveStatus,
                         disciplines: res.data.disciplines,
 						startDateTime: res.data.startDateTime,
-						videoConferenceID: res.data.videoConferenceId,	
+						videoConferenceID: res.data.videoConferenceId,
 						user: localStorage.getItem("user"),
 						author: res.data.createdByName,
 						sponsor: res.data.sponsoredByName
@@ -105,7 +106,7 @@ const [media, setMedia] = useState({
 
 (media.liveStatus === 0) || (media.liveStatus === 1) ?
     <Fragment>
-      <div id="content-all">			
+      <div id="content-all">
            <div id="content-wrapper">
               <div className="container-fluid pb-0">
                 <div className="video-block section-padding">
@@ -147,9 +148,9 @@ const [media, setMedia] = useState({
 							</div>
 
 						 </div></div>
-						 <div className="main-title">											
-									<h3><span className="title">{media.name}</span></h3>																		
-									
+						 <div className="main-title">
+									<h3><span className="title">{media.name}</span></h3>
+
 									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className={`live${media.liveStatus}`}></div><br />
 						 <p className="tags mb-0">
                                           {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
@@ -157,11 +158,11 @@ const [media, setMedia] = useState({
 						 </div>
 						 <div className="single-video-info-content box mb-3">
 						 <h6>Stream Details:</h6>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>										   
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>										  
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-book-reader"></i>&nbsp;&nbsp;Content Creators:</span>&nbsp;&nbsp;{media.sponsor}</p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-calendar-alt"></i>&nbsp;&nbsp;Scheduled Date:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD yyyy')}</p>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>						              
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>
 						 </div>
 
                       </div>

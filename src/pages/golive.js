@@ -47,6 +47,7 @@ let mediaID = "";
 
 const chatStyle = {
   fontSize: '16px',
+	height: '200px'
 };
 function GoLive() {
   document.title = "WeTeach - Go Live";
@@ -63,7 +64,7 @@ function GoLive() {
                	videoConferenceId: 0,
 				user: 1,
 				author: "",
-				
+
           });
           const { id } = useParams();
 					token = localStorage.getItem("token");
@@ -159,9 +160,7 @@ function GoLive() {
                           <td>
 							<button id="stopButton" onClick={confirmStopStream} className='btn btn-stop' style={{display:"none"}}>Stop Stream</button>
                           </td>
-						  <td>
-						  	<button id="recordButton" onClick={startRecording} className='btn btn-record' style={{display:"none"}}>Start Recording</button>
-						  </td>
+
 						  <td id="streamConcludedText" className="streamConcludedText" >
 							Stream has concluded! <a href="/media/new">Click here</a> to start a new stream!
 						  </td>
@@ -198,17 +197,13 @@ function GoLive() {
 						 <div className="single-video-info-content box mb-3">
 						 {id === "test" ? <Fragment><p>Test your camera for live streaming here</p></Fragment> : <Fragment>
 						 <h6>Stream Details:</h6>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>										   
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>										  
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-book-reader"></i>&nbsp;&nbsp;Content Creators:</span>&nbsp;&nbsp;{media.sponsor}</p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-calendar-alt"></i>&nbsp;&nbsp;Scheduled Date:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD yyyy')}</p>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>						              
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>
 						 <br /></Fragment>
 						 }
-						 
-						  <h6>Video Conference ID:</h6>
-
-										  <input type="text" disabled="1" id="codeDisp" defaultValue="Room Code"/>
 						 </div>
 
                       </div>
@@ -261,12 +256,27 @@ function confirmStopStream(){
 }
 
 async function stopStream(){
+
+	livestream.send({
+		message: {
+			request : "configure",
+			room: room,
+			record: false,
+			filename: room.toString(),
+			display: myusername
+
+		},
+		success: function(){
+			console.log("Sent end record publish request")
+
+		}
+	});
+
 	sendData("Stream has concluded, thank you for attending!");
 	livestream.send({ message: { request: "stop" } });
 	livestream.hangup();
 	janus.destroy();
 	document.getElementById("stopButton").style.display='none';
-	document.getElementById("recordButton").style.display='none';
 	localVid.srcObject = null;
 	localCam.srcObject = null;
 	document.getElementById("local_vid").style.borderStyle = "hidden";
@@ -596,7 +606,6 @@ function startLiveStream() {
 			// Our own screen sharing session has been created, join it
 			room = result["room"];
 			Janus.log("Screen sharing session created: " + room);
-			document.getElementById("codeDisp").value = room;
 			var register = {
 				request: "join",
 				room: room,
@@ -624,6 +633,40 @@ function startLiveStream() {
 						transaction: randomString(12),
 					};
 					textroom.data({text: JSON.stringify(register)});
+
+					livestream.send({
+						message: {
+							request : "configure",
+							room: room,
+							record: true,
+							filename: room.toString(),
+							display: myusername
+
+						},
+						success: function(){
+							console.log("Sent record publish request")
+							recording = 1;
+
+							console.log("ATTEMPING NFO WRITE");
+							axios
+								.get(`${dbdaemon}/api/v1/media/${mediaID}`)
+								.then((res) => {
+									axios
+									.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/filegen?token=${token}`, JSON.stringify({"VCID": room}), {headers: {'Content-Type': 'application/json'}})
+									.then((res) => {
+										console.log("WRITTEN NFO FILE");
+								})
+								.catch((e) => {
+									console.log(e); // Add POST error handling here
+								});
+								})
+								.catch((e) => {
+									console.log(e);// Add GET error handling here. Stream doesn't exist.
+								});
+
+						}
+					});
+
 				}});
 
 			}});
@@ -666,69 +709,9 @@ function startLiveStream() {
 	document.getElementById("startButton").style.display='none'
 	document.getElementById("stopButton").disabled = false;
 	document.getElementById("stopButton").style.display='inline-block';
-	document.getElementById("recordButton").style.display='inline-block';
 	document.getElementById("local_vid").style.borderStyle = "solid";
 }
 
-function startRecording(){
-
-	if (recording == 1) {
-		livestream.send({
-			message: {
-				request : "configure",
-				room: room,
-				record: false,
-				filename: room.toString(),
-				display: myusername
-
-			},
-			success: function(){
-				console.log("Sent end record publish request")
-				recording = 0;
-				document.getElementById("recordButton").innerText = "Start Recording";
-
-			}
-		});
-	} else {
-		livestream.send({
-			message: {
-				request : "configure",
-				room: room,
-				record: true,
-				filename: room.toString(),
-				display: myusername
-
-			},
-			success: function(){
-				console.log("Sent record publish request")
-				recording = 1;
-
-				console.log("ATTEMPING NFO WRITE");
-				axios
-					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
-					.then((res) => {
-						axios
-						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/filegen?token=${token}`, JSON.stringify({"VCID": room}), {headers: {'Content-Type': 'application/json'}})
-						.then((res) => {
-							console.log("WRITTEN NFO FILE");
-					})
-					.catch((e) => {
-						console.log(e); // Add POST error handling here
-					});
-					})
-					.catch((e) => {
-						console.log(e);// Add GET error handling here. Stream doesn't exist.
-					});
-
-
-				document.getElementById("recordButton").innerText = "Stop Recording";
-
-			}
-		});
-
-	}
-
-}
 
 function formatChatMsg(data){
 	var msg = JSON.parse(data);

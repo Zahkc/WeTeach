@@ -71,7 +71,7 @@ function WatchVOD() {
                         liveStatus: res.data.liveStatus,
                         disciplines: res.data.disciplines,
 						startDateTime: res.data.startDateTime,
-						videoConferenceID: res.data.videoConferenceId,						
+						videoConferenceID: res.data.videoConferenceId,
 						user: localStorage.getItem("user"),
 						author: res.data.createdByName,
 						sponsor: res.data.sponsoredByName
@@ -102,10 +102,10 @@ function WatchVOD() {
   return (
     media.liveStatus == 3 ?
     <Fragment>
-      <div id="content-all">	
-	  
+      <div id="content-all">
+
 			<div className="col-md-12">
-									
+
 			</div><br />
            <div id="content-wrapper">
               <div className="container-fluid pb-0">
@@ -143,15 +143,11 @@ function WatchVOD() {
                             <div className="single-video2">
                             <video className="App-camera" id="local_cam" width="80%" autoPlay></video>
 							</div>
-                            <div className = "containerChat"><div>
-							<textarea disabled className="chat_window" id ="chatbox" style={chatStyle}></textarea></div>
-
-							</div>
 
 						 </div></div>
-						 <div className="main-title">												
-									<h3><span className="title">{media.name}</span></h3>																		
-									
+						 <div className="main-title">
+									<h3><span className="title">{media.name}</span></h3>
+
 									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live3"></div>
 						 <p className="tags mb-0">
                                           {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
@@ -159,11 +155,11 @@ function WatchVOD() {
 						 </div>
 						 <div className="single-video-info-content box mb-3">
 						 <h6>Stream Details:</h6>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>										   
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>										  
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-comment-dots	"></i>&nbsp;&nbsp;Description:</span><span>&nbsp;&nbsp;{media.description}</span><br /></p>
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-chalkboard-teacher"></i>&nbsp;&nbsp;Presenter:</span><span>&nbsp;&nbsp;{media.author}</span><br /></p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="fas fa-book-reader"></i>&nbsp;&nbsp;Content Creators:</span>&nbsp;&nbsp;{media.sponsor}</p>
 						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-calendar-alt"></i>&nbsp;&nbsp;Scheduled Date:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('MMMM DD yyyy')}</p>
-						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>						              
+						  <p className="video-metadata"><span className="video-metadata-key"><i className="far fa-clock"></i>&nbsp;&nbsp;Scheduled Start Time:</span>&nbsp;&nbsp;{moment(media.startDateTime).tz("Australia/Sydney").format('hh:mm')}</p>
 						 </div>
 
                       </div>

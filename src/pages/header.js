@@ -79,7 +79,7 @@ function Header() {
 								{
 								 !(localStorage.getItem("token") === null) ? <Fragment>
 								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-users"></i> &nbsp; Switch User</NavLink>
-							<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onClick={logout}><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a></Fragment>: 
+							<a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" onClick={logout}><i className="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a></Fragment>:
 
 								<Fragment>
 								<NavLink className="dropdown-item" to="/login" data-toggle="modal" data-target="#logoutModal"><i className="fas fa-fw fa-sign-in-alt"></i> &nbsp; Login</NavLink>
@@ -97,14 +97,10 @@ function Header() {
                 </NavLink></li>
 			{
 				(localStorage.getItem("capability") === "PRESENTER") ?
-				
+
 			<Fragment><li className="element reducible"><NavLink to = "/media/new" rel="nofollow">
                 <i className="fas fa-fw fas fas fa-podcast"></i>
                 &nbsp;&nbsp;<span>New Stream</span>
-                </NavLink></li>
-			<li className="element reducible"><NavLink to = "/media/test/present" rel="nofollow">
-                <i className="fas fa-fw fas fas fa-play-circle"></i>
-                &nbsp;&nbsp;<span>Go Live Test</span>
                 </NavLink></li>
 
 			<li className="element reducible"><NavLink to = "/upload" rel="nofollow">
@@ -147,7 +143,7 @@ function Header() {
                 <i className="fas fa-fw fa-cloud-upload-alt"></i>
                 &nbsp;&nbsp;<span>Upload Video</span>
                 </NavLink>
-                </li></Fragment> : null 
+                </li></Fragment> : null
 				}
 
             </ul>
