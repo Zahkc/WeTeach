@@ -48,6 +48,7 @@ class Home extends React.Component {
                         </div><br />
                         <div id="web-list">
                         <div className="video-block section-padding">
+                        {/* Here load the MediaItem component using an array mapping */}
                         <div className="row">
                         {
                                 this.state.media.length === 0 ? <Fragment><b>No streams or videos have been created. If this is not correct, please contact the system administrator as this means a backend API component is not functioning as expected</b></Fragment> : this.state.media.map((media,k) => <div className="col-xl-3 col-sm-6 mb-3"><MediaItem media={media} key={moment()+"-tile-"+k} /></div>)
