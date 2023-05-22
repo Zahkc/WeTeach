@@ -49,44 +49,56 @@ const chatStyle = {
   fontSize: '16px',
 	height: '200px'
 };
+
+
 function GoLive() {
+
+	//This is called on page laod.
+
   document.title = "WeTeach - Go Live";
 
 	var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
+
+		//Dummy token to be overwritten by the API call with data from the database.
      const [media, setMedia] = useState({
-				id: "",
+								id: "",
                 name: "",
                 description: "",
                 liveStatus: -1,
-				startDateTime: "",
-				sponsor: "",
+								startDateTime: "",
+								sponsor: "",
                 disciplines: [],
                	videoConferenceId: 0,
-				user: 1,
-				author: "",
+								user: 1,
+								author: "",
 
           });
+
+					//Gets ID from url
           const { id } = useParams();
 					token = localStorage.getItem("token");
+					//Gets JWT token for authentication
 					luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
 					myusername = localStorage.getItem("name") + "#" + localStorage.getItem("user");
 
+
+					//sets the local media object information from database
           useEffect(() => {
                 axios
                   .get(`${dbdaemon}/api/v1/media/${id}`)
                   .then((res) => {
                         setMedia({
-                        id: res.data._id,
-                        name: res.data.name,
-                        description: res.data.description,
-                        liveStatus: res.data.liveStatus,
-                        disciplines: res.data.disciplines,
-                        videoConferenceId: res.data.videoConferenceId,
-						user: localStorage.getItem("user"),
-						author: res.data.createdByName,
-						sponsor: res.data.sponsoredByName
+	                        id: res.data._id,
+	                        name: res.data.name,
+	                        description: res.data.description,
+	                        liveStatus: res.data.liveStatus,
+	                        disciplines: res.data.disciplines,
+	                        videoConferenceId: res.data.videoConferenceId,
+													user: localStorage.getItem("user"),
+													author: res.data.createdByName,
+													sponsor: res.data.sponsoredByName
                         });
-						mediaID = res.data._id;
+												mediaID = res.data._id;
                   })
                   .catch((e) => {
                         console.log(e);
@@ -94,24 +106,28 @@ function GoLive() {
           }, [id]);
 
   useEffect(() => {
-	/* Insert GET request axios.get or fetch.get to DB */
 
-    getMedia();
+    getMedia(); // Gets User Media objects (Webcam and Microphone)
 		document.getElementById("startButton").disabled = true;
-    initJanus();
+    initJanus(); // Initialises a connection to the janus server
 		document.getElementById("mic-mute-button").style.backgroundImage = `url(${unmutedIcon})`;
 		document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOnIcon})`;
 		document.getElementById("screen-mute-button").style.backgroundImage = `url(${screenshareOnIcon})`;
 		document.getElementById("swapButton").style.backgroundImage = `url(${screenshareOffSwap})`;
 		document.getElementById("swapButton").disabled = true;
 		document.getElementById("stopButton").disabled = true;
+
+		//sets states of userinterface
+
   });
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       document.getElementById("chatSubmit").click();
+			//sends chat message
     }
   };
 
+	//Returns ui
   return (
     			<Fragment>
 			<div id="content-all">
@@ -222,10 +238,13 @@ async function getMedia(){
          video: { mediaSource: "camera" },
          audio: true
        });
+			 //Creates MediaStream object with the webcam and mic
 	 displayMedia()
 }
 
 function displayMedia(){
+	//populates the web elements so the streamer can see the stream layout. It then also runs a check to see if the screen is being recorded.
+
 	if (stage == 0) {
 		localCam.srcObject = null;
 		localVid.srcObject = new MediaStream([camStream.getVideoTracks()[0]]);
@@ -256,6 +275,7 @@ function confirmStopStream(){
 }
 
 async function stopStream(){
+	// Stops the recording and ends the janus instance
 
 	livestream.send({
 		message: {
@@ -268,14 +288,18 @@ async function stopStream(){
 		},
 		success: function(){
 			console.log("Sent end record publish request")
-
+			//Creates and sends a request to stop the recording.
 		}
 	});
 
 	sendData("Stream has concluded, thank you for attending!");
+	//sends a message to stop the stream
 	livestream.send({ message: { request: "stop" } });
 	livestream.hangup();
 	janus.destroy();
+
+	//gracefully stops the janus instance by sending
+
 	document.getElementById("stopButton").style.display='none';
 	localVid.srcObject = null;
 	localCam.srcObject = null;
@@ -288,13 +312,14 @@ async function stopStream(){
 
 	document.getElementById("streamConcludedText").style.visibility = " visible";
 	document.getElementById("local_vid").style.borderStyle = "hidden";
+	//stops media capture and sets the UI elements to a end of stream state.
 
-	// API STREAM END call here
+
 
 	let token = localStorage.getItem("token");
-
 	let luser = localStorage.getItem("user") === null ? 0 : localStorage.getItem("user");
 
+	//sends a end of stream call to the API to update the record in the databse to a recording.
 	axios
 	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
 	  .then((res) => {
@@ -307,8 +332,6 @@ async function stopStream(){
 	  .catch((e) => {
 			console.log(e); // If DB operation POST fails
 	  });
-
-
 	  })
 	  .catch((e) => {
 			console.log(e); // If DB operation GET fails
@@ -321,10 +344,13 @@ async function swapScreen(){
 	try {
 		if (screenStream == null && live == 0) {
 			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
+			//enables screen capture for the stream
 		} else if(screenStream == null && live == 1){
 			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 			console.log("Adding track vid 2");
+			//enables screen capture for the stream
 
+			//sends new stream to the active live stream
 			livestream.createOffer({
 				tracks:[{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false, add: true}],
 				success: function(jsep){
@@ -337,7 +363,9 @@ async function swapScreen(){
 		} else {
 			screenStream = await navigator.mediaDevices.getDisplayMedia({video:{ mediaSource: "screen" }, replace: true});
 			console.log("Replacing track vid 2");
+			//enables screen capture for the stream
 
+			//replaces existing screen element with new screen object
 			livestream.replaceTracks({
 				tracks:[
 					{ type: 'screen',  mid:'2', capture: screenStream.getVideoTracks()[0], recv: false, replace: true}],
@@ -350,10 +378,11 @@ async function swapScreen(){
 		console.log(e);
 		console.log("no track, continuing");
 	}
-	displayMedia();
+	displayMedia(); //refreshes UI element for the
 }
 
 async function muteMic(){
+	//runs a toggle for the microphone object and updates ui elements
   if(camStream.getAudioTracks()[0].enabled){
     document.getElementById("mic-mute-button").style.backgroundImage = `url(${mutedIcon})`;
     camStream.getAudioTracks()[0].enabled = false;
@@ -365,6 +394,7 @@ async function muteMic(){
 }
 
 async function muteCam(){
+	//runs a toggle for the camera object and updates ui elements
   if(camStream.getVideoTracks()[0].enabled){
     document.getElementById("cam-mute-button").style.backgroundImage = `url(${cameraOffIcon})`;
     camStream.getVideoTracks()[0].enabled = false;
@@ -376,6 +406,7 @@ async function muteCam(){
 }
 
 async function toggleScreenShare(){
+	//runs a toggle for the screen object and updates ui elements, ensuring the camera
 
   if (screenStream == null) {
     swapScreen();
@@ -401,30 +432,39 @@ function initJanus(){
     return;
         }
         janus = new Janus(
+					//creates new janus instance
     {
 			server: server,
       success: function() {
         console.log("Janus loaded");
+
+				//on successfull load, attacch the video room object
         janus.attach({
           plugin: "janus.plugin.videoroom",
           opaqueId: opaqueId,
           success: function(pluginHandle) {
               livestream = pluginHandle;
+							// creates addressable object for the livestream
 							Janus.log("Plugin attached! (" + livestream.getPlugin() + ", id=" + livestream.getId() + ")");
 							var body = { request: "setup" };
 							Janus.debug("Sending message:", body);
 							livestream.send({ message: body });
 
+							// if succesfull attaches a object for the chat room
 							janus.attach({
 								plugin: "janus.plugin.textroom",
 								opaqueId: opaqueId,
 								success: function(chatHandle) {
 									textroom = chatHandle;
+									// creates addressable object for the chat room
 									console.log("-- Chatroom Plugin Loaded --");
 									let body = { request: "setup" };
 									Janus.debug("Sending message:", body);
 									textroom.send({ message: body });
 									document.getElementById("startButton").disabled = false;
+
+									//if all is good, the ui element to start the stream becomes avaliable.
+
 								},
 								error: function(error){console.error(error)},
 								onmessage: function(msg, jsep) {
@@ -453,6 +493,7 @@ function initJanus(){
 								},
 								ondata: function(data) {
 									console.log("Data Recived: " + data);
+									//on incoming message, send the message to the decoder for display
 									if(JSON.parse(data)["textroom"] == "message"){
 										chatbox = document.getElementById("chatbox");
 										chatbox.value += (formatChatMsg(data)+"\n");
@@ -471,11 +512,11 @@ function initJanus(){
 
             if(event){
               if (event === "joined") {
-
-                myid = msg["id"];
+								myid = msg["id"];
+								//on successfull connection to the janus server, get our assigned room key
                 Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
                 Janus.debug("Negotiating WebRTC stream for our screen (capture " + capture + ")");
-
+								//runs a check to see if screen share is enabled and starts a live stream with the mediaStream object(s)
 									if (screenStream == null) {
 										livestream.createOffer({
 											tracks: [
@@ -487,6 +528,7 @@ function initJanus(){
 												Janus.log("Got publisher SDP!", jsep);
 												var publish = { request: "configure", audio: true, video: true, data: true };
 												livestream.send({ message: publish, jsep: jsep });
+												//starts stream
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
@@ -505,6 +547,7 @@ function initJanus(){
 												Janus.log("Got publisher SDP!", jsep);
 												var publish = { request: "configure", audio: true, video: true, data: true };
 												livestream.send({ message: publish, jsep: jsep });
+												//starts stream
 											},
 											error: function(error) {
 												Janus.error("WebRTC error:", error);
@@ -536,31 +579,14 @@ function initJanus(){
 
       },
       error: function(error) {
+				//On error, resets page for secondary attempt
         Janus.error(error);
         janus = null;
 				camStream = null;
 				vidStream = null;
-				axios
-					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
-					.then((res) => {
-
-						axios
-						.post(`${dbdaemon}/api/v1/media/${mediaID}/stream/start?token=${token}`, JSON.stringify({"user": luser}), {headers: {'Content-Type': 'application/json'}})
-						.then((res) => {
-
-					})
-					.catch((e) => {
-						console.log(e); // Add POST error handling here
-					});
-
-
-					})
-					.catch((e) => {
-						console.log(e);// Add GET error handling here. Stream doesn't exist.
-					});
-
-      },
+			},
       destroyed: function() {
+				//On destroy, clears the janus variable and updates the database record that the stream is over.
 				janus = null;
 				axios
 					.get(`${dbdaemon}/api/v1/media/${mediaID}`)
@@ -588,7 +614,7 @@ function initJanus(){
 }
 
 function startLiveStream() {
-	// Create a new room
+	// Create a new room and set up parameters.
   capture = "screen";
   var desc = "Test transmit Page";
 	var role = "publisher";
@@ -603,7 +629,7 @@ function startLiveStream() {
 		var event = result["videoroom"];
 		Janus.debug("VR Event: " + event);
 		if(event) {
-			// Our own screen sharing session has been created, join it
+			// Once a live stream is created a user can join
 			room = result["room"];
 			Janus.log("Screen sharing session created: " + room);
 			var register = {
@@ -613,7 +639,7 @@ function startLiveStream() {
 				display: myusername
 			};
 			livestream.send({ message: register, success: function(){
-
+				//creates the chatroom with the same id
 				console.log("Creating textroom with room id: " + room);
 				var create = {
 					request: "create",
@@ -633,7 +659,9 @@ function startLiveStream() {
 						transaction: randomString(12),
 					};
 					textroom.data({text: JSON.stringify(register)});
+					//Joins chat as user
 
+					//starts the live stream
 					livestream.send({
 						message: {
 							request : "configure",
@@ -646,7 +674,7 @@ function startLiveStream() {
 						success: function(){
 							console.log("Sent record publish request")
 							recording = 1;
-
+							//once stream recording starts, a api call is made to create the recording refference
 							console.log("ATTEMPING NFO WRITE");
 							axios
 								.get(`${dbdaemon}/api/v1/media/${mediaID}`)
@@ -671,9 +699,7 @@ function startLiveStream() {
 
 			}});
 
-		// API START STREAM call here
-
-
+			//once the stream has started, and API call updates the information in the database to reflect that including the room refference ID
 
 	axios
 	  .get(`${dbdaemon}/api/v1/media/${mediaID}`)
@@ -694,13 +720,6 @@ function startLiveStream() {
 			console.log(e);// Add GET error handling here. Stream doesn't exist.
 	  });
 
-
-
-
-//
-
-
-
 		}
 	}});
 
@@ -710,19 +729,20 @@ function startLiveStream() {
 	document.getElementById("stopButton").disabled = false;
 	document.getElementById("stopButton").style.display='inline-block';
 	document.getElementById("local_vid").style.borderStyle = "solid";
+	//UI elements are updated to reflect the live stream controls.
 }
 
-
+//Runs format on chat messages before displaying them. Also checks for commands
 function formatChatMsg(data){
 	var msg = JSON.parse(data);
 
 	if (msg.text[0] == '/' && msg["from"] == myusername) {
 		parseCommand(msg.text.substring(1,msg.text.length))
-		return "["+msg.time + "] Command: " + msg.text;
+		return "["+getDateString(msg.time) + "] Command: " + msg.text;
 	} else if(msg.text[0] == '/') {
 		parseCommand(msg.text.substring(1,msg.text.length))
 	} else {
-		return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
+		return "["+getDateString(msg.time) + "] " + msg["from"] + ": "+msg.text;
 	}
 }
 
@@ -755,7 +775,7 @@ function getDateString(jsonDate) {
 			("0" + when.getUTCSeconds()).slice(-2);
 	return dateString;
 }
-// Just an helper to generate random usernames
+// To generate random transactions IDs
 function randomString(len, charSet) {
   charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var randomString = '';

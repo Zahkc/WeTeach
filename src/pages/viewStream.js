@@ -46,62 +46,69 @@ function WatchLive() {
    attemptConnect();
  }
 
-  params=useParams(); // not needed
+	//gets JWT, ID and User information
+  params=useParams();
 	myusername = localStorage.getItem("name") + "#" + localStorage.getItem("user");
 
+	//Dummy token to be overwritten by the API call with data from the database.
 const [media, setMedia] = useState({
                 id: "",
                 name: "",
                 description: "",
                 liveStatus: -1,
-				startDateTime: "",
-				sponsor: "",
+								startDateTime: "",
+								sponsor: "",
                 disciplines: [],
                	videoConferenceId: 0,
-				user: 1,
-				author: "",
+								user: 1,
+								author: "",
                 disciplines: [],
                 src: [],
           });
 
+					//Gets ID from url
           const { id } = useParams();
           var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
 
+					//sets the local media object information from database
           useEffect(() => {
                 axios
                   .get(`${dbdaemon}/api/v1/media/${id}`)
                   .then((res) => {
                         setMedia({
-                        id: res.data._id,
-                        name: res.data.name,
-                        description: res.data.description,
-                        liveStatus: res.data.liveStatus,
-                        disciplines: res.data.disciplines,
-						startDateTime: res.data.startDateTime,
-						videoConferenceID: res.data.videoConferenceId,
-						user: localStorage.getItem("user"),
-						author: res.data.createdByName,
-						sponsor: res.data.sponsoredByName
-                        });
+	                        id: res.data._id,
+	                        name: res.data.name,
+	                        description: res.data.description,
+	                        liveStatus: res.data.liveStatus,
+	                        disciplines: res.data.disciplines,
+													startDateTime: res.data.startDateTime,
+													videoConferenceID: res.data.videoConferenceId,
+													user: localStorage.getItem("user"),
+													author: res.data.createdByName,
+													sponsor: res.data.sponsoredByName
+	                      });
                   })
                   .catch((e) => {
                         console.log(e);
                   });
           }, [id]);
 
-  const [janusInstance, setJanusInstance] = useState(null);
   useEffect(() => {
 		localVid = document.getElementById('local_vid');
 		localCam = document.getElementById('local_cam');
-    initJanus();
+		//sets states of userinterface
+    initJanus();  // Initialises a connection to the janus server
   });
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       document.getElementById("chatSubmit").click();
+			//sends chat message
     }
   };
 	document.title = "WeTeach - View Stream";
 
+
+	//Returns ui
   return (
 
 (media.liveStatus === 0) || (media.liveStatus === 1) ?
@@ -189,6 +196,7 @@ async function initJanus(){
         }
 
         janus = new Janus(
+					//creates new janus instance
     {
 			server: server,
 
@@ -199,27 +207,29 @@ async function initJanus(){
           opaqueId: opaqueId,
           success: function(pluginHandle) {
               screentest = pluginHandle;
+							// creates addressable object for the livestream
               Janus.log("Plugin attached! (" + screentest.getPlugin() + ", id=" + screentest.getId() + ")");
-              // Prepare the username registration
+							//on successfull load, attacch the video room object
 							janus.attach({
 								plugin: "janus.plugin.textroom",
 								opaqueId: opaqueId,
 								success: function(chatHandle) {
+									// if succesfull attaches a object for the chat room
 									textroom = chatHandle;
 									console.log("-- Chatroom Plugin Loaded --");
 									let body = { request: "setup" };
 									Janus.debug("Sending message:", body);
 									textroom.send({ message: body });
+
+									//If all is good, attempts to connect to stream
 									attemptConnect();
 								},
 								error: function(error){console.error(error)},
 								onmessage: function(msg, jsep) {
 									if(jsep) {
-										// Answer
 										textroom.createAnswer(
 											{
 												jsep: jsep,
-												// We only use datachannels
 												tracks: [
 													{ type: 'data' }
 												],
@@ -239,6 +249,7 @@ async function initJanus(){
 								},
 								ondata: function(data) {
 									console.log("Data Recived: " + data);
+									//on incoming message, send the message to the decoder for display
 									if(JSON.parse(data)["textroom"] == "message"){
 										chatbox = document.getElementById("chatbox");
 										chatbox.value += (formatChatMsg(data)+"\n");
@@ -316,11 +327,13 @@ async function initJanus(){
 
       },
       error: function(error) {
+				//On error, resets page for secondary attempt
         Janus.error(error);
 				janus.destroy();
         janus = null;
       },
       destroyed: function() {
+				//On destroy ends janus instance
 				janus.destroy();
 				janus = null;
       }
@@ -329,10 +342,12 @@ async function initJanus(){
 }
 
 function leaveStream(){
+	//gracefull end of object
 	janus.destroy();
 }
 
 function attemptConnect(){
+	//set parameters to connect to existing room
 	role = "listener";
   var register = {
 		request: "join",
@@ -350,6 +365,7 @@ function attemptConnect(){
 			transaction: randomString(12),
 		};
 		textroom.data({text: JSON.stringify(register), success: function(){
+			// Once a live stream is connected join textroom
 			console.log(" --- Joined Chatroom ---");
 		}});
 	}});
@@ -357,6 +373,7 @@ function attemptConnect(){
 }
 
 function newRemoteFeed(id, display) {
+	// for each track in recived media object, load into UI
   source = id;
   var remoteFeed = null;
   janus.attach({
@@ -439,6 +456,7 @@ function newRemoteFeed(id, display) {
       } else {
         // New video track: create a stream out of it
 
+				//if only stream, put in center, else load secondary screen on center
 				if (mid == 1 && stage == 0) {
 					camStream.addTrack(track);
 					Janus.log("Created remote video stream:", camStream);
@@ -467,7 +485,7 @@ function newRemoteFeed(id, display) {
 
 }
 
-// Just an helper to generate random usernames
+// To generate random transactions IDs
 function randomString(len, charSet) {
   charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var randomString = '';
@@ -487,7 +505,7 @@ function handlePlay(){
 }
 
 async function getMediaReccord(id){
-	axios.get(`https://weteach.ddns.net/api/v1/media/${id}`).then(res => {
+	axios.get(`${dbdaemon}/api/v1/media/${id}`).then(res => {
 	const mdata = res.data;
 	room = mdata.videoConferenceId;
 	console.log("Found room id: " + room);
@@ -506,17 +524,18 @@ function getDateString(jsonDate) {
 			("0" + when.getUTCSeconds()).slice(-2);
 	return dateString;
 }
-// Sends chat message
+
+// Runs check on message to check for command
 function formatChatMsg(data){
 	var msg = JSON.parse(data);
 
 	if (msg.text[0] == '/' && msg["from"] == myusername) {
 		parseCommand(msg.text.substring(1,msg.text.length))
-		return "["+msg.time + "] Command: " + msg.text;
+		return "["+getDateString(msg.time) + "] Command: " + msg.text;
 	} else if(msg.text[0] == '/') {
 		parseCommand(msg.text.substring(1,msg.text.length))
 	} else {
-		return "["+msg.time + "] " + msg["from"] + ": "+msg.text;
+		return "["+getDateString(msg.time) + "] " + msg["from"] + ": "+msg.text;
 	}
 }
 
@@ -533,6 +552,7 @@ function parseCommand(command){
 }
 
 function swapScreen(){
+	//swaps ui locations
 	if (stage == 0) {
 		stage = 1;
 		localCam.srcObject = camStream;
@@ -545,6 +565,7 @@ function swapScreen(){
 }
 
 function sendData() {
+	//sends messages to chatroom
 	var messageText = document.getElementById("msg_box").value;
 	if(messageText === "") {
     // Does nothing

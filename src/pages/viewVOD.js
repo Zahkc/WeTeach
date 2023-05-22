@@ -40,26 +40,28 @@ function WatchVOD() {
 
 
 
-  params=useParams(); // not needed
+  params=useParams();
 
+		//Dummy token to be overwritten by the API call with data from the database.
   const [media, setMedia] = useState({
                 id: "",
                 name: "",
                 description: "",
                 liveStatus: -1,
-				startDateTime: "",
-				sponsor: "",
+								startDateTime: "",
+								sponsor: "",
                 disciplines: [],
                	videoConferenceId: 0,
-				user: 1,
-				author: "",
+								user: 1,
+								author: "",
                 disciplines: [],
                 src: [],
 
           });
+					//Gets ID from url
           var thumbnail = process.env.PUBLIC_URL + "/img/thumbs.png";
           const { id } = useParams();
-
+					//sets the local media object information from database
           useEffect(() => {
                 axios
                   .get(`${dbdaemon}/api/v1/media/${id}`)
@@ -70,16 +72,16 @@ function WatchVOD() {
                         description: res.data.description,
                         liveStatus: res.data.liveStatus,
                         disciplines: res.data.disciplines,
-						startDateTime: res.data.startDateTime,
-						videoConferenceID: res.data.videoConferenceId,
-						user: localStorage.getItem("user"),
-						author: res.data.createdByName,
-						sponsor: res.data.sponsoredByName
+												startDateTime: res.data.startDateTime,
+												videoConferenceID: res.data.videoConferenceId,
+												user: localStorage.getItem("user"),
+												author: res.data.createdByName,
+												sponsor: res.data.sponsoredByName
                         });
 												axios.get(`${dbdaemon}/api/v1/media/${id}`).then(res => {
 													room = res.data.videoConferenceId;
-													console.log("Found room id: " + room);
-													initJanus();
+													console.log("Found room id: " + room); //gets janus room id
+													initJanus(); // Initialises a connection to the janus server
 													//fill out other dataspots
 												}).catch((e) => console.log(e));
                   })
@@ -96,9 +98,7 @@ function WatchVOD() {
   });
 	document.title = "WeTeach - View Stream";
 
-
-
-
+	//Returns ui
   return (
     media.liveStatus == 3 ?
     <Fragment>
@@ -180,6 +180,7 @@ function initJanus(){
 		}
 
 		janus = new Janus(
+			//creates new janus instance
 			{
 				server: server,
 				success: function(){
@@ -189,6 +190,7 @@ function initJanus(){
 						opaqueId: opaqueId,
 						success: function(pluginHandle){
 							pb1 = pluginHandle;
+							// creates addressable object for the first video object
 							console.log("PB1 Connected to Record Daemon");
 
 							janus.attach({
@@ -196,6 +198,7 @@ function initJanus(){
 								opaqueId: opaqueId,
 								success: function(pluginHandle){
 									pb2 = pluginHandle;
+									// creates addressable object for the second video object
 									console.log("PB2 Connected to Record Daemon");
 									startVOD();
 								},
@@ -229,7 +232,7 @@ function initJanus(){
 								},
 								onremotetrack: function(track, mid, on) {
 						      Janus.debug("Remote track (mid=" + mid + ") " + (on ? "added" : "removed") + ":", track);
-
+											//for each video object, add to UI
 											stream.addTrack(track);
 											Janus.log("Created remote Camera stream:", stream);
 											localVid = document.getElementById('local_vid');
@@ -299,7 +302,8 @@ function initJanus(){
 
 function startVOD(){
 	updateVODS();
-	listVODS();
+	// listVODS();
+	//Request both vods & start playing
 	console.log("Starting vod: " + room);
 	pb1.send({
 		message: {
@@ -317,6 +321,7 @@ function startVOD(){
 }
 
 function updateVODS(){
+	//update internal vod list
 	pb1.send({
 		message: {
 			request: "update"
