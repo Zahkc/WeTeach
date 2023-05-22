@@ -23,13 +23,16 @@ function Header() {
 		navigate(`/search-results/${searchInput}`);
 		window.location.reload(true); // trigger a hard refresh to display search results
 	}
-	if(!(localStorage.getItem("token"))==="null")
+	try
 	{
 		if (isExpired(localStorage.getItem("token")))
 		{
 	                localStorage.clear(); // simulate logout if token expired
         	        window.location.reload(true);
 		}
+	}
+	catch (e)
+	{
 	}
     return(
         <Fragment>
@@ -148,7 +151,7 @@ function Header() {
 
             </ul>
 			</div>
-			*/
+
 
 
 		</Fragment>

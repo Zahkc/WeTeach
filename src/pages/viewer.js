@@ -53,7 +53,7 @@ function Viewer(props) {
 			console.log(e);
 		  });
 	  }, [id]);
-	
+
   return (
 
    media.liveStatus === 2 ?
@@ -82,9 +82,9 @@ function Viewer(props) {
 
 
 						</div></div>
-						 <div className="main-title"><br />												
-									<h3><span className="title">{media.name}</span></h3>																		
-									
+						 <div className="main-title"><br />
+									<h3><span className="title">{media.name}</span></h3>
+
 									<div style={{"position":"relative","left":"0px","width":"fit-content"}} className="live2"></div><br />
 						 <p className="tags mb-0">
                                           {media.disciplines.map((tag, k) => <Fragment><span><a href="#v" key={k}>{tag}</a></span>&nbsp;&nbsp;</Fragment>)}
