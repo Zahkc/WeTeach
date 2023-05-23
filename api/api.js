@@ -931,7 +931,7 @@ graph.route("/api/v1/channels/:id/presenters").post(auth, (req, res) => {
 });
 
 // Push an attendee onto a channel.
-graph.route("/api/v1/channels/:id/presenters").post(auth,(req, res) => {
+graph.route("/api/v1/channels/:id/attendees").post(auth,(req, res) => {
  try {
 	var hex = /[0-9A-Fa-f]{24}/g;
 	if(hex.test(req.params.id))
