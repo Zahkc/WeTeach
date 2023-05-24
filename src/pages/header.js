@@ -114,7 +114,7 @@ function Header() {
 			</div></div><br /><br /><br />
 			<div id="sidebar" className="smallscreen">
 			{/*<!-- Sidebar -->*/}
-			<ul className="sidebar navbar-nav" id="sidebar-list">
+			<ul className="sidebar navbar-nav toggled" id="sidebar-list">
                 <li className="nav-item active">
                 <NavLink to = "/" rel="nofollow">
                 <i className="fas fa-fw fa-film"></i>

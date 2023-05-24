@@ -2,6 +2,9 @@ var express =   require("express");
 var multer  =   require('multer');
 var randomstring = require("randomstring");
 
+const yenv = require('yenv');
+const config = yenv(__dirname+'/config.yaml');
+const STORAGE_LOCATION = config.STORAGE_LOCATION;
 const https = require('https');
 const fs = require('fs');
 
@@ -16,7 +19,7 @@ app.use(cors()); // require cors
 
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, '../data/public');
+    callback(null, STORAGE_LOCATION+'/public');
   },
   filename: function (req, file, callback) {
 	newfile = file.originalname + randomstring.generate(5)+".mp4"

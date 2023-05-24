@@ -2091,14 +2091,14 @@ td {
 
 	#content-all {
 		overflow: ellipsis;
+		margin-left: 20px !important;
+		margin-right: 20px !important;
+
 	}
 
 	#page-wrapper {
 		/*	margin: auto; */
-		margin-left: 20px !important;
-		margin-right: 20px !important;
 		max-width: 1032px !important;
-		min-width: 440px !important;
 	}
 }
 

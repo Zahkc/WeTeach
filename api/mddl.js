@@ -30,9 +30,9 @@ module.exports = {
 		if(process.platform == "win32")
 		{
 			try {
-			
+
 				console.log("Connecting to " + MONGODB_WIN32_URL);
-				win32client.connect()					
+				win32client.connect()
 			}
 			catch (e) {
 				console.error(e);
