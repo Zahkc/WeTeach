@@ -23,17 +23,14 @@ function Header() {
 		navigate(`/search-results/${searchInput}`);
 		window.location.reload(true); // trigger a hard refresh to display search results
 	}
-	try
-	{
-		if (isExpired(localStorage.getItem("token")))
+	if(!(localStorage.getItem("token"))==="null")
 		{
-	                localStorage.clear(); // simulate logout if token expired
-        	        window.location.reload(true);
+			if (isExpired(localStorage.getItem("token")))
+			{
+		                localStorage.clear(); // simulate logout if token expired
+	        	        window.location.reload(true);
+			}
 		}
-	}
-	catch (e)
-	{
-	}
     return(
         <Fragment>
 		{/* Desktop navigation bar */}
