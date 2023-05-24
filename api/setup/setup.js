@@ -34,7 +34,7 @@ db.records.insertOne({
     {value: "pexels-wheatfield.jpg", label: "Wheat Field"}
 ]
 	
-	disciplines: ["Animation", "Chemistry", "Economics", "Philosophy", "Physics", "Mathematics", "Communications", "Big Data", "Cybersecurity", "Visual Arts", "Politics", "IT"]
+	disciplines: ["Animation", "Chemistry", "Economics", "Philosophy", "Physics", "Mathematics", "Communications", "Big Data", "Cybersecurity", "Visual Arts", "Politics", "IT"],
 	
 	locked: 1
 });
